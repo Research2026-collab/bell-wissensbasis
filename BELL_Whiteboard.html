@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELL 2026 – Wissensbasis Whiteboard</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f1923;
+  --surface: #172030;
+  --surface2: #1e2d40;
+  --border: rgba(255,255,255,0.08);
+  --text: #e8e8e4;
+  --text-muted: #8a9ab0;
+  --text-faint: #4a5a6a;
+
+  --blue: #4a90d9;       --blue-light: #1a3a5c;
+  --green: #4caf82;      --green-light: #1a3028;
+  --orange: #e0913a;     --orange-light: #2a1e0a;
+  --purple: #a47de0;     --purple-light: #281f3a;
+  --gray: #8a9ab0;       --gray-light: #20293a;
+  --pink: #d97aa6;       --pink-light: #2a1c24;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+body {
+  font-family: -apple-system, Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; padding: 1.5rem;
+}
+.top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; margin-bottom: 1.25rem;
+  flex-wrap: wrap; gap: 0.75rem;
+}
+.top-left h1 { font-size: 20px; font-weight: 500; margin-bottom: 0.25rem; }
+.top-left p { font-size: 12px; color: var(--text-muted); }
+.live-dot { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.tabs {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+  margin-bottom: 1.5rem; border-bottom: 0.5px solid var(--border); padding-bottom: 0.75rem;
+}
+.tab {
+  font-family: inherit; font-size: 13px; font-weight: 500;
+  color: var(--text-muted); background: var(--surface);
+  border: 0.5px solid var(--border); border-radius: 20px;
+  padding: 0.5rem 1.1rem; cursor: pointer; transition: all 0.15s;
+}
+.tab:hover { color: var(--text); border-color: var(--text-faint); }
+.tab.active { color: var(--bg); background: var(--blue); border-color: var(--blue); font-weight: 600; }
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+.column { display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+.column-header {
+  font-size: 13px; font-weight: 600; letter-spacing: 0.02em;
+  padding: 0.6rem 0.9rem; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.column-header .count { font-size: 11px; font-weight: 400; opacity: 0.75; }
+
+.col-blue   .column-header { background: var(--blue-light);   color: var(--blue); }
+.col-green  .column-header { background: var(--green-light);  color: var(--green); }
+.col-orange .column-header { background: var(--orange-light); color: var(--orange); }
+.col-purple .column-header { background: var(--purple-light); color: var(--purple); }
+.col-gray   .column-header { background: var(--gray-light);   color: var(--gray); }
+.col-pink   .column-header { background: var(--pink-light);   color: var(--pink); }
+
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  animation: fadein 0.4s ease;
+}
+@keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.col-blue   .card { border-left: 3px solid var(--blue); }
+.col-green  .card { border-left: 3px solid var(--green); }
+.col-orange .card { border-left: 3px solid var(--orange); }
+.col-purple .card { border-left: 3px solid var(--purple); }
+.col-gray   .card { border-left: 3px solid var(--gray); }
+.col-pink   .card { border-left: 3px solid var(--pink); }
+
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 0.35rem; }
+.card-meta { font-size: 11px; color: var(--text-faint); margin-bottom: 0.5rem; }
+.card-text { font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+.card-contact { font-size: 11px; color: var(--text-faint); margin-top: 0.6rem; padding-top: 0.5rem; border-top: 0.5px solid var(--border); }
+
+.tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.6rem; }
+.tag {
+  font-size: 10px; font-weight: 600; padding: 0.15rem 0.55rem;
+  border-radius: 20px; letter-spacing: 0.03em;
+}
+
+.empty { text-align: center; color: var(--text-faint); padding: 4rem 0; font-size: 14px; grid-column: 1/-1; }
+
+/* Übersicht: full project cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+.full-card {
+  background: var(--surface); border: 0.5px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem;
+}
+.full-card h3 { font-size: 16px; margin-bottom: 0.2rem; }
+.full-card .region { font-size: 12px; color: var(--text-faint); margin-bottom: 0.75rem; }
+.full-card .section { margin-top: 0.75rem; padding-top: 0.6rem; border-top: 0.5px solid var(--border); }
+.full-card .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.25rem; }
+.full-card .section-text { font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+.full-card .contacts { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="top-left">
+    <h1>BELL 2026 – Wissensbasis</h1>
+    <p>Gemeinsame Übersicht der teilnehmenden Projekte · Jahreskonferenz BELL, 16.&ndash;17.11.2026, Hannover</p>
+  </div>
+  <div class="live-dot">
+    <div class="dot"></div>
+    <span id="livetext">Wird geladen…</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="themen">Themen</button>
+  <button class="tab" data-tab="regionen">Regionen</button>
+  <button class="tab" data-tab="reflexion">Gelingen &amp; Hindernisse</button>
+  <button class="tab" data-tab="marktplatz">Marktplatz</button>
+  <button class="tab" data-tab="uebersicht">Übersicht</button>
+</div>
+
+<div class="board" id="board"></div>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwwq7XdHJA3-J-K13LF8q7bkV6RrVIpjyZfkfuDBwN7QJ_rTqe-sfr1SwA9ydH_H22iAw/exec';
+
+let daten = [];
+let activeTab = 'themen';
+
+const THEMEN = [
+  { name: 'Breit angelegtes Angebot für ältere Menschen vor Ort', color: 'orange' },
+  { name: 'Gesundheitsbildung', color: 'green' },
+  { name: 'Sprachförderung', color: 'blue' },
+  { name: 'Digitale Kompetenzen', color: 'purple' },
+  { name: 'Sonstiges', color: 'gray' },
+];
+
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeTab = btn.dataset.tab;
+    render();
+  });
+});
+
+async function laden() {
+  try {
+    const res = await fetch(SHEET_URL + '?t=' + Date.now());
+    daten = await res.json();
+    render();
+    const now = new Date().toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    document.getElementById('livetext').textContent = 'Zuletzt: ' + now + ' · ' + daten.length + ' Projekte';
+  } catch(e) {
+    document.getElementById('livetext').textContent = 'Verbindungsfehler';
+  }
+}
+
+function esc(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function listToArray(s) {
+  return (s || '').split(',').map(v => v.trim()).filter(Boolean);
+}
+
+function render() {
+  const board = document.getElementById('board');
+  if (!daten.length) {
+    board.innerHTML = '<p class="empty">Noch keine Projektangaben eingegangen.</p>';
+    return;
+  }
+  if (activeTab === 'themen') return renderThemen(board);
+  if (activeTab === 'regionen') return renderRegionen(board);
+  if (activeTab === 'reflexion') return renderReflexion(board);
+  if (activeTab === 'marktplatz') return renderMarktplatz(board);
+  if (activeTab === 'uebersicht') return renderUebersicht(board);
+}
+
+function renderThemen(board) {
+  const cols = THEMEN.map(t => {
+    const projekte = daten.filter(e => listToArray(e.themen).includes(t.name));
+    const cards = projekte.map(e => {
+      const sonst = (t.name === 'Sonstiges' && e.themenSonstiges)
+        ? `<p class="card-meta">${esc(e.themenSonstiges)}</p>` : '';
+      return `
+        <div class="card">
+          <p class="card-title">${esc(e.projekt)}</p>
+          <p class="card-meta">${esc(e.region) || 'Region nicht angegeben'}</p>
+          ${sonst}
+          <p class="card-text">${esc(e.fokus)}</p>
+        </div>`;
+    }).join('') || `<p class="card-text" style="color:var(--text-faint);padding:0.5rem 0;">Keine Projekte in dieser Kategorie</p>`;
+    return `
+      <div class="column col-${t.color}">
+        <div class="column-header"><span>${esc(t.name)}</span><span class="count">${projekte.length}</span></div>
+        ${cards}
+      </div>`;
+  }).join('');
+  board.innerHTML = cols;
+}
+
+function renderRegionen(board) {
+  const colorCycle = ['blue','green','orange','purple','pink','gray'];
+  const regionen = {};
+  daten.forEach(e => {
+    const r = e.region && e.region.trim() ? e.region.trim() : 'Ohne Angabe';
+    (regionen[r] = regionen[r] || []).push(e);
+  });
+  const namen = Object.keys(regionen).sort((a,b) => a === 'Ohne Angabe' ? 1 : b === 'Ohne Angabe' ? -1 : a.localeCompare(b, 'de'));
+  board.innerHTML = namen.map((r, i) => {
+    const color = colorCycle[i % colorCycle.length];
+    const cards = regionen[r].map(e => `
+      <div class="card">
+        <p class="card-title">${esc(e.projekt)}</p>
+        <p class="card-text">${esc(e.fokus)}</p>
+      </div>`).join('');
+    return `
+      <div class="column col-${color}">
+        <div class="column-header"><span>${esc(r)}</span><span class="count">${regionen[r].length}</span></div>
+        ${cards}
+      </div>`;
+  }).join('');
+}
+
+function renderReflexion(board) {
+  const spalten = [
+    { key: 'gelingen', label: 'Gelingensfaktoren', color: 'green' },
+    { key: 'hindernisse', label: 'Behindernde Faktoren', color: 'orange' },
+    { key: 'geheimtipp', label: 'Geheimtipps', color: 'purple' },
+  ];
+  board.innerHTML = spalten.map(s => {
+    const items = daten.filter(e => e[s.key] && e[s.key].trim());
+    const cards = items.map(e => `
+      <div class="card">
+        <p class="card-title">${esc(e.projekt)}</p>
+        <p class="card-text">${esc(e[s.key])}</p>
+      </div>`).join('') || `<p class="card-text" style="color:var(--text-faint);padding:0.5rem 0;">Noch keine Einträge</p>`;
+    return `
+      <div class="column col-${s.color}">
+        <div class="column-header"><span>${esc(s.label)}</span><span class="count">${items.length}</span></div>
+        ${cards}
+      </div>`;
+  }).join('');
+}
+
+function renderMarktplatz(board) {
+  const spalten = [
+    { key: 'suche', label: 'Wonach suche ich aktuell', color: 'blue' },
+    { key: 'biete', label: 'Was ich anbieten kann', color: 'green' },
+  ];
+  board.innerHTML = spalten.map(s => {
+    const items = daten.filter(e => e[s.key] && e[s.key].trim());
+    const cards = items.map(e => {
+      const kontakt = e.ap1Name
+        ? `<p class="card-contact">${esc(e.ap1Name)}${e.ap1Mail ? ' · ' + esc(e.ap1Mail) : ''}</p>` : '';
+      return `
+        <div class="card">
+          <p class="card-title">${esc(e.projekt)}</p>
+          <p class="card-meta">${esc(e.region) || 'Region nicht angegeben'}</p>
+          <p class="card-text">${esc(e[s.key])}</p>
+          ${kontakt}
+        </div>`;
+    }).join('') || `<p class="card-text" style="color:var(--text-faint);padding:0.5rem 0;">Noch keine Einträge</p>`;
+    return `
+      <div class="column col-${s.color}">
+        <div class="column-header"><span>${esc(s.label)}</span><span class="count">${items.length}</span></div>
+        ${cards}
+      </div>`;
+  }).join('');
+}
+
+function renderUebersicht(board) {
+  function colorFor(e) {
+    const themen = listToArray(e.themen);
+    const treffer = THEMEN.find(t => themen.includes(t.name));
+    return treffer ? treffer.color : 'gray';
+  }
+  const cards = daten.map(e => {
+    const themen = listToArray(e.themen).map(t => t === 'Sonstiges' && e.themenSonstiges ? e.themenSonstiges : t);
+    const zielgruppen = listToArray(e.zielgruppe).map(z => z === 'Sonstiges' && e.zielgruppeSonstiges ? e.zielgruppeSonstiges : z);
+    const tagColor = colorFor(e);
+    const themenTags = themen.map(t => `<span class="tag" style="background:var(--${tagColor}-light);color:var(--${tagColor})">${esc(t)}</span>`).join('');
+
+    const kontakte = [
+      [e.ap1Name, e.ap1Mail], [e.ap2Name, e.ap2Mail], [e.ap3Name, e.ap3Mail]
+    ].filter(([n]) => n).map(([n, m]) => `${esc(n)}${m ? ' · ' + esc(m) : ''}`).join('<br>');
+
+    return `
+      <div class="full-card" style="border-left:3px solid var(--${tagColor})">
+        <h3>${esc(e.projekt)}</h3>
+        <p class="region">${esc(e.region) || 'Region nicht angegeben'} · ${esc(e.stand) || 'Stand nicht angegeben'}</p>
+        ${themenTags ? `<div class="tags">${themenTags}</div>` : ''}
+
+        <div class="section">
+          <p class="section-label">Fokus</p>
+          <p class="section-text">${esc(e.fokus) || '–'}</p>
+        </div>
+
+        ${zielgruppen.length ? `
+        <div class="section">
+          <p class="section-label">Zielgruppe</p>
+          <p class="section-text">${esc(zielgruppen.join(', '))}</p>
+        </div>` : ''}
+
+        <div class="section">
+          <p class="section-label">Gelingensfaktoren</p>
+          <p class="section-text">${esc(e.gelingen) || '–'}</p>
+        </div>
+
+        <div class="section">
+          <p class="section-label">Behindernde Faktoren</p>
+          <p class="section-text">${esc(e.hindernisse) || '–'}</p>
+        </div>
+
+        ${e.geheimtipp ? `
+        <div class="section">
+          <p class="section-label">Geheimtipp</p>
+          <p class="section-text">${esc(e.geheimtipp)}</p>
+        </div>` : ''}
+
+        <div class="section">
+          <p class="section-label">Wonach suche ich</p>
+          <p class="section-text">${esc(e.suche) || '–'}</p>
+        </div>
+
+        <div class="section">
+          <p class="section-label">Was ich anbieten kann</p>
+          <p class="section-text">${esc(e.biete) || '–'}</p>
+        </div>
+
+        ${kontakte ? `
+        <div class="section">
+          <p class="section-label">Kontakt</p>
+          <p class="contacts">${kontakte}</p>
+        </div>` : ''}
+      </div>`;
+  }).join('');
+  board.innerHTML = `<div class="grid" style="grid-column:1/-1">${cards}</div>`;
+}
+
+laden();
+setInterval(laden, 15000);
+</script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELL 2026 – Projektangaben</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --border-strong: rgba(0,0,0,0.18);
+  --text: #1a1a18;
+  --text-muted: #6b6b67;
+  --text-faint: #9a9a96;
+  --accent: #1a4f8a;
+  --accent-mid: #2e6fc4;
+  --accent-light: #eef3fb;
+  --green: #2E7D5A;
+  --green-light: #ebf5f0;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+body {
+  font-family: -apple-system, Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; display: flex;
+  align-items: flex-start; justify-content: center;
+  padding: 2.5rem 1rem 4rem;
+}
+.wrapper { width: 100%; max-width: 680px; }
+.label { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-mid); margin-bottom: 0.5rem; }
+h1 { font-size: 22px; font-weight: 500; line-height: 1.35; margin-bottom: 0.6rem; }
+.intro { font-size: 15px; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.5rem; }
+.card { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 1.75rem; margin-bottom: 1.25rem; }
+h2 { font-size: 16px; font-weight: 600; margin-bottom: 1rem; }
+.field { margin-bottom: 1.1rem; }
+.field:last-child { margin-bottom: 0; }
+.field label, .field-label {
+  display: block; font-size: 12px; font-weight: 500;
+  color: var(--text-muted); margin-bottom: 0.4rem;
+}
+input[type="text"], input[type="email"], textarea {
+  width: 100%; padding: 0.65rem 0.75rem;
+  font-family: inherit; font-size: 14px; line-height: 1.6;
+  color: var(--text); background: var(--bg);
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-sm); resize: vertical; outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+textarea { min-height: 80px; }
+input::placeholder, textarea::placeholder { color: var(--text-faint); }
+input:focus, textarea:focus { border-color: var(--accent-mid); box-shadow: 0 0 0 3px rgba(46,111,196,0.12); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.ap-block { border-top: 0.5px solid var(--border-strong); padding-top: 0.9rem; margin-top: 0.9rem; }
+.ap-block:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+.ap-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 0.6rem; }
+.checkbox-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.checkbox-row { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 14px; }
+.checkbox-row input { margin-top: 3px; }
+.checkbox-row label { font-size: 14px; color: var(--text); font-weight: 400; }
+.radio-row { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.radio-row label { font-size: 14px; color: var(--text); font-weight: 400; display: flex; align-items: center; gap: 0.4rem; }
+.sonstiges-input { margin-top: 0.5rem; }
+.einverstaendnis {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  background: var(--accent-light); border: 0.5px solid rgba(46,111,196,0.25);
+  border-radius: var(--radius-sm); padding: 1rem;
+}
+.einverstaendnis input { margin-top: 3px; }
+.einverstaendnis label { font-size: 13px; line-height: 1.6; color: var(--text); }
+.submit-row { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.btn {
+  font-family: inherit; font-size: 15px; font-weight: 500;
+  padding: 0.7rem 1.85rem; border-radius: var(--radius-sm);
+  border: none; background: var(--accent); color: #fff;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn-secondary {
+  background: transparent; color: var(--accent); border: 0.5px solid var(--accent-mid);
+}
+.status-text { font-size: 13px; color: var(--text-faint); }
+.confirm-card {
+  display: none; background: var(--green-light);
+  border: 0.5px solid rgba(46,125,90,0.30);
+  border-radius: var(--radius); padding: 1.5rem; margin-top: 1rem; text-align: center;
+}
+.confirm-card.visible { display: block; }
+.confirm-text { font-size: 15px; color: var(--green); font-weight: 500; margin-bottom: 0.4rem; }
+.confirm-sub { font-size: 13px; color: var(--text-muted); }
+.hint { font-size: 12px; color: var(--text-faint); margin-top: 0.4rem; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <p class="label">Jahreskonferenz BELL 2026 · Hannover</p>
+  <h1>Angaben zu Ihrem BELL-Projekt</h1>
+  <p class="intro">
+    Diese Angaben bilden die Grundlage für die Vorbereitung der Tagung und für die gemeinsame
+    Wissensbasis aller Projekte. Sie können Ihre Angaben jederzeit über den Namen Ihres Projekts
+    laden und aktualisieren.
+  </p>
+
+  <div class="submit-row" style="margin-bottom: 1.25rem;">
+    <button class="btn btn-secondary" id="loadBtn" onclick="laden()">Vorhandene Angaben laden</button>
+    <p class="status-text" id="loadStatus"></p>
+  </div>
+
+  <form id="form">
+
+    <div class="card">
+      <h2>Projekt</h2>
+      <div class="field">
+        <label for="projekt">Name des Projekts</label>
+        <input type="text" id="projekt" required placeholder="z. B. Brücken bauen – Bildung vor Ort">
+      </div>
+      <div class="field">
+        <label for="region">Region / Bundesland</label>
+        <input type="text" id="region" placeholder="z. B. Niedersachsen">
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ansprechpersonen</h2>
+
+      <div class="ap-block">
+        <p class="ap-title">Ansprechpartner:in 1</p>
+        <div class="row2">
+          <div class="field"><label for="ap1Name">Name</label><input type="text" id="ap1Name"></div>
+          <div class="field"><label for="ap1Mail">E-Mail</label><input type="email" id="ap1Mail"></div>
+        </div>
+      </div>
+
+      <div class="ap-block">
+        <p class="ap-title">Ansprechpartner:in 2 (optional)</p>
+        <div class="row2">
+          <div class="field"><label for="ap2Name">Name</label><input type="text" id="ap2Name"></div>
+          <div class="field"><label for="ap2Mail">E-Mail</label><input type="email" id="ap2Mail"></div>
+        </div>
+      </div>
+
+      <div class="ap-block">
+        <p class="ap-title">Ansprechpartner:in 3 (optional)</p>
+        <div class="row2">
+          <div class="field"><label for="ap3Name">Name</label><input type="text" id="ap3Name"></div>
+          <div class="field"><label for="ap3Mail">E-Mail</label><input type="email" id="ap3Mail"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Inhaltliche Einordnung</h2>
+
+      <div class="field">
+        <label for="fokus">Fokus des Projekts</label>
+        <textarea id="fokus" placeholder="Kurze Beschreibung des inhaltlichen Schwerpunkts"></textarea>
+      </div>
+
+      <div class="field">
+        <p class="field-label">Thematische Einordnung (Mehrfachauswahl möglich)</p>
+        <div class="checkbox-group" id="themenGroup">
+          <div class="checkbox-row"><input type="checkbox" value="Breit angelegtes Angebot für ältere Menschen vor Ort" id="th1"><label for="th1">Breit angelegtes Angebot für ältere Menschen vor Ort</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Gesundheitsbildung" id="th2"><label for="th2">Gesundheitsbildung</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Sprachförderung" id="th3"><label for="th3">Sprachförderung</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Digitale Kompetenzen" id="th4"><label for="th4">Digitale Kompetenzen</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Sonstiges" id="th5"><label for="th5">Sonstiges</label></div>
+        </div>
+        <div class="sonstiges-input">
+          <input type="text" id="themenSonstiges" placeholder="Sonstiges – bitte angeben">
+        </div>
+      </div>
+
+      <div class="field">
+        <p class="field-label">Spezifische Zielgruppe (Mehrfachauswahl möglich)</p>
+        <div class="checkbox-group" id="zielgruppeGroup">
+          <div class="checkbox-row"><input type="checkbox" value="Ältere Migrantinnen und Migranten" id="zg1"><label for="zg1">Ältere Migrantinnen und Migranten</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Menschen in institutionellen Wohnformen" id="zg2"><label for="zg2">Menschen in institutionellen Wohnformen</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Personen mit geringem Einkommen oder niedriger formaler Bildung" id="zg3"><label for="zg3">Personen mit geringem Einkommen oder niedriger formaler Bildung</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Allgemeine ältere Bevölkerung vor Ort" id="zg4"><label for="zg4">Allgemeine ältere Bevölkerung vor Ort</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Sonstiges" id="zg5"><label for="zg5">Sonstiges</label></div>
+        </div>
+        <div class="sonstiges-input">
+          <input type="text" id="zielgruppeSonstiges" placeholder="Sonstiges – bitte angeben">
+        </div>
+      </div>
+
+      <div class="field">
+        <p class="field-label">Stand des Projekts</p>
+        <div class="radio-row">
+          <label><input type="radio" name="stand" value="Neuaufbau"> Neuaufbau</label>
+          <label><input type="radio" name="stand" value="Aufbau auf bestehenden Strukturen"> Aufbau auf bestehenden Strukturen</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Reflexion</h2>
+      <div class="field">
+        <label for="gelingen">Wichtige Gelingensfaktoren</label>
+        <textarea id="gelingen" placeholder="Was hat in Ihrem Projekt besonders gut funktioniert?"></textarea>
+      </div>
+      <div class="field">
+        <label for="hindernisse">Wichtige behindernde Faktoren</label>
+        <textarea id="hindernisse" placeholder="Welche Hürden sind Ihnen begegnet?"></textarea>
+      </div>
+      <div class="field">
+        <label for="geheimtipp">Mein Geheimtipp für den Erfolg des Projekts</label>
+        <textarea id="geheimtipp" placeholder="Eine konkrete Empfehlung aus Ihrer Erfahrung"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Vernetzung auf der Tagung</h2>
+      <div class="field">
+        <label for="suche">Wonach suche ich aktuell</label>
+        <textarea id="suche" placeholder="Wofür suchen Sie Austausch, Erfahrung oder Unterstützung?"></textarea>
+      </div>
+      <div class="field">
+        <label for="biete">Was kann ich anderen Projekten anbieten</label>
+        <textarea id="biete" placeholder="Womit können Sie andere Projekte unterstützen?"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="einverstaendnis">
+        <input type="checkbox" id="einverstaendnis" required>
+        <label for="einverstaendnis">
+          Ich bin damit einverstanden, dass die hier eingegebenen Angaben, einschließlich der
+          Kontaktangaben der Ansprechpersonen, im Rahmen einer gemeinsamen Wissensbasis während
+          und nach der Tagung den teilnehmenden Projekten zugänglich gemacht und für die
+          Abschlussdokumentation der Tagung verwendet werden dürfen.
+        </label>
+      </div>
+      <p class="hint">Die Teilnahme an dieser Erhebung ist freiwillig. Eine Übermittlung ist nur mit gesetztem Häkchen möglich.</p>
+    </div>
+
+    <div class="submit-row">
+      <button type="submit" class="btn" id="submitBtn">Angaben übermitteln</button>
+      <p class="status-text" id="status"></p>
+    </div>
+  </form>
+
+  <div class="confirm-card" id="confirmCard">
+    <p class="confirm-text">Vielen Dank, Ihre Angaben wurden übermittelt.</p>
+    <p class="confirm-sub">Sie erscheinen in Kürze auf dem gemeinsamen Whiteboard und können jederzeit über den Namen Ihres Projekts erneut geladen und aktualisiert werden.</p>
+  </div>
+
+</div>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwwq7XdHJA3-J-K13LF8q7bkV6RrVIpjyZfkfuDBwN7QJ_rTqe-sfr1SwA9ydH_H22iAw/exec';
+
+function getMulti(groupId) {
+  return [...document.querySelectorAll('#' + groupId + ' input:checked')].map(i => i.value).join(', ');
+}
+function setMulti(groupId, value) {
+  const values = (value || '').split(',').map(v => v.trim()).filter(Boolean);
+  document.querySelectorAll('#' + groupId + ' input').forEach(i => {
+    i.checked = values.includes(i.value);
+  });
+}
+
+async function laden() {
+  const projekt = document.getElementById('projekt').value.trim();
+  const loadStatus = document.getElementById('loadStatus');
+  if (!projekt) {
+    loadStatus.textContent = 'Bitte zuerst den Projektnamen eingeben.';
+    return;
+  }
+  loadStatus.textContent = 'Lade…';
+  try {
+    const res = await fetch(SHEET_URL + '?t=' + Date.now());
+    const daten = await res.json();
+    const eintrag = daten.find(e => e.projekt === projekt);
+    if (!eintrag) {
+      loadStatus.textContent = 'Kein Eintrag mit diesem Projektnamen gefunden.';
+      return;
+    }
+    document.getElementById('region').value = eintrag.region || '';
+    document.getElementById('ap1Name').value = eintrag.ap1Name || '';
+    document.getElementById('ap1Mail').value = eintrag.ap1Mail || '';
+    document.getElementById('ap2Name').value = eintrag.ap2Name || '';
+    document.getElementById('ap2Mail').value = eintrag.ap2Mail || '';
+    document.getElementById('ap3Name').value = eintrag.ap3Name || '';
+    document.getElementById('ap3Mail').value = eintrag.ap3Mail || '';
+    document.getElementById('fokus').value = eintrag.fokus || '';
+    setMulti('themenGroup', eintrag.themen);
+    document.getElementById('themenSonstiges').value = eintrag.themenSonstiges || '';
+    setMulti('zielgruppeGroup', eintrag.zielgruppe);
+    document.getElementById('zielgruppeSonstiges').value = eintrag.zielgruppeSonstiges || '';
+    if (eintrag.stand) {
+      const radio = document.querySelector('input[name="stand"][value="' + eintrag.stand + '"]');
+      if (radio) radio.checked = true;
+    }
+    document.getElementById('gelingen').value = eintrag.gelingen || '';
+    document.getElementById('hindernisse').value = eintrag.hindernisse || '';
+    document.getElementById('geheimtipp').value = eintrag.geheimtipp || '';
+    document.getElementById('suche').value = eintrag.suche || '';
+    document.getElementById('biete').value = eintrag.biete || '';
+    document.getElementById('einverstaendnis').checked = (eintrag.einverstaendnis === 'ja');
+    loadStatus.textContent = 'Angaben geladen.';
+  } catch (e) {
+    loadStatus.textContent = 'Verbindungsfehler beim Laden.';
+  }
+}
+
+document.getElementById('form').addEventListener('submit', async function (ev) {
+  ev.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const status = document.getElementById('status');
+
+  const projekt = document.getElementById('projekt').value.trim();
+  if (!projekt) {
+    status.textContent = 'Bitte den Namen des Projekts angeben.';
+    return;
+  }
+  if (!document.getElementById('einverstaendnis').checked) {
+    status.textContent = 'Bitte das Einverständnis bestätigen.';
+    return;
+  }
+
+  const stand = document.querySelector('input[name="stand"]:checked');
+
+  const payload = {
+    projekt: projekt,
+    region: document.getElementById('region').value.trim(),
+    ap1Name: document.getElementById('ap1Name').value.trim(),
+    ap1Mail: document.getElementById('ap1Mail').value.trim(),
+    ap2Name: document.getElementById('ap2Name').value.trim(),
+    ap2Mail: document.getElementById('ap2Mail').value.trim(),
+    ap3Name: document.getElementById('ap3Name').value.trim(),
+    ap3Mail: document.getElementById('ap3Mail').value.trim(),
+    fokus: document.getElementById('fokus').value.trim(),
+    themen: getMulti('themenGroup'),
+    themenSonstiges: document.getElementById('themenSonstiges').value.trim(),
+    zielgruppe: getMulti('zielgruppeGroup'),
+    zielgruppeSonstiges: document.getElementById('zielgruppeSonstiges').value.trim(),
+    stand: stand ? stand.value : '',
+    gelingen: document.getElementById('gelingen').value.trim(),
+    hindernisse: document.getElementById('hindernisse').value.trim(),
+    geheimtipp: document.getElementById('geheimtipp').value.trim(),
+    suche: document.getElementById('suche').value.trim(),
+    biete: document.getElementById('biete').value.trim(),
+    einverstaendnis: 'ja'
+  };
+
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet…';
+  status.textContent = '';
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) { /* no-cors wirft keinen Fehler */ }
+
+  document.getElementById('form').style.display = 'none';
+  document.getElementById('confirmCard').classList.add('visible');
+});
+</script>
+</body>
+</html>
