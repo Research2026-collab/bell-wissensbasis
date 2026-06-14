@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELL 2026 – Workshop Session 2</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --border-strong: rgba(0,0,0,0.18);
+  --text: #1a1a18;
+  --text-muted: #6b6b67;
+  --text-faint: #9a9a96;
+  --accent: #C9692E;
+  --accent-mid: #e0913a;
+  --accent-light: #fbf0e6;
+  --green: #C9692E;
+  --green-light: #fbf0e6;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+body {
+  font-family: -apple-system, Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; display: flex;
+  align-items: flex-start; justify-content: center;
+  padding: 2.5rem 1rem 4rem;
+}
+.wrapper { width: 100%; max-width: 560px; }
+.label { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-mid); margin-bottom: 0.5rem; }
+h1 { font-size: 22px; font-weight: 500; line-height: 1.35; margin-bottom: 0.6rem; }
+.intro { font-size: 15px; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.5rem; }
+.card { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 1.75rem; margin-bottom: 1.25rem; }
+h2 { font-size: 16px; font-weight: 600; margin-bottom: 1rem; }
+.field { margin-bottom: 1.1rem; }
+.field:last-child { margin-bottom: 0; }
+.field label, .field-label {
+  display: block; font-size: 12px; font-weight: 500;
+  color: var(--text-muted); margin-bottom: 0.4rem;
+}
+select {
+  width: 100%; padding: 0.65rem 0.75rem;
+  font-family: inherit; font-size: 14px;
+  color: var(--text); background: var(--bg);
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-sm); outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  cursor: pointer;
+}
+select:focus { border-color: var(--accent-mid); box-shadow: 0 0 0 3px rgba(224,145,58,0.18); }
+textarea {
+  width: 100%; padding: 0.65rem 0.75rem;
+  font-family: inherit; font-size: 14px; line-height: 1.6;
+  color: var(--text); background: var(--bg);
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-sm); resize: vertical; outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  min-height: 90px;
+}
+textarea::placeholder { color: var(--text-faint); }
+textarea:focus { border-color: var(--accent-mid); box-shadow: 0 0 0 3px rgba(224,145,58,0.18); }
+.submit-row { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.btn {
+  font-family: inherit; font-size: 15px; font-weight: 500;
+  padding: 0.7rem 1.85rem; border-radius: var(--radius-sm);
+  border: none; background: var(--accent); color: #fff;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.status-text { font-size: 13px; color: var(--text-faint); }
+.confirm-card {
+  display: none; background: var(--green-light);
+  border: 0.5px solid rgba(224,145,58,0.30);
+  border-radius: var(--radius); padding: 1.5rem; margin-top: 1rem; text-align: center;
+}
+.confirm-card.visible { display: block; }
+.confirm-text { font-size: 15px; color: var(--green); font-weight: 500; margin-bottom: 0.4rem; }
+.confirm-sub { font-size: 13px; color: var(--text-muted); }
+.btn-secondary {
+  background: transparent; color: var(--accent); border: 0.5px solid var(--accent-mid);
+  font-family: inherit; font-size: 15px; font-weight: 500;
+  padding: 0.7rem 1.85rem; border-radius: var(--radius-sm);
+  cursor: pointer; transition: opacity 0.15s;
+}
+.btn-secondary:hover { opacity: 0.85; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <p class="label">Jahreskonferenz BELL 2026 · Workshop Session 2</p>
+  <h1>Behindernde Faktoren – Eintrag Ihrer Gruppe</h1>
+  <p class="intro">
+    Tragen Sie hier die Ergebnisse Ihrer Kleingruppe ein. Die Einträge erscheinen auf dem
+    gemeinsamen digitalen Board und bilden die Grundlage für den Talk am zweiten
+    Veranstaltungstag. Ihre Gruppe kann mehrere Einträge senden.
+  </p>
+
+  <form id="form">
+    <div class="card">
+      <div class="field">
+        <label for="gruppe">Gruppennummer</label>
+        <select id="gruppe" required>
+          <option value="">— bitte auswählen —</option>
+          <option value="1">Gruppe 1</option>
+          <option value="2">Gruppe 2</option>
+          <option value="3">Gruppe 3</option>
+          <option value="4">Gruppe 4</option>
+          <option value="5">Gruppe 5</option>
+          <option value="6">Gruppe 6</option>
+          <option value="7">Gruppe 7</option>
+          <option value="8">Gruppe 8</option>
+          <option value="9">Gruppe 9</option>
+          <option value="10">Gruppe 10</option>
+          <option value="11">Gruppe 11</option>
+          <option value="12">Gruppe 12</option>
+          <option value="13">Gruppe 13</option>
+          <option value="14">Gruppe 14</option>
+          <option value="15">Gruppe 15</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="inhalt">Unsere wichtigsten behindernden Faktoren</label>
+        <textarea id="inhalt" required placeholder="An welchen Stellen erschweren bestimmte Rahmenbedingungen oder Haltungen, dass der eigentliche Mehrwert eines Angebots zur Wirkung kommt?"></textarea>
+      </div>
+      <div class="field">
+        <label for="weitere">Weitere Einsichten?</label>
+        <textarea id="weitere" placeholder="Gibt es noch etwas, das Ihre Gruppe festhalten möchte?"></textarea>
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <button type="submit" class="btn" id="submitBtn">Eintrag senden</button>
+      <button type="button" class="btn-secondary" id="moreBtn" style="display:none;">Weiteren Eintrag senden</button>
+      <p class="status-text" id="status"></p>
+    </div>
+  </form>
+
+  <div class="confirm-card" id="confirmCard">
+    <p class="confirm-text">Vielen Dank, Ihr Eintrag wurde übermittelt.</p>
+    <p class="confirm-sub">Er erscheint in Kürze auf dem gemeinsamen Workshop-Board.</p>
+  </div>
+</div>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzt29vNU-riSrLsKJuORybtkdr5SnO9tJwDmzKnTwNXry45Qf9z4wQFf75Zq6p4EzR7VQ/exec';
+
+document.getElementById('form').addEventListener('submit', async function (ev) {
+  ev.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const status = document.getElementById('status');
+
+  const gruppe = document.getElementById('gruppe').value;
+  const inhalt = document.getElementById('inhalt').value.trim();
+
+  if (!gruppe) {
+    status.textContent = 'Bitte die Gruppennummer auswählen.';
+    return;
+  }
+  if (!inhalt) {
+    status.textContent = 'Bitte die behindernden Faktoren eintragen.';
+    return;
+  }
+
+  const payload = {
+    session: '2',
+    gruppe: gruppe,
+    inhalt: inhalt,
+    weitere: document.getElementById('weitere').value.trim()
+  };
+
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet…';
+  status.textContent = '';
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) { /* no-cors wirft keinen Fehler */ }
+
+  document.getElementById('form').style.display = 'none';
+  document.getElementById('confirmCard').classList.add('visible');
+  document.getElementById('moreBtn').style.display = 'inline-block';
+});
+
+document.getElementById('moreBtn').addEventListener('click', function () {
+  document.getElementById('inhalt').value = '';
+  document.getElementById('weitere').value = '';
+  document.getElementById('confirmCard').classList.remove('visible');
+  document.getElementById('form').style.display = 'block';
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  btn.textContent = 'Eintrag senden';
+});
+</script>
+</body>
+</html>

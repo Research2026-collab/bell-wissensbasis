@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELL 2026 – Workshop-Board</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f1923;
+  --surface: #172030;
+  --surface2: #1e2d40;
+  --border: rgba(255,255,255,0.08);
+  --text: #e8e8e4;
+  --text-muted: #8a9ab0;
+  --text-faint: #4a5a6a;
+  --green: #4caf82;   --green-light: #1a3028;
+  --orange: #e0913a;  --orange-light: #2a1e0a;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+body {
+  font-family: -apple-system, Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; padding: 1.5rem;
+}
+.top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; margin-bottom: 1.25rem;
+  flex-wrap: wrap; gap: 0.75rem;
+}
+.top-left h1 { font-size: 20px; font-weight: 500; margin-bottom: 0.25rem; }
+.top-left p { font-size: 12px; color: var(--text-muted); }
+.live-dot { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.tabs-wrap { margin-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); padding-bottom: 0.75rem; }
+.tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.tab {
+  font-family: inherit; font-size: 13px; font-weight: 500;
+  color: var(--text-muted); background: var(--surface);
+  border: 0.5px solid var(--border); border-radius: 20px;
+  padding: 0.5rem 1.1rem; cursor: pointer; transition: all 0.15s;
+  white-space: nowrap;
+}
+.tab:hover { color: var(--text); border-color: var(--text-faint); }
+.tab.active.tab-green  { color: var(--bg); background: var(--green);  border-color: var(--green); font-weight: 600; }
+.tab.active.tab-orange { color: var(--bg); background: var(--orange); border-color: var(--orange); font-weight: 600; }
+
+.cards-grid { columns: 280px; gap: 0.75rem; }
+.cards-grid .card { break-inside: avoid; margin-bottom: 0.75rem; }
+
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  animation: fadein 0.35s ease;
+}
+@keyframes fadein { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.card-green  { border-left: 3px solid var(--green); }
+.card-orange { border-left: 3px solid var(--orange); }
+
+.card-head {
+  padding: 0.85rem 1rem 0.6rem;
+  border-bottom: 0.5px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-group {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+  padding: 0.15rem 0.6rem; border-radius: 20px;
+}
+.card-green .card-group  { background: var(--green-light);  color: var(--green); }
+.card-orange .card-group { background: var(--orange-light); color: var(--orange); }
+.card-time { font-size: 11px; color: var(--text-faint); }
+.card-body { padding: 0.75rem 1rem; font-size: 13px; line-height: 1.65; color: var(--text-muted); }
+.card-body .extra {
+  margin-top: 0.6rem; padding-top: 0.6rem; border-top: 0.5px solid var(--border);
+  font-size: 12px; color: var(--text-faint);
+}
+.card-body .extra strong {
+  display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-faint); margin-bottom: 0.25rem;
+}
+
+.empty { text-align: center; color: var(--text-faint); padding: 4rem 0; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-left">
+    <h1>BELL 2026 – Workshop-Board</h1>
+    <p>Ergebnisse der Kleingruppen · Jahreskonferenz BELL, 16.–17.11.2026, Hannover</p>
+  </div>
+  <div class="live-dot">
+    <div class="dot"></div>
+    <span id="livetext">Wird geladen…</span>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs" id="tabs">
+    <button class="tab active tab-green" data-session="1">Workshop Session 1 · Gelingensfaktoren</button>
+    <button class="tab tab-orange" data-session="2">Workshop Session 2 · Behindernde Faktoren</button>
+  </div>
+</div>
+
+<div id="board"></div>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzt29vNU-riSrLsKJuORybtkdr5SnO9tJwDmzKnTwNXry45Qf9z4wQFf75Zq6p4EzR7VQ/exec';
+const POLL_INTERVAL = 25000; // 25 Sekunden – bewusst ruhiger als die Wissensbasis
+
+let daten = [];
+let letzterStand = '';
+let activeSession = '1';
+
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeSession = btn.dataset.session;
+    render();
+  });
+});
+
+function esc(s) {
+  return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+}
+
+function makeCard(e, accent) {
+  const extra = e.weitere && e.weitere.trim()
+    ? `<div class="extra"><strong>Weitere Einsichten</strong>${esc(e.weitere)}</div>`
+    : '';
+  return `
+    <div class="card card-${accent}">
+      <div class="card-head">
+        <span class="card-group">Gruppe ${esc(e.gruppe)}</span>
+        <span class="card-time">${formatTime(e.timestamp)}</span>
+      </div>
+      <div class="card-body">
+        ${esc(e.inhalt)}
+        ${extra}
+      </div>
+    </div>`;
+}
+
+function render() {
+  const board = document.getElementById('board');
+  const accent = activeSession === '1' ? 'green' : 'orange';
+  const label = activeSession === '1' ? 'Gelingensfaktoren' : 'behindernde Faktoren';
+
+  const items = daten
+    .filter(e => String(e.session) === activeSession)
+    .sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  if (!items.length) {
+    board.innerHTML = `<p class="empty">Noch keine Einträge zu ${label}.</p>`;
+    return;
+  }
+
+  board.innerHTML = `<div class="cards-grid">${
+    items.map(e => makeCard(e, accent)).join('')
+  }</div>`;
+}
+
+async function laden() {
+  try {
+    const res = await fetch(SHEET_URL + '?sheet=workshop&t=' + Date.now());
+    const neu = await res.json();
+    const neuJson = JSON.stringify(neu);
+    const now = new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    if (neuJson !== letzterStand) {
+      letzterStand = neuJson;
+      daten = neu;
+      render();
+    }
+    document.getElementById('livetext').textContent =
+      `Zuletzt gepr\u00FCft: ${now} \u00B7 ${daten.length} Eintr\u00E4ge`;
+  } catch(e) {
+    document.getElementById('livetext').textContent = 'Verbindungsfehler';
+  }
+}
+
+laden();
+setInterval(laden, POLL_INTERVAL);
+</script>
+</body>
+</html>
