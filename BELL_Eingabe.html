@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELL 2026 – Projektangaben</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --border-strong: rgba(0,0,0,0.18);
+  --text: #1a1a18;
+  --text-muted: #6b6b67;
+  --text-faint: #9a9a96;
+  --accent: #1a4f8a;
+  --accent-mid: #2e6fc4;
+  --accent-light: #eef3fb;
+  --green: #2E7D5A;
+  --green-light: #ebf5f0;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+body {
+  font-family: -apple-system, Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; display: flex;
+  align-items: flex-start; justify-content: center;
+  padding: 2.5rem 1rem 4rem;
+}
+.wrapper { width: 100%; max-width: 680px; }
+.label { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-mid); margin-bottom: 0.5rem; }
+.date-line { font-size: 13px; font-weight: 500; color: var(--accent-mid); margin-top: -0.25rem; margin-bottom: 0.5rem; }
+h1 { font-size: 22px; font-weight: 500; line-height: 1.35; margin-bottom: 0.6rem; }
+.intro { font-size: 15px; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.5rem; }
+.card { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 1.75rem; margin-bottom: 1.25rem; }
+h2 { font-size: 16px; font-weight: 600; margin-bottom: 1rem; }
+.field { margin-bottom: 1.1rem; }
+.field:last-child { margin-bottom: 0; }
+.field label, .field-label {
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--text); margin-bottom: 0.4rem;
+}
+select {
+  width: 100%; padding: 0.65rem 0.75rem;
+  font-family: inherit; font-size: 14px;
+  color: var(--text); background: var(--bg);
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-sm); outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  cursor: pointer;
+}
+select:focus { border-color: var(--accent-mid); box-shadow: 0 0 0 3px rgba(46,111,196,0.12); }
+  width: 100%; padding: 0.65rem 0.75rem;
+  font-family: inherit; font-size: 14px; line-height: 1.6;
+  color: var(--text); background: var(--bg);
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-sm); resize: vertical; outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+textarea { min-height: 80px; }
+input::placeholder, textarea::placeholder { color: var(--text-faint); }
+input:focus, textarea:focus { border-color: var(--accent-mid); box-shadow: 0 0 0 3px rgba(46,111,196,0.12); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.ap-block { border-top: 0.5px solid var(--border-strong); padding-top: 0.9rem; margin-top: 0.9rem; }
+.ap-block:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+.ap-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 0.6rem; }
+.checkbox-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.checkbox-row { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 14px; }
+.checkbox-row input { margin-top: 3px; }
+.checkbox-row label { font-size: 14px; color: var(--text); font-weight: 400; }
+.radio-row { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.radio-row label { font-size: 14px; color: var(--text); font-weight: 400; display: flex; align-items: center; gap: 0.4rem; }
+.sonstiges-input { margin-top: 0.5rem; }
+.char-counter { font-size: 11px; color: var(--accent-mid); text-align: right; margin-top: 0.25rem; }
+.einverstaendnis {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  background: var(--accent-light); border: 0.5px solid rgba(46,111,196,0.25);
+  border-radius: var(--radius-sm); padding: 1rem;
+}
+.einverstaendnis input { margin-top: 3px; }
+.einverstaendnis label { font-size: 13px; line-height: 1.6; color: var(--text); }
+.submit-row { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.btn {
+  font-family: inherit; font-size: 15px; font-weight: 500;
+  padding: 0.7rem 1.85rem; border-radius: var(--radius-sm);
+  border: none; background: var(--accent); color: #fff;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn-secondary {
+  background: transparent; color: var(--accent); border: 0.5px solid var(--accent-mid);
+}
+.status-text { font-size: 13px; color: var(--text-faint); }
+.confirm-card {
+  display: none; background: var(--green-light);
+  border: 0.5px solid rgba(46,125,90,0.30);
+  border-radius: var(--radius); padding: 1.5rem; margin-top: 1rem; text-align: center;
+}
+.confirm-card.visible { display: block; }
+.confirm-text { font-size: 15px; color: var(--green); font-weight: 500; margin-bottom: 0.4rem; }
+.confirm-sub { font-size: 13px; color: var(--text-muted); }
+.hint { font-size: 12px; color: var(--text-faint); margin-top: 0.4rem; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <p class="label">Jahreskonferenz BELL 2026 · Hannover</p>
+  <p class="date-line">16.–17. November 2026</p>
+  <h1>Angaben zu Ihrem BELL-Projekt</h1>
+  <p class="intro">
+    Diese Angaben bilden die Grundlage für die Vorbereitung der Tagung und für die gemeinsame
+    Wissensbasis aller Projekte. Bitte füllen Sie das Formular einmal pro Projekt aus. Sie können
+    Ihre Angaben jederzeit über den Namen Ihres Projekts oder über Ihre BELL-Projektnummer laden
+    und aktualisieren.
+  </p>
+
+  <div class="submit-row" style="margin-bottom: 1.25rem;">
+    <button class="btn btn-secondary" id="loadBtn" onclick="laden()">Vorhandene Angaben laden</button>
+    <p class="status-text" id="loadStatus"></p>
+  </div>
+
+  <form id="form">
+
+    <div class="card">
+      <h2>Projekt</h2>
+      <div class="field">
+        <label for="projekt">Name des Projekts</label>
+        <input type="text" id="projekt" required placeholder="z. B. Brücken bauen – Bildung vor Ort">
+      </div>
+      <div class="field">
+        <label for="projektnummer">BELL-Projektnummer</label>
+        <input type="text" id="projektnummer" placeholder="z. B. 1.03">
+      </div>
+      <div class="field">
+        <label for="region">Region / Bundesland</label>
+        <select id="region">
+          <option value="">— bitte auswählen —</option>
+          <option>Baden-Württemberg</option>
+          <option>Bayern</option>
+          <option>Berlin</option>
+          <option>Brandenburg</option>
+          <option>Bremen</option>
+          <option>Hamburg</option>
+          <option>Hessen</option>
+          <option>Mecklenburg-Vorpommern</option>
+          <option>Niedersachsen</option>
+          <option>Nordrhein-Westfalen</option>
+          <option>Rheinland-Pfalz</option>
+          <option>Saarland</option>
+          <option>Sachsen</option>
+          <option>Sachsen-Anhalt</option>
+          <option>Schleswig-Holstein</option>
+          <option>Thüringen</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ansprechpersonen</h2>
+
+      <div class="ap-block">
+        <p class="ap-title">Ansprechpartner:in 1</p>
+        <div class="row2">
+          <div class="field"><label for="ap1Name">Name</label><input type="text" id="ap1Name"></div>
+          <div class="field"><label for="ap1Mail">E-Mail</label><input type="email" id="ap1Mail"></div>
+        </div>
+      </div>
+
+      <div class="ap-block">
+        <p class="ap-title">Ansprechpartner:in 2 (optional)</p>
+        <div class="row2">
+          <div class="field"><label for="ap2Name">Name</label><input type="text" id="ap2Name"></div>
+          <div class="field"><label for="ap2Mail">E-Mail</label><input type="email" id="ap2Mail"></div>
+        </div>
+      </div>
+
+      <div class="ap-block">
+        <p class="ap-title">Ansprechpartner:in 3 (optional)</p>
+        <div class="row2">
+          <div class="field"><label for="ap3Name">Name</label><input type="text" id="ap3Name"></div>
+          <div class="field"><label for="ap3Mail">E-Mail</label><input type="email" id="ap3Mail"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Inhaltliche Einordnung</h2>
+
+      <div class="field">
+        <label for="fokus">Fokus des Projekts</label>
+        <textarea id="fokus" placeholder="Kurze Beschreibung des inhaltlichen Schwerpunkts" maxlength="600"></textarea>
+        <p class="char-counter" id="fokusCounter">0 / 600 Zeichen</p>
+      </div>
+
+      <div class="field">
+        <p class="field-label">Thematische Einordnung (Mehrfachauswahl möglich)</p>
+        <div class="checkbox-group" id="themenGroup">
+          <div class="checkbox-row"><input type="checkbox" value="Alle Themen/keine Festlegung" id="th1"><label for="th1">Alle Themen/keine Festlegung</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Bildung fürs Engagement" id="th2"><label for="th2">Bildung fürs Engagement</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Digitale Kompetenzentwicklung" id="th3"><label for="th3">Digitale Kompetenzentwicklung</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Finanzbildung" id="th4"><label for="th4">Finanzbildung</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Gesundheitsbildung" id="th5"><label for="th5">Gesundheitsbildung</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Kulturelle Bildung" id="th6"><label for="th6">Kulturelle Bildung</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Politische Bildung" id="th7"><label for="th7">Politische Bildung</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Sprachenlernen Deutsch" id="th8"><label for="th8">Sprachenlernen Deutsch</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Umweltbildung / Nachhaltigkeit" id="th9"><label for="th9">Umweltbildung / Nachhaltigkeit</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Sonstiges" id="th10"><label for="th10">Sonstiges</label></div>
+        </div>
+        <div class="sonstiges-input">
+          <input type="text" id="themenSonstiges" placeholder="Sonstiges – bitte angeben" maxlength="600">
+          <p class="char-counter" id="themenSonstigesCounter">0 / 600 Zeichen</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <p class="field-label">Zielgruppenmerkmale (Mehrfachauswahl möglich)</p>
+        <div class="checkbox-group" id="zielgruppeGroup">
+          <div class="checkbox-row"><input type="checkbox" value="Alle Älteren" id="zg1"><label for="zg1">Alle Älteren</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Menschen mit Einwanderungsgeschichte" id="zg2"><label for="zg2">Menschen mit Einwanderungsgeschichte</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Ältere Beschäftigte" id="zg3"><label for="zg3">Ältere Beschäftigte</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Menschen mit Behinderung / Einschränkungen" id="zg4"><label for="zg4">Menschen mit Behinderung / Einschränkungen</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Ältere in institutionellen Wohnformen" id="zg6"><label for="zg6">Ältere in institutionellen Wohnformen</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Ressourcenarme Ältere (geringe formale Bildung, geringes Einkommen, wenig Kontakte)" id="zg7"><label for="zg7">Ressourcenarme Ältere (geringe formale Bildung, geringes Einkommen, wenig Kontakte)</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Menschen im Übergang (in die Nachberuflichkeit)" id="zg8"><label for="zg8">Menschen im Übergang (in die Nachberuflichkeit)</label></div>
+          <div class="checkbox-row"><input type="checkbox" value="Sonstiges" id="zg9"><label for="zg9">Sonstiges</label></div>
+        </div>
+        <div class="sonstiges-input">
+          <input type="text" id="zielgruppeSonstiges" placeholder="Sonstiges – bitte angeben" maxlength="600">
+          <p class="char-counter" id="zielgruppeSonstigesCounter">0 / 600 Zeichen</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <p class="field-label">Geschlechtsspezifische Ausrichtung des Angebots</p>
+        <div class="radio-row">
+          <label><input type="radio" name="geschlecht" value="Offen für alle Geschlechter"> Offen für alle Geschlechter</label>
+          <label><input type="radio" name="geschlecht" value="Nur Frauen"> Nur Frauen</label>
+          <label><input type="radio" name="geschlecht" value="Nur Männer"> Nur Männer</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <p class="field-label">Programmlinie</p>
+        <div class="radio-row">
+          <label><input type="radio" name="linie" value="AB"> AB – allgemeine, breiter angelegte Projekte</label>
+          <label><input type="radio" name="linie" value="BC"> BC – Spezialprojekte</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Meine Zielgruppe</h2>
+      <div class="field">
+        <label for="begeisterung">Was begeistert mich an meiner Zielgruppe?</label>
+        <textarea id="begeisterung" placeholder="Was macht die Arbeit mit dieser Zielgruppe für Sie besonders?" maxlength="600"></textarea>
+        <p class="char-counter" id="begeisterungCounter">0 / 600 Zeichen</p>
+      </div>
+      <div class="field">
+        <label for="veraenderung">Was hat sich für meine Zielgruppe bereits verändert?</label>
+        <textarea id="veraenderung" placeholder="Welche Veränderung nehmen Sie bei Ihrer Zielgruppe seit Projektstart wahr?" maxlength="600"></textarea>
+        <p class="char-counter" id="veraenderungCounter">0 / 600 Zeichen</p>
+      </div>
+      <div class="field">
+        <label for="veraenderungZiel">Was wird sich am Ende des Projekts für meine Zielgruppe verändert haben?</label>
+        <textarea id="veraenderungZiel" placeholder="Welchen Unterschied soll Ihre Zielgruppe nach Projektende spüren?" maxlength="600"></textarea>
+        <p class="char-counter" id="veraenderungZielCounter">0 / 600 Zeichen</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Reflexion</h2>
+      <div class="field">
+        <label for="gelingen">Wichtige Gelingensfaktoren</label>
+        <textarea id="gelingen" placeholder="Was hat in Ihrem Projekt besonders gut funktioniert?" maxlength="600"></textarea>
+        <p class="char-counter" id="gelingenCounter">0 / 600 Zeichen</p>
+      </div>
+      <div class="field">
+        <label for="hindernisse">Welche Faktoren erschweren die tägliche Arbeit mit der Zielgruppe</label>
+        <textarea id="hindernisse" placeholder="Zum Beispiel Barrierefreiheit, Erreichbarkeit, Sprache" maxlength="600"></textarea>
+        <p class="char-counter" id="hindernisseCounter">0 / 600 Zeichen</p>
+      </div>
+      <div class="field">
+        <label for="geheimtipp">Mein Geheimtipp für den Erfolg des Projekts</label>
+        <textarea id="geheimtipp" placeholder="Eine konkrete Empfehlung aus Ihrer Erfahrung" maxlength="600"></textarea>
+        <p class="char-counter" id="geheimtippCounter">0 / 600 Zeichen</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Vernetzung auf der Tagung</h2>
+      <div class="field">
+        <label for="suche">Wonach suche ich aktuell</label>
+        <textarea id="suche" placeholder="Wofür suchen Sie Austausch, Erfahrung oder Unterstützung?" maxlength="600"></textarea>
+        <p class="char-counter" id="sucheCounter">0 / 600 Zeichen</p>
+      </div>
+      <div class="field">
+        <label for="biete">Was kann ich anderen Projekten anbieten</label>
+        <textarea id="biete" placeholder="Womit können Sie andere Projekte unterstützen?" maxlength="600"></textarea>
+        <p class="char-counter" id="bieteCounter">0 / 600 Zeichen</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Einverst&auml;ndnis</h2>
+
+      <div class="einverstaendnis" style="margin-bottom: 1rem;">
+        <input type="checkbox" id="einverstaendnis" required>
+        <label for="einverstaendnis">
+          <strong>Inhaltliche Angaben:</strong> Ich bin damit einverstanden, dass die hier eingegebenen inhaltlichen Angaben unter Nennung des Projektnamens im Rahmen der gemeinsamen Wissensbasis w&auml;hrend und nach der Tagung den teilnehmenden Personen zug&auml;nglich gemacht und f&uuml;r die Abschlussdokumentation der Tagung verwendet werden d&uuml;rfen.
+        </label>
+      </div>
+      <p class="hint" style="margin-bottom: 1rem;">Dieses Einverst&auml;ndnis ist Voraussetzung f&uuml;r die Teilnahme an der gemeinsamen Wissensbasis.</p>
+
+      <div class="einverstaendnis">
+        <input type="checkbox" id="einverstaendnisKontakt">
+        <label for="einverstaendnisKontakt">
+          <strong>Kontaktangaben:</strong> Ich bin damit einverstanden, dass mein Projektname sowie die Angaben zu den Ansprechpersonen einschlie&szlig;lich Mailadressen den teilnehmenden Personen auf der Tagung zum Zweck der Vernetzung zug&auml;nglich gemacht werden. Diese Angaben werden getrennt von den inhaltlichen Projektangaben dargestellt.
+        </label>
+      </div>
+      <p class="hint">Dieses Einverst&auml;ndnis ist freiwillig und betrifft ausschlie&szlig;lich die Sichtbarkeit der Kontaktangaben im separaten Kontakte-Bereich.</p>
+    </div>
+
+    <div class="submit-row">
+      <button type="submit" class="btn" id="submitBtn">Angaben übermitteln</button>
+      <p class="status-text" id="status"></p>
+    </div>
+  </form>
+
+  <div class="confirm-card" id="confirmCard">
+    <p class="confirm-text">Vielen Dank, Ihre Angaben wurden übermittelt.</p>
+    <p class="confirm-sub">Sie erscheinen in Kürze auf dem gemeinsamen Whiteboard und können jederzeit über den Namen Ihres Projekts erneut geladen und aktualisiert werden.</p>
+  </div>
+
+</div>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzt29vNU-riSrLsKJuORybtkdr5SnO9tJwDmzKnTwNXry45Qf9z4wQFf75Zq6p4EzR7VQ/exec';
+
+const ZAEHLFELDER = ['fokus', 'themenSonstiges', 'zielgruppeSonstiges', 'begeisterung', 'veraenderung', 'veraenderungZiel', 'gelingen', 'hindernisse', 'geheimtipp', 'suche', 'biete'];
+
+function zaehlerAktualisieren(id) {
+  const feld = document.getElementById(id);
+  const zaehler = document.getElementById(id + 'Counter');
+  if (!feld || !zaehler) return;
+  zaehler.textContent = feld.value.length + ' / 600 Zeichen';
+}
+
+ZAEHLFELDER.forEach(id => {
+  const feld = document.getElementById(id);
+  if (!feld) return;
+  feld.addEventListener('input', () => zaehlerAktualisieren(id));
+  zaehlerAktualisieren(id);
+});
+
+function getMulti(groupId) {
+  return [...document.querySelectorAll('#' + groupId + ' input:checked')].map(i => i.value).join(', ');
+}
+function setMulti(groupId, value) {
+  const values = (value || '').split(',').map(v => v.trim()).filter(Boolean);
+  document.querySelectorAll('#' + groupId + ' input').forEach(i => {
+    i.checked = values.includes(i.value);
+  });
+}
+
+async function laden() {
+  const projekt = document.getElementById('projekt').value.trim();
+  const projektnummer = document.getElementById('projektnummer').value.trim();
+  const loadStatus = document.getElementById('loadStatus');
+  if (!projekt && !projektnummer) {
+    loadStatus.textContent = 'Bitte den Projektnamen oder die BELL-Projektnummer eingeben.';
+    return;
+  }
+  loadStatus.textContent = 'Lade…';
+  try {
+    const res = await fetch(SHEET_URL + '?t=' + Date.now());
+    const daten = await res.json();
+    const eintrag = projektnummer
+      ? daten.find(e => e.projektnummer === projektnummer)
+      : daten.find(e => e.projekt === projekt);
+    if (!eintrag) {
+      loadStatus.textContent = projektnummer
+        ? 'Kein Eintrag mit dieser Projektnummer gefunden.'
+        : 'Kein Eintrag mit diesem Projektnamen gefunden.';
+      return;
+    }
+    document.getElementById('projekt').value = eintrag.projekt || '';
+    document.getElementById('projektnummer').value = eintrag.projektnummer || '';
+    document.getElementById('region').value = eintrag.region || '';
+    document.getElementById('ap1Name').value = eintrag.ap1Name || '';
+    document.getElementById('ap1Mail').value = eintrag.ap1Mail || '';
+    document.getElementById('ap2Name').value = eintrag.ap2Name || '';
+    document.getElementById('ap2Mail').value = eintrag.ap2Mail || '';
+    document.getElementById('ap3Name').value = eintrag.ap3Name || '';
+    document.getElementById('ap3Mail').value = eintrag.ap3Mail || '';
+    document.getElementById('fokus').value = eintrag.fokus || '';
+    setMulti('themenGroup', eintrag.themen);
+    document.getElementById('themenSonstiges').value = eintrag.themenSonstiges || '';
+    setMulti('zielgruppeGroup', eintrag.zielgruppe);
+    document.getElementById('zielgruppeSonstiges').value = eintrag.zielgruppeSonstiges || '';
+    if (eintrag.stand) {
+      const radio = document.querySelector('input[name="linie"][value="' + eintrag.stand + '"]');
+      if (radio) radio.checked = true;
+    }
+    if (eintrag.geschlecht) {
+      const radioG = document.querySelector('input[name="geschlecht"][value="' + eintrag.geschlecht + '"]');
+      if (radioG) radioG.checked = true;
+    }
+    document.getElementById('begeisterung').value = eintrag.begeisterung || '';
+    document.getElementById('veraenderung').value = eintrag.veraenderung || '';
+    document.getElementById('veraenderungZiel').value = eintrag.veraenderungZiel || '';
+    document.getElementById('gelingen').value = eintrag.gelingen || '';
+    document.getElementById('hindernisse').value = eintrag.hindernisse || '';
+    document.getElementById('geheimtipp').value = eintrag.geheimtipp || '';
+    document.getElementById('suche').value = eintrag.suche || '';
+    document.getElementById('biete').value = eintrag.biete || '';
+    document.getElementById('einverstaendnis').checked = (eintrag.einverstaendnis === 'ja');
+    document.getElementById('einverstaendnisKontakt').checked = (eintrag.einverstaendnisKontakt === 'ja');
+    ZAEHLFELDER.forEach(zaehlerAktualisieren);
+    loadStatus.textContent = 'Angaben geladen.';
+  } catch (e) {
+    loadStatus.textContent = 'Verbindungsfehler beim Laden.';
+  }
+}
+
+document.getElementById('form').addEventListener('submit', async function (ev) {
+  ev.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const status = document.getElementById('status');
+
+  const projekt = document.getElementById('projekt').value.trim();
+  if (!projekt) {
+    status.textContent = 'Bitte den Namen des Projekts angeben.';
+    return;
+  }
+  if (!document.getElementById('einverstaendnis').checked) {
+    status.textContent = 'Bitte das Einverständnis bestätigen.';
+    return;
+  }
+
+  const linie = document.querySelector('input[name="linie"]:checked');
+  const geschlecht = document.querySelector('input[name="geschlecht"]:checked');
+
+  const payload = {
+    projekt: projekt,
+    projektnummer: document.getElementById('projektnummer').value.trim(),
+    region: document.getElementById('region').value,
+    ap1Name: document.getElementById('ap1Name').value.trim(),
+    ap1Mail: document.getElementById('ap1Mail').value.trim(),
+    ap2Name: document.getElementById('ap2Name').value.trim(),
+    ap2Mail: document.getElementById('ap2Mail').value.trim(),
+    ap3Name: document.getElementById('ap3Name').value.trim(),
+    ap3Mail: document.getElementById('ap3Mail').value.trim(),
+    fokus: document.getElementById('fokus').value.trim(),
+    themen: getMulti('themenGroup'),
+    themenSonstiges: document.getElementById('themenSonstiges').value.trim(),
+    zielgruppe: getMulti('zielgruppeGroup'),
+    zielgruppeSonstiges: document.getElementById('zielgruppeSonstiges').value.trim(),
+    stand: linie ? linie.value : '',
+    geschlecht: geschlecht ? geschlecht.value : '',
+    begeisterung: document.getElementById('begeisterung').value.trim(),
+    veraenderung: document.getElementById('veraenderung').value.trim(),
+    veraenderungZiel: document.getElementById('veraenderungZiel').value.trim(),
+    gelingen: document.getElementById('gelingen').value.trim(),
+    hindernisse: document.getElementById('hindernisse').value.trim(),
+    geheimtipp: document.getElementById('geheimtipp').value.trim(),
+    suche: document.getElementById('suche').value.trim(),
+    biete: document.getElementById('biete').value.trim(),
+    einverstaendnis: 'ja',
+    einverstaendnisKontakt: document.getElementById('einverstaendnisKontakt').checked ? 'ja' : 'nein'
+  };
+
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet…';
+  status.textContent = '';
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) { /* no-cors wirft keinen Fehler */ }
+
+  document.getElementById('form').style.display = 'none';
+  document.getElementById('confirmCard').classList.add('visible');
+});
+</script>
+</body>
+</html>
