@@ -263,11 +263,14 @@ function cardContactFull(e) {
 }
 
 function makeCard(e, bodyHtml, tagHtml='', hideRegion=false) {
+  const bodyBlock = bodyHtml === null
+    ? ''
+    : `<div class="card-body">${bodyHtml || '<span style="color:var(--text-faint)">Keine Angabe</span>'}</div>`;
   return `
     <div class="card">
       ${cardHead(e, hideRegion)}
       ${tagHtml}
-      <div class="card-body">${bodyHtml || '<span style="color:var(--text-faint)">Keine Angabe</span>'}</div>
+      ${bodyBlock}
       ${cardContact(e)}
     </div>`;
 }
@@ -338,7 +341,7 @@ function render() {
     const defs = namen.map((r,i) => ({ name: r, color: COLOR_CYCLE[i%COLOR_CYCLE.length], _key: r }));
     renderColumns(board, defs,
       (e, def) => (e.region&&e.region.trim()?e.region.trim():'Ohne Angabe') === def.name,
-      e => esc(e.fokus),
+      () => null,
       true
     );
     return;
