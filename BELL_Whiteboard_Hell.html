@@ -156,6 +156,12 @@ body {
 .m-act { font-family:inherit; font-size:11px; font-weight:700; color:var(--navy); background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:.2rem .65rem; cursor:pointer; }
 .m-act:hover { border-color:var(--navy); }
 .m-hl { outline:3px solid var(--teal); outline-offset:3px; box-shadow:0 0 0 8px var(--teal-light) !important; }
+.m-dialog { margin:auto; width:min(720px, calc(100vw - 32px)); max-height:85vh; overflow:auto; border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.4rem; color:var(--text); background:var(--surface); box-shadow:0 20px 50px rgba(26,26,24,.25); }
+.m-dialog::backdrop { background:rgba(26,26,24,.35); }
+.m-dlg-head { display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; margin-bottom:.6rem; }
+.m-dlg-body { margin-top:.9rem; font-size:13.5px; line-height:1.65; color:var(--text-muted); }
+.m-dlg-body .m-label { margin-top:.9rem; }
+.m-dlg-body p:not(.m-label) { white-space:pre-line; }
 .m-status { font-size:12px; color:var(--text-muted); }
 .m-stage { position:fixed; left:-10000px; top:0; width:720px; background:#fff; }
 .m-stage .card { animation:none; transform:none; box-shadow:none; border:1px solid #d9dee5; border-left:3px solid var(--teal); }
@@ -655,7 +661,41 @@ function renderMatching(board) {
 }
 
 let mFocus = '';
+// Projekt im Fenster zeigen, ohne die Matching-Karte zu verlassen
+function mShowProject(nr) {
+  const all = daten.filter(e => (e.projektnummer || '').toString().trim() === nr);
+  if (!all.length) return;
+  const e = all.find(x => x.suche || x.biete) || all[0];
+  const F = [['fokus', 'Fokus'], ['begeisterung', 'Was begeistert mich'], ['veraenderung', 'Mehrwert bisher'],
+    ['veraenderungZiel', 'Wirkung am Projektende'], ['gelingen', 'Gelingensfaktoren'], ['hindernisse', 'Hemmende Faktoren'],
+    ['geheimtipp', 'Geheimtipp'], ['suche', 'Wonach suche ich'], ['biete', 'Was ich anbiete']];
+  const themen = list(e.themen).map(t => t === 'Sonstiges' && e.themenSonstiges ? e.themenSonstiges : t);
+  const zg = list(e.zielgruppe).map(z => z === 'Sonstiges' && e.zielgruppeSonstiges ? e.zielgruppeSonstiges : z);
+  const ok = (e.einverstaendnisKontakt || '').trim().toLowerCase() === 'ja';
+  let dlg = document.getElementById('mDialog');
+  if (!dlg) {
+    dlg = document.createElement('dialog'); dlg.id = 'mDialog'; dlg.className = 'm-dialog';
+    dlg.addEventListener('click', ev => { if (ev.target === dlg) dlg.close(); });
+    document.body.appendChild(dlg);
+  }
+  dlg.innerHTML = `
+    <div class="m-dlg-head">
+      <div><p class="m-eyebrow">Projekt</p><p class="card-project" style="font-size:17px">${esc(e.projekt)}</p>
+      <p class="card-meta">${esc(mRegion(e.region)) || 'Region nicht angegeben'}</p></div>
+      <button type="button" class="m-act" id="mDlgClose">Schließen</button>
+    </div>
+    ${themen.length ? `<div class="tags" style="padding:0">${themen.map(t => `<span class="tag" style="background:var(--teal-light);color:var(--teal)">${esc(t)}</span>`).join('')}</div>` : ''}
+    ${zg.length ? `<p class="card-meta" style="margin-top:.4rem">Zielgruppe: ${esc(zg.join(', '))}</p>` : ''}
+    <div class="m-dlg-body">${F.filter(([k]) => e[k] && e[k].toString().trim()).map(([k, l]) => `<p class="m-label">${l}</p><p>${esc(e[k].toString())}</p>`).join('')}</div>
+    ${ok ? `<div class="m-actions" style="margin-top:1rem"><button type="button" class="m-act" id="mDlgKontakt">Kontakt ansehen</button></div>` : ''}`;
+  dlg.querySelector('#mDlgClose').onclick = () => dlg.close();
+  const k = dlg.querySelector('#mDlgKontakt'); if (k) k.onclick = () => { dlg.close(); mGoto('kontakte', nr); };
+  if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  dlg.scrollTop = 0;
+}
+
 function mGoto(tab, nr) {
+  if (tab === 'uebersicht') { mShowProject(nr); return; }
   mFocus = nr;
   document.querySelectorAll('.tab[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   activeTab = tab; render();
@@ -667,7 +707,7 @@ function mHighlight() {
   const el = els.find(x => x.dataset.rich === '1') || els[0];
   if (!el) return;
   el.classList.add('m-hl');
-  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120 });
   setTimeout(() => el.classList.remove('m-hl'), 4000);
 }
 
