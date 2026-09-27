@@ -42,12 +42,6 @@ body {
 .live-dot { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-.admin-badge {
-  font-size: 11px; font-weight: 600; padding: 0.2rem 0.6rem;
-  border-radius: 20px; background: var(--orange-light); color: var(--orange);
-  letter-spacing: 0.05em; display: none;
-}
-.admin-badge.visible { display: inline-block; }
 
 .tabs-wrap { margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
 .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
@@ -154,9 +148,21 @@ body {
 .m-learn li { border-left:2px solid var(--orange); padding-left:.55rem; }
 .m-learn b { color:var(--navy); }
 .m-seek { color:var(--text-faint); }
+.m-person { font-size:12px; color:var(--text); margin-top:.1rem; }
+.m-card .card-head { position:relative; padding-right:3.6rem; }
+.m-pdf { position:absolute; top:.8rem; right:.8rem; font:700 11px inherit; font-family:inherit; color:var(--teal); background:var(--teal-light); border:1px solid transparent; border-radius:20px; padding:.2rem .6rem; cursor:pointer; }
+.m-pdf:hover { border-color:var(--teal); }
+.m-actions { display:flex; gap:.35rem; flex-wrap:wrap; margin-top:.4rem; }
+.m-act { font-family:inherit; font-size:11px; font-weight:700; color:var(--navy); background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:.2rem .65rem; cursor:pointer; }
+.m-act:hover { border-color:var(--navy); }
+.m-hl { outline:3px solid var(--teal); outline-offset:3px; box-shadow:0 0 0 8px var(--teal-light) !important; }
+.m-status { font-size:12px; color:var(--text-muted); }
+.m-stage { position:fixed; left:-10000px; top:0; width:720px; background:#fff; }
+.m-stage .card { animation:none; transform:none; box-shadow:none; border:1px solid #d9dee5; border-left:3px solid var(--teal); }
+.m-stage .m-pdf, .m-stage .m-actions { display:none; }
 @media print {
   body { background:#fff; padding:0; }
-  .top, .tabs-wrap, .m-bar, .m-hint { display:none !important; }
+  .top, .tabs-wrap, .m-bar, .m-hint, .m-pdf, .m-actions { display:none !important; }
   .m-grid { columns:auto !important; }
   .m-card { break-after:page; box-shadow:none; border:1px solid #ccc; border-left:3px solid var(--teal); animation:none; transform:none; }
   .m-card:last-child { break-after:auto; }
@@ -174,7 +180,6 @@ body {
     <p>Gemeinsame Übersicht der teilnehmenden Projekte</p>
   </div>
   <div class="top-right">
-    <span class="admin-badge" id="adminBadge">Admin-Modus</span>
     <div class="live-dot">
       <div class="dot"></div>
       <span id="livetext">Wird geladen…</span>
@@ -207,11 +212,6 @@ body {
 
 <script>
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzt29vNU-riSrLsKJuORybtkdr5SnO9tJwDmzKnTwNXry45Qf9z4wQFf75Zq6p4EzR7VQ/exec';
-const ADMIN_PW = 'bellAdmin2026';
-
-const params = new URLSearchParams(window.location.search);
-const isAdmin = params.get('admin') === ADMIN_PW;
-if (isAdmin) document.getElementById('adminBadge').classList.add('visible');
 
 let daten = [];
 let letzterStand = '';
@@ -424,7 +424,7 @@ function render() {
         e.suche       ? `<p style="margin-top:.6rem"><strong style="font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em">Wonach suche ich</strong><br>${esc(e.suche)}</p>` : '',
         e.biete       ? `<p style="margin-top:.6rem"><strong style="font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em">Was ich anbiete</strong><br>${esc(e.biete)}</p>` : '',
       ].filter(Boolean).join('');
-      return `<div class="card" style="border-left:3px solid var(--${col});margin-bottom:.75rem;break-inside:avoid">
+      return `<div class="card" data-nr="${esc((e.projektnummer||'').trim())}" data-rich="${e.suche||e.biete?'1':'0'}" style="border-left:3px solid var(--${col});margin-bottom:.75rem;break-inside:avoid">
         ${cardHead(e)}
         ${tagHtml}
         ${zgLine ? `<div style="padding:0 1rem .5rem">${zgLine}</div>` : ''}
@@ -432,6 +432,7 @@ function render() {
       </div>`;
     }).join('');
     board.innerHTML = `<div class="cards-grid">${cards}</div>`;
+    mHighlight();
     return;
   }
 
@@ -439,7 +440,7 @@ function render() {
     const mitEinverstaendnis = daten.filter(e => e.einverstaendnisKontakt === 'ja');
     const hint = '<p style="font-size:12px;color:var(--text-faint);margin-bottom:1rem;">Nur Projektnamen, Ansprechpersonen und Mailadressen – ohne Verknüpfung zu inhaltlichen Angaben. Zur direkten Kontaktaufnahme auf der Tagung.</p>';
     const cards = mitEinverstaendnis.map(e => `
-      <div class="card" style="border-left:3px solid var(--blue);margin-bottom:.75rem;break-inside:avoid">
+      <div class="card" data-nr="${esc((e.projektnummer||'').trim())}" data-rich="1" style="border-left:3px solid var(--blue);margin-bottom:.75rem;break-inside:avoid">
         <div class="card-head">
           <p class="card-project">${esc(e.projekt)}</p>
           <p class="card-meta">${esc(e.region)||'Region nicht angegeben'}</p>
@@ -448,6 +449,7 @@ function render() {
       </div>`).join('');
     if (!mitEinverstaendnis.length) { board.innerHTML = hint + '<p class="empty">Noch keine Projekte haben der Anzeige ihrer Kontaktdaten zugestimmt.</p>'; return; }
     board.innerHTML = hint + `<div class="cards-grid">${cards}</div>`;
+    mHighlight();
     return;
   }
 }
@@ -479,6 +481,14 @@ const M_ZG = {
   'Menschen mit Behinderung': 'Behinderung / Einschränkungen',
   'Ältere in institutionellen Wohnformen': 'Institutionelle Wohnformen',
   'Ältere Beschäftigte': 'Ältere Beschäftigte',
+};
+// Zielgruppen, die im Suche-Text oder im Angebot ausdrücklich genannt werden
+const M_ZG_TEXT = {
+  'Einwanderungsgeschichte': /migration|einwanderung|interkultur|mehrsprach|postmigrant/,
+  'Behinderung / Einschränkungen': /behinder|einschränkung|beeinträchtig|blind|inklusi/,
+  'Ressourcenarme Ältere': /bildungsfern|ressourcenarm|vereinsamt|einsam|armut|geringem einkommen/,
+  'Übergang in den Ruhestand': /übergang in den ruhestand|ruhestand|nachberuf|weiterarbeit|boomer/,
+  'Institutionelle Wohnformen': /senior\S*\s?einrichtung|pflegeeinrichtung|pflegeheim|altenheim|wohnform|bewohner/,
 };
 const M_STOP = new Set(('aber alle allem als also am an auch auf aus bei bin bis da damit dann das dass dem den der des die dies diese dieser dir doch durch ein eine einem einen einer es für gibt hat haben ich ihr im in ist ja kann können mit nach nicht noch nur oder sich sie sind so über um und uns unser unsere unserer unseren von vor wie wir wird wo zu zum zur zwischen besonders gerne gern sowie etwa andere anderen anderer projekt projekte projekten projekts menschen ältere älteren älterer erfahrungen erfahrung austausch interessant bieten suchen gut sehr viele mehr werden wurde einen jahren dazu außerdem welche konnten innen bereich zielgruppe zielgruppen arbeit bildung ideen hinweise darüber hinaus aktiv dabei insbesondere').split(' '));
 const M_EMPTY = /Aufbauphase befinden, lassen sich momentan keine Aussagen/i;
@@ -523,13 +533,18 @@ function mCompute() {
     if (!e.projekt || /^Name Projekt$/i.test(e.projekt.trim())) return;
     const nr = (e.projektnummer || e.projekt).toString().trim();
     const rank = (mText(e.suche) || mText(e.biete) ? 2 : 0) + (e.zeitstempel ? 1 : 0);
-    if (!byNr[nr] || rank > byNr[nr].rank) byNr[nr] = { e, rank };
+    const ok = (e.einverstaendnisKontakt || '').trim().toLowerCase() === 'ja';
+    const names = ok ? [e.ap1Name, e.ap2Name, e.ap3Name].map(n => (n || '').trim()).filter(Boolean) : [];
+    const prev = byNr[nr];
+    const ap = names.length ? names : (prev ? prev.ap : []);
+    if (!prev || rank > prev.rank) byNr[nr] = { e, rank, ap };
+    else if (!prev.ap.length && names.length) prev.ap = names;
   });
-  const P = Object.entries(byNr).map(([nr, { e }]) => {
+  const P = Object.entries(byNr).map(([nr, { e, ap }]) => {
     const s = mText(e.suche), b = mText(e.biete), f = mText(e.fokus).replace(/\s+/g, ' ');
     const B = mCats(b);
     return {
-      id: nr, p: e.projekt.replace(/\s+/g, ' ').trim().replace(/^["„“]+|["„“]+$/g, ''), r: mRegion(e.region),
+      id: nr, ap, p: e.projekt.replace(/\s+/g, ' ').trim().replace(/^["„“]+|["„“]+$/g, ''), r: mRegion(e.region),
       s, b, f, S: mCats(s), B, F: mCats(f).filter(c => !B.includes(c)),
       zg: Object.keys(M_ZG).filter(k => (e.zielgruppe || '').includes(k)).map(k => M_ZG[k]),
     };
@@ -556,15 +571,34 @@ function mCompute() {
       const zgm = a.zg.filter(z => b.zg.includes(z));
       let cos = 0; const prod = [];
       Object.keys(VA[i]).forEach(w => { if (VB[j][w]) { const x = VA[i][w] * VB[j][w]; cos += x; prod.push([x, w]); } });
+      // Zielgruppe: gesucht (im Text oder eigene Zielgruppe bei „Zielgruppen erreichen“) und beim Partner vorhanden
+      const want = Object.keys(M_ZG_TEXT).filter(z => M_ZG_TEXT[z].test(a.s.toLowerCase()) || (a.S.includes('Zielgruppen erreichen') && a.zg.includes(z)));
+      const bText = (b.b + ' ' + b.f).toLowerCase();
+      const zgHit = want.filter(z => M_ZG_TEXT[z].test(bText));
+      const zgExpert = want.filter(z => M_ZG_TEXT[z].test(b.b.toLowerCase()));
       let sc = m.reduce((s, c) => s + W[c], 0) + 0.5 * mf.reduce((s, c) => s + (W[c] || 0.5), 0)
-        + Math.min(0.3, 0.15 * zgm.length) + 3 * cos + (b.r && a.s.includes(b.r) ? 0.8 : 0) + (b.r === a.r ? 0.1 : 0);
-      if (!b.b && !m.length && !mf.length) sc *= 0.6;
+        + Math.min(0.3, 0.15 * zgm.length) + 0.35 * zgHit.length + 0.5 * zgExpert.length
+        + 3 * cos + (b.r && a.s.includes(b.r) ? 0.8 : 0) + (b.r === a.r ? 0.1 : 0);
+      if (!b.b && !m.length && !mf.length && !zgHit.length) sc *= 0.6;
+      // nur allgemeine Felder ohne Text- oder Zielgruppenbezug: abwerten
+      const generic = ['Formate & Methoden', 'Zielgruppen erreichen', 'Netzwerke & Kooperationen'];
+      if (m.concat(mf).every(c => generic.includes(c)) && cos < 0.08 && !zgHit.length) sc *= 0.75;
       if (sc < 0.35) return;
+      zgm.push(...zgHit.filter(z => !zgm.includes(z)));
       const terms = prod.sort((x, y) => y[0] - x[0]).slice(0, 4).map(x => x[1]);
       L.push({ j, sc, m, mf, zg: zgm, sa: mBest(a.s, m, terms), sb: mBest(b.b, m, terms), sf: mf.length ? mBest(b.f, mf) : '', same: b.r === a.r });
     });
-    L.sort((x, y) => y.sc - x.sc || y.same - x.same);
-    a.M = L.slice(0, 4);
+    // Auswahl nacheinander: bereits abgedeckte Anliegen zählen beim nächsten Vorschlag weniger,
+    // damit jedes Anliegen eines Projekts einen passenden Partner bekommt
+    const pick = [], covered = new Set();
+    while (pick.length < 4 && L.length) {
+      L.forEach(x => x.adj = x.sc - 0.6 * x.m.concat(x.mf).filter(c => covered.has(c)).reduce((s, c) => s + (W[c] || 0.3), 0));  // abgedeckt = ausdrücklich angeboten
+      L.sort((x, y) => y.adj - x.adj || y.same - x.same);
+      const x = L.shift();
+      if (pick.length >= 2 && x.adj < 0.3 * pick[0].sc) break;   // lieber weniger als schwache Vorschläge
+      pick.push(x); x.m.forEach(c => covered.add(c));
+    }
+    a.M = pick;
   });
   P.forEach((b, j) => { b.R = []; P.forEach((a, i) => a.M.forEach(x => { if (x.j === j) b.R.push({ i, m: x.m, sc: x.sc }); })); b.R.sort((x, y) => y.sc - x.sc); });
   return P;
@@ -579,7 +613,7 @@ function renderMatching(board) {
   const opts = withCards.map(({ p, i }) => `<option value="${i}"${String(i) === mSel ? ' selected' : ''}>${esc(p.p)}</option>`).join('');
   const shown = mSel === '' ? withCards : withCards.filter(({ i }) => String(i) === mSel);
   const tag = (t, c) => `<span class="tag" style="background:var(--${c}-light);color:var(--${c})">${esc(t)}</span>`;
-  const card = ({ p }) => {
+  const card = ({ p, i }) => {
     const partners = p.M.map((x, n) => {
       const o = P[x.j];
       const why = x.sb ? `<p class="m-why"><b>Bietet:</b> „${esc(x.sb)}“</p>`
@@ -588,11 +622,14 @@ function renderMatching(board) {
       const tags = x.m.concat(x.mf);
       return `<li class="m-partner"><span class="m-nr">${n + 1}</span><div>
         <p class="m-name">${esc(o.p)} <span class="card-meta">${esc(o.r)}</span></p>
-        ${tags.length ? `<div class="m-tags">${tags.map(t => tag(t, 'teal')).join('')}</div>` : ''}${why}${zg}</div></li>`;
+        <p class="m-person">${o.ap.length ? 'Ansprechperson: ' + esc(o.ap.join(', ')) : '<span class="m-seek">Name nicht freigegeben</span>'}</p>
+        ${tags.length ? `<div class="m-tags">${tags.map(t => tag(t, 'teal')).join('')}</div>` : ''}${why}${zg}
+        <div class="m-actions"><button type="button" class="m-act" data-go="uebersicht" data-nr="${esc(o.id)}">Projekt ansehen</button>${o.ap.length ? `<button type="button" class="m-act" data-go="kontakte" data-nr="${esc(o.id)}">Kontakt ansehen</button>` : ''}</div></div></li>`;
     }).join('');
-    const learn = p.R.slice(0, 5).map(x => `<li><b>${esc(P[x.i].p)}</b> <span class="card-meta">${esc(P[x.i].r)}</span>${x.m.length ? `<br><span class="m-seek">sucht ${esc(x.m.join(', '))}</span>` : ''}</li>`).join('');
-    return `<div class="card m-card">
-      <div class="card-head"><p class="m-eyebrow">Matching-Karte</p><p class="card-project">${esc(p.p)}</p><p class="card-meta">${esc(p.r) || 'Region nicht angegeben'}</p></div>
+    const learn = p.R.slice(0, 5).map(x => `<li><b>${esc(P[x.i].p)}</b> <span class="card-meta">${esc(P[x.i].r)}</span>${P[x.i].ap.length ? `<br><span class="m-person">${esc(P[x.i].ap.join(', '))}</span>` : ''}${x.m.length ? `<br><span class="m-seek">sucht ${esc(x.m.join(', '))}</span>` : ''}</li>`).join('');
+    return `<div class="card m-card" data-card="${i}">
+      <div class="card-head"><p class="m-eyebrow">Matching-Karte</p><p class="card-project">${esc(p.p)}</p><p class="card-meta">${esc(p.r) || 'Region nicht angegeben'}${p.ap.length ? ' · ' + esc(p.ap.join(', ')) : ''}</p>
+      <button type="button" class="m-pdf" data-pdf="${i}" title="Diese Karte als PDF herunterladen">PDF</button></div>
       <div class="card-body">
         ${p.s ? `<p class="m-label">Ihr sucht</p><p class="m-quote">${esc(p.s.length > 380 ? p.s.slice(0, 380).replace(/\s\S*$/, '') + ' …' : p.s)}</p>` : ''}
         ${partners ? `<p class="m-label" style="margin-top:.8rem">Eure Gesprächspartner</p><ol class="m-list">${partners}</ol>` : ''}
@@ -603,12 +640,87 @@ function renderMatching(board) {
     <div class="m-bar">
       <label for="mSel" class="m-label" style="margin:0">Karte für</label>
       <select id="mSel"><option value="">Alle Projekte (${withCards.length})</option>${opts}</select>
-      <button type="button" class="tab" id="mPrint">Karten drucken</button>
+      <button type="button" class="tab" id="mPdfAll">${mSel === '' ? 'Alle Karten als PDF' : 'Karte als PDF'}</button>
+      <button type="button" class="tab" id="mPrint">Drucken</button>
+      <span class="m-status" id="mStatus" aria-live="polite"></span>
     </div>
     <p class="m-hint">Die Vorschläge verbinden, was ein Projekt sucht, mit dem, was andere anbieten oder laut Projektbeschreibung tun, und berücksichtigen gemeinsame Zielgruppen. Seltene Anliegen zählen stärker als allgemeine.${ohne ? ` ${ohne} Projekte haben Suche und Biete noch nicht ausgefüllt und erhalten deshalb keine eigene Karte.` : ''}</p>
     <div class="cards-grid m-grid${mSel !== '' ? ' m-single' : ''}">${shown.map(card).join('') || '<p class="empty">Noch keine Suche- und Biete-Angaben für ein Matching.</p>'}</div>`;
   document.getElementById('mSel').onchange = ev => { mSel = ev.target.value; render(); };
   document.getElementById('mPrint').onclick = () => window.print();
+  mLibs().catch(() => {});
+  document.getElementById('mPdfAll').onclick = () => mPdf(shown.map(x => x.i), mSel === '' ? 'BELL_Matching-Karten' : 'Matching-Karte_' + P[+mSel].p);
+  board.querySelectorAll('[data-go]').forEach(b => b.onclick = () => mGoto(b.dataset.go, b.dataset.nr));
+  board.querySelectorAll('[data-pdf]').forEach(b => b.onclick = () => mPdf([+b.dataset.pdf], 'Matching-Karte_' + P[+b.dataset.pdf].p));
+}
+
+let mFocus = '';
+function mGoto(tab, nr) {
+  mFocus = nr;
+  document.querySelectorAll('.tab[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  activeTab = tab; render();
+}
+function mHighlight() {
+  if (!mFocus) return;
+  const els = [...document.querySelectorAll(`#board [data-nr="${CSS.escape(mFocus)}"]`)];
+  mFocus = '';
+  const el = els.find(x => x.dataset.rich === '1') || els[0];
+  if (!el) return;
+  el.classList.add('m-hl');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => el.classList.remove('m-hl'), 4000);
+}
+
+function mLoad(src) {
+  return new Promise((ok, fail) => { if (document.querySelector(`script[src="${src}"]`)) return ok();
+    const sc = document.createElement('script'); sc.src = src; sc.onload = ok; sc.onerror = fail; document.head.appendChild(sc); });
+}
+// PDF-Bibliotheken liegen im Repository; cdnjs nur als Reserve
+const M_LIBS = [
+  ['html2canvas.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', () => window.html2canvas],
+  ['jspdf.umd.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', () => window.jspdf],
+];
+let mLibsPromise = null;
+function mLibs() {
+  if (!mLibsPromise) mLibsPromise = (async () => {
+    for (const [local, cdn, ready] of M_LIBS) {
+      if (ready()) continue;
+      try { await mLoad(local); } catch (e) { await mLoad(cdn); }
+    }
+  })().catch(e => { mLibsPromise = null; throw e; });
+  return mLibsPromise;
+}
+let mBusy = false;
+async function mPdf(ids, name) {
+  if (mBusy) return; mBusy = true;
+  const st = document.getElementById('mStatus'); const say = t => { if (st) st.textContent = t; };
+  try {
+    say('PDF wird vorbereitet …');
+    await mLibs();
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pw = 210, ph = 297, mg = 12;
+    const stage = document.createElement('div');
+    stage.className = 'm-stage';
+    document.body.appendChild(stage);
+    for (let k = 0; k < ids.length; k++) {
+      say(`PDF wird erstellt … ${k + 1} von ${ids.length}`);
+      const src = document.querySelector(`[data-card="${ids[k]}"]`);
+      if (!src) continue;
+      stage.innerHTML = ''; const c = src.cloneNode(true); stage.appendChild(c);
+      const canvas = await html2canvas(c, { scale: 1.6, backgroundColor: '#ffffff', logging: false });
+      let w = pw - 2 * mg, h = canvas.height * w / canvas.width;
+      if (h > ph - 2 * mg) { h = ph - 2 * mg; w = canvas.width * h / canvas.height; }
+      if (k > 0) pdf.addPage();
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.8), 'JPEG', (pw - w) / 2, mg, w, h);
+    }
+    stage.remove();
+    pdf.save(name.replace(/[^\wÄÖÜäöüß\- ]+/g, '').trim().replace(/\s+/g, '_').slice(0, 80) + '.pdf');
+    say('PDF heruntergeladen');
+    setTimeout(() => say(''), 4000);
+  } catch (err) {
+    say('PDF konnte nicht erstellt werden. Bitte „Drucken“ und dann „Als PDF speichern“ wählen.');
+  } finally { mBusy = false; }
 }
 
 async function laden() {
