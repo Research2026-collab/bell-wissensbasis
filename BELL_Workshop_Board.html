@@ -18,6 +18,7 @@
   --green: #2E7D5A;   --green-light: #ebf5f0;
   --orange: #c05621;  --orange-light: #faf1e6;
   --teal: #2b7a78;    --teal-light: #e9f3f1;
+  --warn: #9a5b00;    --warn-light: #fdf3dc;
   --radius: 10px;
   --radius-sm: 7px;
 }
@@ -26,77 +27,68 @@ body {
   background: var(--bg); color: var(--text);
   min-height: 100vh; padding: 1.5rem;
 }
-.top {
-  display: flex; align-items: flex-start;
-  justify-content: space-between; margin-bottom: 1.25rem;
-  flex-wrap: wrap; gap: 0.75rem;
-}
+.demo { background: var(--warn-light); border: 1px solid #e9c46a; color: var(--warn); font-size: 13px; font-weight: 600; border-radius: var(--radius-sm); padding: .55rem .8rem; margin-bottom: 1rem; }
+.top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem; }
 .top-left .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.35rem; }
 .top-left h1 { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 0.25rem; }
 .top-left p { font-size: 12px; color: var(--text-muted); }
-.top-right { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 .live-dot { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
 .dot.error { background: var(--orange); animation: none; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-.tabs-wrap { margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
+.tabs-wrap { margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
 .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-.tab {
-  font-family: inherit; font-size: 12px; font-weight: 600;
-  color: var(--text-muted); background: var(--surface);
-  border: 1px solid var(--border); border-radius: 20px;
-  padding: 0.4rem 0.95rem; cursor: pointer; transition: all 0.15s;
-  white-space: nowrap;
-}
-.tab .count { font-weight: 500; opacity: 0.75; margin-left: 0.3rem; }
+.tab { font-family: inherit; font-size: 12px; font-weight: 600; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 0.4rem 0.95rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.tab .n { font-weight: 500; opacity: 0.75; margin-left: 0.3rem; }
 .tab-green:hover  { color: var(--green);  border-color: var(--green); }
 .tab-orange:hover { color: var(--orange); border-color: var(--orange); }
 .tab.active.tab-green  { color: #fff; background: var(--green);  border-color: var(--green);  font-weight: 700; }
 .tab.active.tab-orange { color: #fff; background: var(--orange); border-color: var(--orange); font-weight: 700; }
 .tab:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 
-.question { font-size: 13px; color: var(--text-muted); margin-bottom: 1rem; max-width: 80ch; line-height: 1.6; }
-.question strong { color: var(--text); }
+.aufgabe { font-size: 13px; color: var(--text-muted); margin-bottom: 1.1rem; max-width: 90ch; line-height: 1.6; }
+.aufgabe strong { color: var(--text); }
 
-.cards-grid { columns: 300px; gap: 0.75rem; }
-.cards-grid .card { break-inside: avoid; margin-bottom: 0.75rem; }
+/* Fragen an die Geragogik */
+.fragen { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--navy); border-radius: var(--radius); padding: .9rem 1rem 1rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(26,26,24,0.07); }
+.fragen h2 { font-size: 14px; font-weight: 800; color: var(--navy); margin-bottom: .65rem; display: flex; justify-content: space-between; gap: 1rem; }
+.fragen h2 span { font-size: 12px; font-weight: 500; color: var(--text-faint); }
+.fragen ol { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: .6rem; }
+.fragen li { background: var(--surface2); border-radius: var(--radius-sm); padding: .6rem .75rem; font-size: 14px; line-height: 1.5; }
+.fragen li b { display: block; font-size: 11px; color: var(--navy); margin-bottom: .15rem; }
 
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(26,26,24,0.07);
-  animation: fadein 0.35s ease;
-}
+/* Spalten je Faktor */
+.columns { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; align-items: start; }
+.column { display: flex; flex-direction: column; gap: .55rem; }
+.column-header { font-size: 13px; font-weight: 700; line-height: 1.3; padding: .6rem .8rem; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: flex-start; gap: .6rem; }
+.column-header small { display: block; font-size: 11px; font-weight: 500; opacity: .8; margin-top: .2rem; }
+.column-header .count { font-size: 11px; font-weight: 600; white-space: nowrap; opacity: .8; margin-top: 1px; }
+.acc-green  .column-header { background: var(--green-light);  color: var(--green); }
+.acc-orange .column-header { background: var(--orange-light); color: var(--orange); }
+.col-extra .column-header { background: var(--surface2); color: var(--text-muted); }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(26,26,24,0.07); animation: fadein .35s ease; }
 @keyframes fadein { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
 @media (prefers-reduced-motion: reduce) { .card, .dot { animation: none; } }
-.card-green  { border-left: 3px solid var(--green); }
-.card-orange { border-left: 3px solid var(--orange); }
-
-.card-head {
-  padding: 0.7rem 1rem 0.55rem;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
-}
-.card-group { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; padding: 0.15rem 0.6rem; border-radius: 20px; }
-.card-green .card-group  { background: var(--green-light);  color: var(--green); }
-.card-orange .card-group { background: var(--orange-light); color: var(--orange); }
+.acc-green .card  { border-left: 3px solid var(--green); }
+.acc-orange .card { border-left: 3px solid var(--orange); }
+.col-extra .card  { border-left: 3px solid var(--text-faint); }
+.card-head { display: flex; justify-content: space-between; gap: .5rem; padding: .5rem .8rem .35rem; }
+.card-group { font-size: 11px; font-weight: 700; color: var(--text-muted); }
 .card-time { font-size: 11px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
-.card-body { padding: 0.75rem 1rem; font-size: 13.5px; line-height: 1.65; color: var(--text); white-space: pre-line; }
-.card-body .extra {
-  margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--border);
-  font-size: 12.5px; color: var(--text-muted);
-}
-.card-body .extra strong {
-  display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--text-faint); margin-bottom: 0.25rem;
-}
-.empty { text-align: center; color: var(--text-faint); padding: 4rem 0; font-size: 14px; }
+.card-body { padding: 0 .8rem .6rem; font-size: 13.5px; line-height: 1.55; white-space: pre-line; }
+.card-body.leer { color: var(--text-faint); font-style: italic; }
+.card-body .titel { font-weight: 600; display: block; }
+
+.empties { margin-top: 1.25rem; font-size: 12px; color: var(--text-faint); }
+.empties b { color: var(--text-muted); font-weight: 600; }
+.empty { text-align: center; color: var(--text-faint); padding: 3rem 0; font-size: 14px; }
 </style>
 </head>
 <body>
+
+<p class="demo" id="demoBanner" hidden>Vorführmodus: Die Einträge sind Beispiele und stammen nicht aus dem Google Sheet.</p>
 
 <div class="top">
   <div class="top-left">
@@ -104,120 +96,138 @@ body {
     <h1>Workshop-Board</h1>
     <p>Ergebnisse der Kleingruppen</p>
   </div>
-  <div class="top-right">
-    <div class="live-dot">
-      <div class="dot" id="dot"></div>
-      <span id="livetext">Wird geladen…</span>
-    </div>
-  </div>
+  <div class="live-dot"><div class="dot" id="dot"></div><span id="livetext">Wird geladen…</span></div>
 </div>
 
 <div class="tabs-wrap">
-  <div class="tabs" id="tabs">
-    <button class="tab active tab-green" data-session="1">Session 1 · Gelingensfaktoren<span class="count" id="c1"></span></button>
-    <button class="tab tab-orange" data-session="2">Session 2 · Hemmende Faktoren<span class="count" id="c2"></span></button>
+  <div class="tabs">
+    <button class="tab active tab-green" data-session="1">Session 1 · Gelingensfaktoren<span class="n" id="c1"></span></button>
+    <button class="tab tab-orange" data-session="2">Session 2 · Hemmende Faktoren<span class="n" id="c2"></span></button>
   </div>
 </div>
 
-<p class="question" id="question"></p>
+<p class="aufgabe" id="aufgabe"></p>
 <div id="board"></div>
 
+<script src="bell_faktoren.js"></script>
 <script>
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzt29vNU-riSrLsKJuORybtkdr5SnO9tJwDmzKnTwNXry45Qf9z4wQFf75Zq6p4EzR7VQ/exec';
-const POLL_INTERVAL = 25000; // 25 Sekunden, bewusst ruhiger als die Wissensbasis
+const POLL_INTERVAL = 25000;
+const DEMO = new URLSearchParams(location.search).has('demo');
+const FRAGE_PREFIX = 'Frage an die Geragogik';
+const ACC = { '1': 'green', '2': 'orange' };
 
-const SESSIONS = {
-  '1': { accent: 'green',  label: 'Gelingensfaktoren',
-         frage: 'Was hat dazu beigetragen, dass der eigentliche Mehrwert eines Angebots für die Teilnehmenden zustande gekommen ist?' },
-  '2': { accent: 'orange', label: 'Hemmende Faktoren',
-         frage: 'An welchen Stellen erschweren bestimmte Rahmenbedingungen oder Haltungen, dass der eigentliche Mehrwert eines Angebots zur Wirkung kommt?' },
-};
+let daten = [], letzterStand = '', activeSession = '1';
 
-let daten = [];
-let letzterStand = '';
-let activeSession = '1';
+document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); activeSession = btn.dataset.session; render();
+}));
 
-document.querySelectorAll('.tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeSession = btn.dataset.session;
-    render();
-  });
-});
-
-function esc(s) {
-  return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// Zeitstempel kann je nach Sheet „timestamp“ oder „zeitstempel“ heißen
+function esc(s) { return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function zeit(e) { return e.timestamp || e.zeitstempel || ''; }
-function formatTime(ts) {
-  if (!ts) return '';
-  const d = new Date(ts);
-  if (isNaN(d.getTime())) return '';
-  return d.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}) + ' Uhr';
+function uhr(ts) { const d = new Date(ts); return ts && !isNaN(d) ? d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}) + ' Uhr' : ''; }
+
+// Ordnet einen Eintrag seinem Faktor zu („Faktor: Anmerkung“)
+function zerlegen(e, faktoren) {
+  const t = (e.inhalt || '').toString().trim();
+  const rest = f => { const r = t.slice(f.length).replace(/^\s*:\s*/, '').trim(); return r; };
+  if (t.startsWith(FRAGE_PREFIX)) return { typ: 'frage', text: rest(FRAGE_PREFIX) };
+  const f = faktoren.find(f => t === f || t.startsWith(f + ':'));
+  if (f) return { typ: 'faktor', faktor: f, text: rest(f) };
+  const a = t.match(/^Anderes(?:\s*\(([^)]*)\))?\s*(?::\s*([\s\S]*))?$/);
+  if (a) return { typ: 'faktor', faktor: 'Anderes', titel: a[1] || '', text: (a[2] || '').trim() };
+  return { typ: 'faktor', faktor: 'Weitere Einträge', text: t + (e.weitere ? '\n\n' + e.weitere : '') };
 }
 
-function makeCard(e, accent) {
-  const extra = e.weitere && e.weitere.toString().trim()
-    ? `<div class="extra"><strong>Weitere Einsichten</strong>${esc(e.weitere)}</div>`
-    : '';
-  return `
-    <div class="card card-${accent}">
-      <div class="card-head">
-        <span class="card-group">Gruppe ${esc(e.gruppe)}</span>
-        <span class="card-time">${formatTime(zeit(e))}</span>
-      </div>
-      <div class="card-body">${esc(e.inhalt)}${extra}</div>
-    </div>`;
+function card(e, z) {
+  const body = z.titel ? `<span class="titel">${esc(z.titel)}</span>${esc(z.text)}` : esc(z.text);
+  return `<div class="card"><div class="card-head"><span class="card-group">Gruppe ${esc(e.gruppe)}</span><span class="card-time">${uhr(zeit(e))}</span></div>
+    <div class="card-body${z.text || z.titel ? '' : ' leer'}">${z.text || z.titel ? body : 'ohne Anmerkung'}</div></div>`;
 }
 
 function render() {
-  const s = SESSIONS[activeSession];
-  ['1','2'].forEach(k => {
-    const n = daten.filter(e => String(e.session) === k).length;
-    document.getElementById('c'+k).textContent = n ? `(${n})` : '';
-  });
-  document.getElementById('question').innerHTML = `<strong>Leitfrage:</strong> ${esc(s.frage)}`;
+  const s = activeSession, acc = ACC[s];
+  const defs = ((window.BELL_FAKTOREN || {})[s] || []).map(f => typeof f === 'string' ? { name: f } : f);
+  const faktoren = defs.map(f => f.name);
+  const basis = Object.fromEntries(defs.map(f => [f.name, f.projekte]));
+  ['1','2'].forEach(k => { const n = new Set(daten.filter(e => String(e.session) === k).map(e => e.gruppe)).size;
+    document.getElementById('c'+k).textContent = n ? `(${n} ${n === 1 ? 'Gruppe' : 'Gruppen'})` : ''; });
+  document.getElementById('aufgabe').innerHTML = `<strong>Aufgabe:</strong> ${esc((window.BELL_AUFGABE || {})[s] || '')}`;
 
+  const items = daten.filter(e => String(e.session) === s).sort((a,b) => new Date(zeit(b)) - new Date(zeit(a)));
   const board = document.getElementById('board');
-  const items = daten
-    .filter(e => String(e.session) === activeSession)
-    .sort((a,b) => new Date(zeit(b)) - new Date(zeit(a)));
+  if (!items.length) { board.innerHTML = `<p class="empty">Noch keine Einträge in dieser Session.</p>`; return; }
 
-  if (!items.length) {
-    board.innerHTML = `<p class="empty">Noch keine Einträge zu ${s.label}.</p>`;
-    return;
-  }
-  board.innerHTML = `<div class="cards-grid">${items.map(e => makeCard(e, s.accent)).join('')}</div>`;
+  const fragen = [], gruppen = {};
+  items.forEach(e => { const z = zerlegen(e, faktoren);
+    if (z.typ === 'frage') fragen.push({ e, z }); else (gruppen[z.faktor] = gruppen[z.faktor] || []).push({ e, z }); });
+
+  const reihenfolge = faktoren.concat(['Anderes', 'Weitere Einträge']);
+  const mit = reihenfolge.filter(f => gruppen[f]).sort((a, b) =>
+    (['Anderes','Weitere Einträge'].includes(a) - ['Anderes','Weitere Einträge'].includes(b)) || gruppen[b].length - gruppen[a].length);
+  const ohne = faktoren.filter(f => !gruppen[f]);
+
+  let html = '';
+  if (fragen.length) html += `<section class="fragen"><h2>Fragen an die Geragogik <span>${fragen.length}</span></h2><ol>${
+    fragen.map(({e, z}) => `<li><b>Gruppe ${esc(e.gruppe)}</b>${esc(z.text)}</li>`).join('')}</ol></section>`;
+  html += `<div class="columns">${mit.map(f => {
+    const extra = f === 'Anderes' || f === 'Weitere Einträge';
+    const n = new Set(gruppen[f].map(x => x.e.gruppe)).size;
+    return `<div class="column ${extra ? 'col-extra' : 'acc-' + acc}"><div class="column-header"><span>${esc(f)}${basis[f] ? `<small>Wissensbasis: ${basis[f]} von ${window.BELL_BASIS} Projekten</small>` : ''}</span><span class="count">${n} ${n === 1 ? 'Gruppe' : 'Gruppen'}</span></div>
+      ${gruppen[f].map(x => card(x.e, x.z)).join('')}</div>`; }).join('')}</div>`;
+  if (ohne.length) html += `<p class="empties"><b>Noch von keiner Gruppe gewählt:</b> ${ohne.map(esc).join(' · ')}</p>`;
+  board.innerHTML = html;
+}
+
+// Beispielinhalte für den Vorführmodus (?demo)
+function demoDaten() {
+  const t = m => new Date(Date.now() - m * 60000).toISOString();
+  const F = window.BELL_FAKTOREN;
+  const r = (s, g, f, note, m) => ({ session: s, gruppe: g, inhalt: note ? `${f}: ${note}` : f, weitere: '', timestamp: t(m) });
+  return [
+    r('1','2',F['1'][2].name,'Wir laden persönlich ein, beim Mittagstisch oder am Telefon. Flyer allein bringen kaum jemanden.',42),
+    r('1','5',F['1'][2].name,'Feste Ansprechperson, die man auch zwischen den Terminen anrufen darf.',35),
+    r('1','7',F['1'][2].name,'',20),
+    r('1','2',F['1'][0].name,'Themen kommen aus der Gruppe selbst, zum Beispiel Online-Banking, weil die Filiale schließt.',41),
+    r('1','3',F['1'][0].name,'Wir fragen zu Beginn jedes Treffens, was gerade im Alltag schwierig ist.',30),
+    r('1','3',F['1'][1].name,'Gleicher Ort, gleiche Uhrzeit, jede Woche. Das gibt Sicherheit.',30),
+    r('1','5',F['1'][4].name,'Teilnehmende planen ein Treffen im Monat selbst.',34),
+    r('1','7',F['1'][5].name,'Kooperation mit der Kirchengemeinde öffnet Türen, die wir allein nicht hätten.',19),
+    r('1','3','Anderes (Humor)','Gemeinsam lachen baut schneller Vertrauen auf als jede Methode.',28),
+    r('2','1',F['2'][1].name,'Im selben Kurs sitzen Menschen, die noch nie ein Smartphone hatten, neben Menschen, die Videos schneiden.',50),
+    r('2','4',F['2'][1].name,'Zwei Kursleitungen würden helfen, dafür fehlt aber das Geld.',38),
+    r('2','1',F['2'][8].name,'Der Aufnahmebogen schreckt ab, bevor das erste Treffen überhaupt stattgefunden hat.',49),
+    r('2','6',F['2'][8].name,'Menschen mit Demenz können nicht unterschreiben und fallen damit aus der Zählung.',25),
+    r('2','4',F['2'][0].name,'Hörgeräte und schlechte Akustik in Gemeinderäumen.',37),
+    r('2','6',F['2'][2].name,'Wir erreichen vor allem die, die ohnehin kommen würden.',24),
+    r('2','4',F['2'][4].name,'',36),
+    { session: '2', gruppe: '1', inhalt: `${FRAGE_PREFIX}: Wie gestalten wir ein Angebot, wenn in einer Gruppe Menschen mit sehr unterschiedlichem Vorwissen sitzen, ohne jemanden zu über- oder unterfordern?`, weitere: '', timestamp: t(48) },
+    { session: '2', gruppe: '6', inhalt: `${FRAGE_PREFIX}: Wie erreichen wir Menschen, die sich selbst gar nicht als Zielgruppe von Bildung sehen?`, weitere: '', timestamp: t(23) },
+  ];
 }
 
 async function laden() {
   const dot = document.getElementById('dot');
+  if (DEMO) { daten = demoDaten(); render(); document.getElementById('livetext').textContent = `Vorführmodus · ${daten.length} Beispieleinträge`; return; }
   try {
     const res = await fetch(SHEET_URL + '?sheet=workshop&t=' + Date.now());
     const neu = await res.json();
     const neuJson = JSON.stringify(neu);
     const now = new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    if (neuJson !== letzterStand) {
-      letzterStand = neuJson;
-      daten = Array.isArray(neu) ? neu : [];
-      render();
-    }
+    if (neuJson !== letzterStand) { letzterStand = neuJson; daten = Array.isArray(neu) ? neu : []; render(); }
     dot.classList.remove('error');
-    document.getElementById('livetext').textContent =
-      `Zuletzt geprüft: ${now} · ${daten.length} Einträge`;
-  } catch(e) {
-    // Bereits angezeigte Einträge bleiben stehen
+    document.getElementById('livetext').textContent = `Zuletzt geprüft: ${now} · ${daten.length} Einträge`;
+  } catch (e) {
     dot.classList.add('error');
     document.getElementById('livetext').textContent = 'Keine Verbindung, neuer Versuch in 25 Sekunden';
   }
 }
 
+document.getElementById('demoBanner').hidden = !DEMO;
 render();
 laden();
-setInterval(laden, POLL_INTERVAL);
+if (!DEMO) setInterval(laden, POLL_INTERVAL);
 </script>
 </body>
 </html>

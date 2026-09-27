@@ -27,19 +27,18 @@ body {
   font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: var(--bg); color: var(--text);
   min-height: 100vh; display: flex; align-items: flex-start; justify-content: center;
-  padding: 2.5rem 1rem 4rem;
+  padding: 2rem 1rem 4rem;
 }
-.wrapper { width: 100%; max-width: 560px; }
+.wrapper { width: 100%; max-width: 600px; }
+.demo { background: var(--warn-light); border: 1px solid #e9c46a; color: var(--warn); font-size: 13px; font-weight: 600; border-radius: var(--radius-sm); padding: .55rem .8rem; margin-bottom: 1.25rem; }
 .label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem; }
 h1 { font-size: 22px; font-weight: 800; color: var(--navy); line-height: 1.3; margin-bottom: 0.6rem; }
-.intro { font-size: 15px; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.5rem; }
-.card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(26,26,24,0.07); }
-.field { margin-bottom: 1.1rem; }
-.field:last-child { margin-bottom: 0; }
-.field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; }
-select, textarea {
-  width: 100%; padding: 0.65rem 0.75rem;
-  font-family: inherit; font-size: 15px; line-height: 1.6;
+.intro { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem; }
+.card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(26,26,24,0.07); }
+.step { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .6rem; }
+select, textarea, input[type=text] {
+  width: 100%; padding: 0.6rem 0.75rem;
+  font-family: inherit; font-size: 15px; line-height: 1.5;
   color: var(--text); background: var(--bg);
   border: 1px solid var(--border-strong); border-radius: var(--radius-sm); outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -49,9 +48,27 @@ select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 0.75rem center;
 }
-textarea { resize: vertical; min-height: 110px; }
-textarea::placeholder { color: var(--text-faint); }
-select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+textarea { resize: vertical; min-height: 64px; }
+textarea::placeholder, input::placeholder { color: var(--text-faint); }
+select:focus, textarea:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+
+.factors { display: flex; flex-direction: column; gap: .5rem; }
+.factor { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); transition: border-color .15s, background .15s; }
+.factor.on { border-color: var(--accent); background: var(--accent-light); }
+.factor > label { display: flex; align-items: flex-start; gap: .65rem; padding: .7rem .8rem; cursor: pointer; font-size: 15px; line-height: 1.35; }
+.factor input[type=checkbox] { width: 20px; height: 20px; margin-top: 1px; accent-color: var(--accent); flex: none; cursor: pointer; }
+.ftext { display: flex; flex-direction: column; gap: .2rem; }
+.fname { font-size: 15px; }
+.factor.on .fname { font-weight: 700; }
+.fmeta { font-size: 12px; color: var(--text-muted); }
+.fmeta b { font-weight: 600; color: var(--text); }
+.fzitat { font-size: 12.5px; color: var(--text-muted); font-style: italic; line-height: 1.45; }
+.note { padding: 0 .8rem .8rem 2.65rem; }
+.note[hidden] { display: none; }
+.note input { margin-bottom: .5rem; }
+.hint { font-size: 12px; color: var(--text-faint); margin-top: .35rem; }
+.count { font-size: 13px; color: var(--text-muted); margin-top: .7rem; }
+
 .submit-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
 .btn {
   font-family: inherit; font-size: 15px; font-weight: 600;
@@ -62,12 +79,13 @@ select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3p
 .btn:hover { opacity: 0.88; }
 .btn:disabled { opacity: 0.45; cursor: default; }
 .btn-secondary { background: var(--surface); color: var(--accent); }
-.btn:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.btn:focus-visible, .factor input:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 .status-text { font-size: 13px; color: var(--error); }
-.msg { display: none; border-radius: var(--radius); padding: 1.25rem 1.4rem; margin-top: 1rem; font-size: 14px; line-height: 1.6; }
+.msg { display: none; border-radius: var(--radius); padding: 1.2rem 1.3rem; margin-top: 1rem; font-size: 14px; line-height: 1.6; }
 .msg.visible { display: block; }
 .msg h2 { font-size: 16px; font-weight: 700; margin-bottom: 0.35rem; }
 .msg p { color: var(--text-muted); }
+.msg ul { margin: .5rem 0 0 1.1rem; color: var(--text); }
 .msg .row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.9rem; }
 .msg-ok    { background: var(--accent-light); border: 1px solid var(--accent); }
 .msg-ok h2 { color: var(--accent); }
@@ -76,7 +94,7 @@ select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3p
 .msg-warn h2 { color: var(--warn); }
 .msg-error { background: var(--error-light); border: 1px solid #f1a8a0; }
 .msg-error h2 { color: var(--error); }
-.copybox { margin-top: 0.8rem; background: var(--surface); border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); padding: 0.7rem 0.8rem; font-size: 13px; white-space: pre-line; color: var(--text); max-height: 220px; overflow: auto; }
+.copybox { margin-top: 0.8rem; background: var(--surface); border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); padding: 0.7rem 0.8rem; font-size: 13px; white-space: pre-line; color: var(--text); max-height: 240px; overflow: auto; }
 .saved { margin-top: 2rem; font-size: 12px; color: var(--text-faint); }
 .saved summary { cursor: pointer; }
 .saved li { margin: 0.4rem 0 0 1rem; }
@@ -84,46 +102,47 @@ select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3p
 </head>
 <body>
 <div class="wrapper">
+  <p class="demo" id="demoBanner" hidden>Vorführmodus: Einträge werden nicht gespeichert.</p>
   <p class="label">Jahreskonferenz BELL 2026 · Workshop Session 1</p>
   <h1>Gelingensfaktoren – Eintrag Ihrer Gruppe</h1>
-  <p class="intro">
-    Tragen Sie hier die Ergebnisse Ihrer Kleingruppe ein. Die Einträge erscheinen auf dem
-    gemeinsamen Workshop-Board und bilden die Grundlage für den Talk am zweiten
-    Veranstaltungstag. Ihre Gruppe kann mehrere Einträge senden.
-  </p>
+  <p class="intro" id="aufgabe"></p>
 
   <form id="form" novalidate>
     <div class="card">
-      <div class="field">
-        <label for="gruppe">Gruppennummer</label>
-        <select id="gruppe" required>
-          <option value="">— bitte auswählen —</option>
-          <option value="1">Gruppe 1</option>
-          <option value="2">Gruppe 2</option>
-          <option value="3">Gruppe 3</option>
-          <option value="4">Gruppe 4</option>
-          <option value="5">Gruppe 5</option>
-          <option value="6">Gruppe 6</option>
-          <option value="7">Gruppe 7</option>
-          <option value="8">Gruppe 8</option>
-          <option value="9">Gruppe 9</option>
-          <option value="10">Gruppe 10</option>
-          <option value="11">Gruppe 11</option>
-          <option value="12">Gruppe 12</option>
-          <option value="13">Gruppe 13</option>
-          <option value="14">Gruppe 14</option>
-          <option value="15">Gruppe 15</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="inhalt">Unsere wichtigsten Gelingensfaktoren</label>
-        <textarea id="inhalt" required placeholder="Was hat dazu beigetragen, dass der eigentliche Mehrwert eines Angebots für die Teilnehmenden zustande gekommen ist?"></textarea>
-      </div>
-      <div class="field">
-        <label for="weitere">Weitere Einsichten?</label>
-        <textarea id="weitere" placeholder="Gibt es noch etwas, das Ihre Gruppe festhalten möchte?"></textarea>
-      </div>
+      <p class="step">1 · Gruppe</p>
+      <label for="gruppe" class="hint" style="display:block;margin:0 0 .4rem">Gruppennummer</label>
+      <select id="gruppe" required>
+        <option value="">— bitte auswählen —</option>
+        <option value="1">Gruppe 1</option>
+        <option value="2">Gruppe 2</option>
+        <option value="3">Gruppe 3</option>
+        <option value="4">Gruppe 4</option>
+        <option value="5">Gruppe 5</option>
+        <option value="6">Gruppe 6</option>
+        <option value="7">Gruppe 7</option>
+        <option value="8">Gruppe 8</option>
+        <option value="9">Gruppe 9</option>
+        <option value="10">Gruppe 10</option>
+        <option value="11">Gruppe 11</option>
+        <option value="12">Gruppe 12</option>
+        <option value="13">Gruppe 13</option>
+        <option value="14">Gruppe 14</option>
+        <option value="15">Gruppe 15</option>
+      </select>
     </div>
+
+    <div class="card">
+      <p class="step">2 · Faktoren auswählen und kurz kommentieren</p>
+      <div class="factors" id="factors"></div>
+      <p class="count" id="count"></p>
+    </div>
+
+    <div class="card" id="frageCard" hidden>
+      <p class="step">3 · Frage an die Geragogik (freiwillig)</p>
+      <label for="frage" class="hint" style="display:block;margin:0 0 .4rem">Wo stoßen Sie an eine Grenze, für die Sie keine Lösung haben? Ein Satz genügt.</label>
+      <textarea id="frage" placeholder="Zum Beispiel: Wie gestalten wir ein Angebot, wenn Menschen mit sehr unterschiedlichem Vorwissen in einer Gruppe sitzen?"></textarea>
+    </div>
+
     <div class="submit-row">
       <button type="submit" class="btn" id="submitBtn">Eintrag senden</button>
       <p class="status-text" id="status" role="alert"></p>
@@ -138,18 +157,55 @@ select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3p
   </details>
 </div>
 
+<script src="bell_faktoren.js"></script>
 <script>
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzt29vNU-riSrLsKJuORybtkdr5SnO9tJwDmzKnTwNXry45Qf9z4wQFf75Zq6p4EzR7VQ/exec';
 const SESSION = '1';
-const LABEL = 'Gelingensfaktoren';
 const STORE = 'bell2026_workshop_' + SESSION;
+const DEMO = new URLSearchParams(location.search).has('demo');
+const FAKTOREN = ((window.BELL_FAKTOREN || {})[SESSION] || []).map(f => typeof f === 'string' ? { name: f } : f);
+const BASIS = window.BELL_BASIS || 0;
+const MIT_FRAGE = !!(window.BELL_FRAGE_GERAGOGIK || {})[SESSION];
+const FRAGE_PREFIX = 'Frage an die Geragogik';
+const NOTIZ = SESSION === '1' ? 'Kurz notieren: ein Beispiel oder Tipp aus Ihrer Praxis' : 'Kurz notieren: Wo stoßen Sie an eine Grenze?';
 
 const $ = id => document.getElementById(id);
-function esc(s) { return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s) { return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 const norm = s => (s||'').toString().replace(/\s+/g, ' ').trim();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// Sicherung auf dem Gerät: jeder Eintrag wird vor dem Senden lokal abgelegt
+// ── Aufbau der Seite ──────────────────────────────────────────────
+$('aufgabe').textContent = (window.BELL_AUFGABE || {})[SESSION] || '';
+$('demoBanner').hidden = !DEMO;
+$('frageCard').hidden = !MIT_FRAGE;
+if (!MIT_FRAGE) document.querySelectorAll('.step')[1].textContent = '2 · Faktoren auswählen und kurz kommentieren';
+
+const liste = FAKTOREN.concat([{ name: '__ANDERES__' }]);
+$('factors').innerHTML = liste.map((f, i) => {
+  const anderes = f.name === '__ANDERES__';
+  const meta = anderes ? '<span class="fmeta">Eigener Faktor, der in der Liste fehlt</span>'
+    : (f.projekte ? `<span class="fmeta"><b>${f.projekte} von ${BASIS} Projekten</b> in der Wissensbasis</span>` : '') + (f.zitat ? `<span class="fzitat">„${esc(f.zitat)}“</span>` : '');
+  return `<div class="factor" data-i="${i}">
+    <label><input type="checkbox" id="f${i}"> <span class="ftext"><span class="fname">${anderes ? 'Anderes' : esc(f.name)}</span>${meta}</span></label>
+    <div class="note" hidden>
+      ${anderes ? `<input type="text" id="t${i}" placeholder="Name des Faktors">` : ''}
+      <textarea id="n${i}" placeholder="${NOTIZ}"></textarea>
+    </div></div>`;
+}).join('');
+$('factors').addEventListener('change', ev => {
+  const box = ev.target.closest('.factor'); if (!box || ev.target.type !== 'checkbox') return;
+  box.classList.toggle('on', ev.target.checked);
+  box.querySelector('.note').hidden = !ev.target.checked;
+  if (ev.target.checked) box.querySelector('input[type=text], textarea').focus();
+  zaehlen();
+});
+function zaehlen() {
+  const n = document.querySelectorAll('.factor input[type=checkbox]:checked').length;
+  $('count').textContent = n ? `${n} ${n === 1 ? 'Faktor' : 'Faktoren'} ausgewählt` : 'Mehrfachauswahl möglich';
+}
+zaehlen();
+
+// ── Gerätesicherung ───────────────────────────────────────────────
 function readStore() { try { return JSON.parse(localStorage.getItem(STORE) || '[]'); } catch (e) { return []; } }
 function writeStore(list) { try { localStorage.setItem(STORE, JSON.stringify(list)); } catch (e) {} }
 function saveLocal(entry) { const l = readStore(); l.push(entry); writeStore(l); showSaved(); }
@@ -158,70 +214,91 @@ function showSaved() {
   const l = readStore();
   $('saved').hidden = !l.length;
   $('savedList').innerHTML = l.slice().reverse().map(e =>
-    `<li>Gruppe ${esc(e.gruppe)}, ${new Date(e.zeit).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr · ${e.status === 'ok' ? 'auf dem Board bestätigt' : e.status === 'fehler' ? 'nicht gesendet' : 'gesendet, noch nicht bestätigt'}<br>${esc(e.inhalt.slice(0,120))}${e.inhalt.length > 120 ? ' …' : ''}</li>`).join('');
+    `<li>Gruppe ${esc(e.gruppe)}, ${new Date(e.zeit).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr · ${e.status === 'ok' ? 'auf dem Board bestätigt' : e.status === 'fehler' ? 'nicht gesendet' : 'gesendet, noch nicht bestätigt'}<br>${e.rows.map(r => esc(r.inhalt.slice(0, 90))).join('<br>')}</li>`).join('');
 }
 
-function textOf(p) { return `Gruppe ${p.gruppe}\n\n${p.inhalt}${p.weitere ? '\n\nWeitere Einsichten:\n' + p.weitere : ''}`; }
+// ── Einträge zusammenstellen: ein Eintrag je Faktor ────────────────
+function sammeln(gruppe) {
+  const rows = [];
+  liste.forEach((f, i) => {
+    if (!$('f' + i).checked) return;
+    let name = f.name;
+    if (f.name === '__ANDERES__') { name = 'Anderes' + (norm($('t' + i).value) ? ' (' + norm($('t' + i).value) + ')' : ''); }
+    const note = $('n' + i).value.trim();
+    rows.push({ session: SESSION, gruppe, faktor: name, inhalt: note ? `${name}: ${note}` : name, weitere: '' });
+  });
+  if (MIT_FRAGE && $('frage').value.trim()) {
+    rows.push({ session: SESSION, gruppe, faktor: FRAGE_PREFIX, inhalt: `${FRAGE_PREFIX}: ${$('frage').value.trim()}`, weitere: '' });
+  }
+  return rows;
+}
+function textOf(gruppe, rows) { return `Gruppe ${gruppe}\n\n` + rows.map(r => r.inhalt).join('\n\n'); }
 
 function show(kind, html) { const m = $('msg'); m.className = 'msg visible msg-' + kind; m.innerHTML = html; }
 
-// Prüft, ob der Eintrag im Google Sheet angekommen ist
-async function isOnBoard(p) {
+// ── Prüfen, ob alle Einträge im Sheet stehen ───────────────────────
+async function missing(rows) {
+  if (DEMO) return [];
   try {
     const res = await fetch(SHEET_URL + '?sheet=workshop&t=' + Date.now());
-    const rows = await res.json();
-    return Array.isArray(rows) && rows.some(r => String(r.session) === p.session && String(r.gruppe) === p.gruppe && norm(r.inhalt) === norm(p.inhalt));
-  } catch (e) { return null; }   // null = Prüfung nicht möglich
+    const data = await res.json();
+    if (!Array.isArray(data)) return null;
+    return rows.filter(p => !data.some(r => String(r.session) === p.session && String(r.gruppe) === p.gruppe && norm(r.inhalt) === norm(p.inhalt)));
+  } catch (e) { return null; }
 }
 
-async function verify(p, entryId) {
-  show('wait', `<h2>Wird gespeichert …</h2><p>Wir prüfen, ob Ihr Eintrag im gemeinsamen Board angekommen ist. Das dauert einige Sekunden.</p>`);
-  let checked = false;
-  for (const wait of [2500, 4000, 6000, 8000]) {
+async function verify(sub) {
+  show('wait', `<h2>Wird gespeichert …</h2><p>Wir prüfen, ob alle Einträge im gemeinsamen Board angekommen sind. Das dauert einige Sekunden.</p>`);
+  let last = null;
+  for (const wait of (DEMO ? [900] : [2500, 4000, 6000, 8000])) {
     await sleep(wait);
-    const r = await isOnBoard(p);
-    if (r === true) { markLocal(entryId, 'ok'); return success(); }
-    if (r === false) checked = true;
+    last = await missing(sub.rows);
+    if (last && !last.length) { markLocal(sub.id, 'ok'); return success(sub); }
   }
-  unconfirmed(p, entryId, checked);
+  unconfirmed(sub, last);
 }
 
-function success() {
+function success(sub) {
   $('form').style.display = 'none';
-  show('ok', `<h2>Gespeichert</h2><p>Ihr Eintrag ist im Workshop-Board angekommen.</p>
+  show('ok', `<h2>Gespeichert</h2><p>${sub.rows.length === 1 ? 'Ihr Eintrag ist' : 'Alle ' + sub.rows.length + ' Einträge sind'} im Workshop-Board angekommen.</p>
+    <ul>${sub.rows.map(r => `<li>${esc(r.faktor)}</li>`).join('')}</ul>
     <div class="row"><button type="button" class="btn btn-secondary" id="moreBtn">Weiteren Eintrag senden</button></div>`);
   $('moreBtn').onclick = resetForm;
 }
 
-function unconfirmed(p, entryId, checked) {
+function unconfirmed(sub, fehlend) {
   $('form').style.display = 'none';
+  const offen = fehlend && fehlend.length ? fehlend : sub.rows;
   show('warn', `<h2>Noch nicht bestätigt</h2>
-    <p>${checked ? 'Ihr Eintrag wurde gesendet, ist aber noch nicht auf dem Board zu sehen.' : 'Wir konnten nicht prüfen, ob Ihr Eintrag angekommen ist, vermutlich wegen der Internetverbindung.'}
-    Bitte senden Sie ihn nicht sofort erneut, sonst erscheint er doppelt. Prüfen Sie in einer Minute noch einmal.
-    Ihr Text ist auf diesem Gerät gesichert.</p>
-    <div class="copybox" id="copyText">${esc(textOf(p))}</div>
+    <p>${fehlend ? `Von ${sub.rows.length} Einträgen ${offen.length === 1 ? 'ist einer' : 'sind ' + offen.length} noch nicht auf dem Board zu sehen.` : 'Wir konnten nicht prüfen, ob Ihre Einträge angekommen sind, vermutlich wegen der Internetverbindung.'}
+    Bitte nicht sofort erneut senden, sonst erscheinen Einträge doppelt. Prüfen Sie in einer Minute noch einmal. Ihr Text ist auf diesem Gerät gesichert.</p>
+    <div class="copybox" id="copyText">${esc(textOf(sub.gruppe, sub.rows))}</div>
     <div class="row">
       <button type="button" class="btn" id="recheckBtn">Noch einmal prüfen</button>
-      <button type="button" class="btn btn-secondary" id="resendBtn">Erneut senden</button>
+      <button type="button" class="btn btn-secondary" id="resendBtn">Fehlende erneut senden</button>
       <button type="button" class="btn btn-secondary" id="copyBtn">Text kopieren</button>
     </div>`);
   $('recheckBtn').onclick = async () => {
     $('recheckBtn').disabled = true; $('recheckBtn').textContent = 'Wird geprüft …';
-    const r = await isOnBoard(p);
-    if (r === true) { markLocal(entryId, 'ok'); success(); }
-    else { $('recheckBtn').disabled = false; $('recheckBtn').textContent = r === null ? 'Keine Verbindung, nochmal prüfen' : 'Noch nicht da, nochmal prüfen'; }
+    const m = await missing(sub.rows);
+    if (m && !m.length) { markLocal(sub.id, 'ok'); success(sub); }
+    else { $('recheckBtn').disabled = false; $('recheckBtn').textContent = m === null ? 'Keine Verbindung, nochmal prüfen' : 'Noch nicht vollständig, nochmal prüfen'; }
   };
-  $('resendBtn').onclick = () => send(p, entryId);
-  $('copyBtn').onclick = () => copy(textOf(p));
+  $('resendBtn').onclick = async () => {
+    const m = await missing(sub.rows);
+    send({ ...sub, rows: sub.rows }, m && m.length ? m : sub.rows);
+  };
+  $('copyBtn').onclick = () => copy(textOf(sub.gruppe, sub.rows));
 }
 
 let pending = null;
-function failed(p, entryId) {
-  pending = { id: entryId, gruppe: p.gruppe, inhalt: p.inhalt };
-  markLocal(entryId, 'fehler');
+function failed(sub) {
+  pending = sub;
+  markLocal(sub.id, 'fehler');
   show('error', `<h2>Nicht gesendet</h2>
     <p>Es besteht gerade keine Internetverbindung. Ihr Text ist nicht verloren. Er steht noch im Formular und ist auf diesem Gerät gesichert.
     Bitte prüfen Sie das WLAN und senden Sie erneut.</p>`);
+  $('form').style.display = 'block';
   $('submitBtn').disabled = false; $('submitBtn').textContent = 'Erneut senden';
 }
 
@@ -234,42 +311,43 @@ async function copy(t) {
   }
 }
 
-async function send(p, entryId) {
+async function send(sub, rowsToSend) {
   $('submitBtn').disabled = true; $('submitBtn').textContent = 'Wird gesendet …';
-  if (!navigator.onLine) return failed(p, entryId);
-  try {
-    await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) });
-  } catch (e) {
-    return failed(p, entryId);   // Netzwerkfehler: nichts ist angekommen
+  if (!DEMO) {
+    if (!navigator.onLine) return failed(sub);
+    for (const p of rowsToSend) {
+      try { await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) }); }
+      catch (e) { return failed(sub); }
+    }
   }
-  markLocal(entryId, 'gesendet');
-  verify(p, entryId);
+  markLocal(sub.id, 'gesendet');
+  verify(sub);
 }
 
 function resetForm() {
-  $('inhalt').value = ''; $('weitere').value = '';
+  document.querySelectorAll('.factor').forEach(b => { b.classList.remove('on'); b.querySelector('.note').hidden = true; });
+  document.querySelectorAll('#factors input, #factors textarea').forEach(el => { if (el.type === 'checkbox') el.checked = false; else el.value = ''; });
+  if ($('frage')) $('frage').value = '';
+  zaehlen();
   $('msg').className = 'msg';
   $('form').style.display = 'block';
   $('submitBtn').disabled = false; $('submitBtn').textContent = 'Eintrag senden';
-  $('inhalt').focus();
+  window.scrollTo({ top: 0 });
 }
 
 $('form').addEventListener('submit', ev => {
   ev.preventDefault();
-  const gruppe = $('gruppe').value, inhalt = $('inhalt').value.trim();
+  const gruppe = $('gruppe').value;
   $('status').textContent = '';
   if (!gruppe) { $('status').textContent = 'Bitte die Gruppennummer auswählen.'; return; }
-  if (!inhalt) { $('status').textContent = 'Bitte die ' + LABEL + ' eintragen.'; return; }
-  const p = { session: SESSION, gruppe, inhalt, weitere: $('weitere').value.trim() };
-  // Nach einem Ausfall denselben gesicherten Eintrag weiterverwenden, statt einen zweiten anzulegen
-  let entryId;
-  if (pending && pending.gruppe === gruppe && pending.inhalt === inhalt) entryId = pending.id;
-  else {
-    entryId = Date.now() + '-' + Math.random().toString(36).slice(2, 7);
-    saveLocal({ id: entryId, zeit: Date.now(), status: 'offen', ...p });
-  }
+  const rows = sammeln(gruppe);
+  if (!rows.length) { $('status').textContent = MIT_FRAGE ? 'Bitte mindestens einen Faktor auswählen oder eine Frage eintragen.' : 'Bitte mindestens einen Faktor auswählen.'; return; }
+  const key = JSON.stringify(rows);
+  let sub;
+  if (pending && pending.key === key) sub = pending;   // nach Ausfall: denselben gesicherten Eintrag weiterverwenden
+  else { sub = { id: Date.now() + '-' + Math.random().toString(36).slice(2, 7), key, gruppe, rows }; saveLocal({ id: sub.id, zeit: Date.now(), status: 'offen', gruppe, rows }); }
   pending = null;
-  send(p, entryId);
+  send(sub, rows);
 });
 
 showSaved();
