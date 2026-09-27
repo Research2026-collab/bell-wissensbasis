@@ -133,6 +133,36 @@ body {
 .accent-teal   .card { border-left: 3px solid var(--teal); }
 
 .empty { text-align: center; color: var(--text-faint); padding: 4rem 0; font-size: 14px; }
+
+/* Matching-Karten */
+.m-bar { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-bottom:.6rem; }
+.m-bar select { font-family:inherit; font-size:13px; padding:.4rem .6rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); color:var(--text); max-width:100%; }
+.m-hint { font-size:12px; color:var(--text-faint); margin-bottom:1rem; max-width:80ch; line-height:1.6; }
+.m-card { border-left:3px solid var(--teal); }
+.m-single { columns:auto; max-width:680px; }
+.m-eyebrow { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--teal); margin-bottom:.2rem; }
+.m-label { font-size:11px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:.3rem; }
+.m-quote { font-style:italic; color:var(--text-muted); }
+.m-list { list-style:none; display:flex; flex-direction:column; gap:.55rem; }
+.m-partner { display:grid; grid-template-columns:1.6rem 1fr; gap:.5rem; background:var(--surface2); border-radius:var(--radius-sm); padding:.55rem .65rem; }
+.m-nr { font-weight:800; color:var(--teal); font-size:15px; line-height:1.4; }
+.m-name { font-weight:700; color:var(--navy); font-size:13px; }
+.m-tags { display:flex; flex-wrap:wrap; gap:.25rem; margin:.25rem 0; }
+.m-why { font-size:12px; line-height:1.55; color:var(--text-muted); margin-top:.2rem; }
+.m-why b { color:var(--text); font-weight:600; }
+.m-learn { list-style:none; display:flex; flex-direction:column; gap:.35rem; font-size:12px; }
+.m-learn li { border-left:2px solid var(--orange); padding-left:.55rem; }
+.m-learn b { color:var(--navy); }
+.m-seek { color:var(--text-faint); }
+@media print {
+  body { background:#fff; padding:0; }
+  .top, .tabs-wrap, .m-bar, .m-hint { display:none !important; }
+  .m-grid { columns:auto !important; }
+  .m-card { break-after:page; box-shadow:none; border:1px solid #ccc; border-left:3px solid var(--teal); animation:none; transform:none; }
+  .m-card:last-child { break-after:auto; }
+  .card-body { font-size:12.5px; }
+  * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}
 </style>
 </head>
 <body>
@@ -167,6 +197,7 @@ body {
     <button class="tab" data-tab="geheimtipp">Geheimtipps</button>
     <button class="tab" data-tab="suche">Wonach suche ich</button>
     <button class="tab" data-tab="biete">Was ich anbiete</button>
+    <button class="tab" data-tab="matching">Matching-Karten</button>
     <button class="tab" data-tab="uebersicht">Übersicht</button>
     <button class="tab" data-tab="kontakte">Kontakte</button>
   </div>
@@ -371,6 +402,8 @@ function render() {
   if (activeTab === 'suche')       { renderSingle(board, 'suche',      'Wonach suche ich',      'teal');   return; }
   if (activeTab === 'biete')       { renderSingle(board, 'biete',      'Was ich anbiete',       'pink');   return; }
 
+  if (activeTab === 'matching')    { renderMatching(board); return; }
+
   if (activeTab === 'uebersicht') {
     const cards = daten.map(e => {
       const themen = list(e.themen).map(t => t==='Sonstiges'&&e.themenSonstiges?e.themenSonstiges:t);
@@ -417,6 +450,165 @@ function render() {
     board.innerHTML = hint + `<div class="cards-grid">${cards}</div>`;
     return;
   }
+}
+
+
+// ══ Matching-Karten ═══════════════════════════════════════════════
+// Verbindet, was ein Projekt sucht, mit dem, was andere anbieten.
+// Berechnung im Browser aus den Live-Daten, ohne Kontaktdaten.
+const M_CATS = {
+  'Zielgruppen erreichen': /erreich|zugang|zugangsweg|ansprache|teilnehmer\w*gewinn|teilnehmendengewinn|akquise|hemmschwelle|hürde|gewinnung von teilnehm|gewonnen werden|motivation|aktivierung|misstrauen|vertrauen|neugierig auf/g,
+  'Ehrenamt gewinnen': /ehrenamt|multiplikator|freiwillig|engagement/g,
+  'Verstetigung & Anschlussförderung': /versteti|verstäti|anschlussfin|anschlussförder|skalier|über die projektlaufzeit|nachhaltige(n)? (strukturen|angebote|projektentwicklung|bildungsangebote)|wie das bell-programm/g,
+  'Netzwerke & Kooperationen': /netzwerk|kooperation|vernetz|partner/g,
+  'Partizipation': /partizipat|beteiligung|gestalter|bedürfnisse erfassen/g,
+  'Migration & Diversität': /migration|einwanderung|postmigrant|mehrsprach|interkultur|diversität|sprachsensib|heterogen/g,
+  'Digitale Bildung': /digital|\bki\b|epa|video-sprechstunde/g,
+  'Ländlicher Raum': /ländlich|auf dem land|flächenregion/g,
+  'Formate & Methoden': /format|methode|didaktik|workshop|kreativ|best.practice|good-practice|praxisbeispiel|konzept|peer|train-the-trainer|qualifizierung|themenvorschläge|bildungsfahrt/g,
+  'Verwaltung & ESF-Nachweise': /administ|bürokrat|zeus|esf|eintritts|dokumentation|fragebög|qualitätssicherung/g,
+  'Materialien': /material|unterlagen|toolbox|leitfäden|ressourcen|aufzeichnungen/g,
+  'Gesundheit & Bewegung': /gesundheit|bewegung|erste-hilfe|ernährung/g,
+  'Politische Bildung': /politisch|demokratie|radikalis/g,
+  'Mobile & aufsuchende Angebote': /mobil|aufsuchend|workshopmobil|senior\w*bus/g,
+};
+const M_ZG = {
+  'Menschen im Übergang': 'Übergang in den Ruhestand',
+  'Menschen mit Einwanderungsgeschichte': 'Einwanderungsgeschichte',
+  'Ressourcenarme Ältere': 'Ressourcenarme Ältere',
+  'Menschen mit Behinderung': 'Behinderung / Einschränkungen',
+  'Ältere in institutionellen Wohnformen': 'Institutionelle Wohnformen',
+  'Ältere Beschäftigte': 'Ältere Beschäftigte',
+};
+const M_STOP = new Set(('aber alle allem als also am an auch auf aus bei bin bis da damit dann das dass dem den der des die dies diese dieser dir doch durch ein eine einem einen einer es für gibt hat haben ich ihr im in ist ja kann können mit nach nicht noch nur oder sich sie sind so über um und uns unser unsere unserer unseren von vor wie wir wird wo zu zum zur zwischen besonders gerne gern sowie etwa andere anderen anderer projekt projekte projekten projekts menschen ältere älteren älterer erfahrungen erfahrung austausch interessant bieten suchen gut sehr viele mehr werden wurde einen jahren dazu außerdem welche konnten innen bereich zielgruppe zielgruppen arbeit bildung ideen hinweise darüber hinaus aktiv dabei insbesondere').split(' '));
+const M_EMPTY = /Aufbauphase befinden, lassen sich momentan keine Aussagen/i;
+let mCache = { key: '', P: [] };
+let mSel = '';
+
+function mText(t) { t = (t || '').toString().trim(); return M_EMPTY.test(t) ? '' : t; }
+function mCats(t) { const l = (t || '').toLowerCase(); return t ? Object.keys(M_CATS).filter(k => l.search(new RegExp(M_CATS[k].source)) >= 0) : []; }
+function mRegion(r) { r = (r || '').trim(); return r && r === r.toUpperCase() ? r.toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()) : r; }
+function mSents(t) {
+  t = t.replace(/z\.\s?B\./g, 'z.B.').replace(/u\.\s?a\./g, 'u.a.');
+  return t.split(/(?<=[.!?])\s+|\n+|\s-\s|\s\d\.\s/).map(s => s.trim().replace(/^[-•\s]+/, '')).filter(s => s.length > 12);
+}
+function mBest(t, cats, terms) {
+  if (!t) return '';
+  const parts = cats.map(c => M_CATS[c].source).concat((terms || []).map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  if (!parts.length) return '';
+  const re = new RegExp(parts.join('|'), 'g');
+  let best = null;
+  mSents(t).forEach(s => {
+    const n = (s.toLowerCase().match(re) || []).length;
+    if (!n) return;
+    const sc = [n, -Math.abs(s.length - 140)];
+    if (!best || sc[0] > best.sc[0] || (sc[0] === best.sc[0] && sc[1] > best.sc[1])) best = { sc, s };
+  });
+  if (!best) return '';
+  let s = best.s;
+  if (s.length <= 240) return s;
+  const i = s.toLowerCase().search(new RegExp(parts.join('|')));
+  const st = Math.max(0, i - 90), en = Math.min(s.length, st + 230);
+  let f = s.slice(st, en);
+  if (st > 0) f = '… ' + f.slice(f.indexOf(' ') + 1);
+  if (en < s.length) f = f.slice(0, f.lastIndexOf(' ')) + ' …';
+  return f;
+}
+function mTokens(t) { return ((t || '').toLowerCase().match(/[a-zäöüß][a-zäöüß-]{3,}/g) || []).filter(w => !M_STOP.has(w)); }
+
+function mCompute() {
+  // Dubletten je Projektnummer: Eintrag mit Suche/Biete und Zeitstempel bevorzugen
+  const byNr = {};
+  daten.forEach(e => {
+    if (!e.projekt || /^Name Projekt$/i.test(e.projekt.trim())) return;
+    const nr = (e.projektnummer || e.projekt).toString().trim();
+    const rank = (mText(e.suche) || mText(e.biete) ? 2 : 0) + (e.zeitstempel ? 1 : 0);
+    if (!byNr[nr] || rank > byNr[nr].rank) byNr[nr] = { e, rank };
+  });
+  const P = Object.entries(byNr).map(([nr, { e }]) => {
+    const s = mText(e.suche), b = mText(e.biete), f = mText(e.fokus).replace(/\s+/g, ' ');
+    const B = mCats(b);
+    return {
+      id: nr, p: e.projekt.replace(/\s+/g, ' ').trim().replace(/^["„“]+|["„“]+$/g, ''), r: mRegion(e.region),
+      s, b, f, S: mCats(s), B, F: mCats(f).filter(c => !B.includes(c)),
+      zg: Object.keys(M_ZG).filter(k => (e.zielgruppe || '').includes(k)).map(k => M_ZG[k]),
+    };
+  });
+  // Gewichte: seltene Angebote zählen mehr
+  const W = {};
+  Object.keys(M_CATS).forEach(c => { const n = P.filter(p => p.B.includes(c)).length; W[c] = n ? 1 / Math.sqrt(n) : 0; });
+  // TF-IDF: Suche-Text gegen Angebot (doppelt) und Projektbeschreibung
+  const docA = P.map(p => mTokens(p.s)), docB = P.map(p => mTokens(p.b + ' ' + p.b + ' ' + p.f));
+  const df = {}; const all = docA.concat(docB);
+  all.forEach(d => new Set(d).forEach(w => df[w] = (df[w] || 0) + 1));
+  const N = all.length;
+  const vec = d => { const tf = {}; d.forEach(w => tf[w] = (tf[w] || 0) + 1); let n = 0; const v = {};
+    Object.keys(tf).forEach(w => { v[w] = (1 + Math.log(tf[w])) * (Math.log((1 + N) / (1 + df[w])) + 1); n += v[w] * v[w]; });
+    n = Math.sqrt(n) || 1; Object.keys(v).forEach(w => v[w] /= n); return v; };
+  const VA = docA.map(vec), VB = docB.map(vec);
+  P.forEach((a, i) => {
+    if (!a.s) { a.M = []; return; }
+    const L = [];
+    P.forEach((b, j) => {
+      if (i === j) return;
+      const m = a.S.filter(c => b.B.includes(c));
+      const mf = a.S.filter(c => b.F.includes(c) && !m.includes(c));
+      const zgm = a.zg.filter(z => b.zg.includes(z));
+      let cos = 0; const prod = [];
+      Object.keys(VA[i]).forEach(w => { if (VB[j][w]) { const x = VA[i][w] * VB[j][w]; cos += x; prod.push([x, w]); } });
+      let sc = m.reduce((s, c) => s + W[c], 0) + 0.5 * mf.reduce((s, c) => s + (W[c] || 0.5), 0)
+        + Math.min(0.3, 0.15 * zgm.length) + 3 * cos + (b.r && a.s.includes(b.r) ? 0.8 : 0) + (b.r === a.r ? 0.1 : 0);
+      if (!b.b && !m.length && !mf.length) sc *= 0.6;
+      if (sc < 0.35) return;
+      const terms = prod.sort((x, y) => y[0] - x[0]).slice(0, 4).map(x => x[1]);
+      L.push({ j, sc, m, mf, zg: zgm, sa: mBest(a.s, m, terms), sb: mBest(b.b, m, terms), sf: mf.length ? mBest(b.f, mf) : '', same: b.r === a.r });
+    });
+    L.sort((x, y) => y.sc - x.sc || y.same - x.same);
+    a.M = L.slice(0, 4);
+  });
+  P.forEach((b, j) => { b.R = []; P.forEach((a, i) => a.M.forEach(x => { if (x.j === j) b.R.push({ i, m: x.m, sc: x.sc }); })); b.R.sort((x, y) => y.sc - x.sc); });
+  return P;
+}
+
+function renderMatching(board) {
+  if (mCache.key !== letzterStand) mCache = { key: letzterStand, P: mCompute() };
+  const P = mCache.P;
+  const withCards = P.map((p, i) => ({ p, i })).filter(({ p }) => p.M.length || p.R.length)
+    .sort((x, y) => x.p.p.localeCompare(y.p.p, 'de'));
+  const ohne = P.filter(p => !p.s && !p.b).length;
+  const opts = withCards.map(({ p, i }) => `<option value="${i}"${String(i) === mSel ? ' selected' : ''}>${esc(p.p)}</option>`).join('');
+  const shown = mSel === '' ? withCards : withCards.filter(({ i }) => String(i) === mSel);
+  const tag = (t, c) => `<span class="tag" style="background:var(--${c}-light);color:var(--${c})">${esc(t)}</span>`;
+  const card = ({ p }) => {
+    const partners = p.M.map((x, n) => {
+      const o = P[x.j];
+      const why = x.sb ? `<p class="m-why"><b>Bietet:</b> „${esc(x.sb)}“</p>`
+        : x.sf ? `<p class="m-why"><b>Laut Projektbeschreibung:</b> „${esc(x.sf)}“</p>` : '';
+      const zg = x.zg.length ? `<p class="m-why"><b>Gleiche Zielgruppe:</b> ${esc(x.zg.join(', '))}</p>` : '';
+      const tags = x.m.concat(x.mf);
+      return `<li class="m-partner"><span class="m-nr">${n + 1}</span><div>
+        <p class="m-name">${esc(o.p)} <span class="card-meta">${esc(o.r)}</span></p>
+        ${tags.length ? `<div class="m-tags">${tags.map(t => tag(t, 'teal')).join('')}</div>` : ''}${why}${zg}</div></li>`;
+    }).join('');
+    const learn = p.R.slice(0, 5).map(x => `<li><b>${esc(P[x.i].p)}</b> <span class="card-meta">${esc(P[x.i].r)}</span>${x.m.length ? `<br><span class="m-seek">sucht ${esc(x.m.join(', '))}</span>` : ''}</li>`).join('');
+    return `<div class="card m-card">
+      <div class="card-head"><p class="m-eyebrow">Matching-Karte</p><p class="card-project">${esc(p.p)}</p><p class="card-meta">${esc(p.r) || 'Region nicht angegeben'}</p></div>
+      <div class="card-body">
+        ${p.s ? `<p class="m-label">Ihr sucht</p><p class="m-quote">${esc(p.s.length > 380 ? p.s.slice(0, 380).replace(/\s\S*$/, '') + ' …' : p.s)}</p>` : ''}
+        ${partners ? `<p class="m-label" style="margin-top:.8rem">Eure Gesprächspartner</p><ol class="m-list">${partners}</ol>` : ''}
+        ${learn ? `<p class="m-label" style="margin-top:.8rem">Diese Projekte möchten von euch lernen</p><ul class="m-learn">${learn}</ul>` : ''}
+      </div></div>`;
+  };
+  board.innerHTML = `
+    <div class="m-bar">
+      <label for="mSel" class="m-label" style="margin:0">Karte für</label>
+      <select id="mSel"><option value="">Alle Projekte (${withCards.length})</option>${opts}</select>
+      <button type="button" class="tab" id="mPrint">Karten drucken</button>
+    </div>
+    <p class="m-hint">Die Vorschläge verbinden, was ein Projekt sucht, mit dem, was andere anbieten oder laut Projektbeschreibung tun, und berücksichtigen gemeinsame Zielgruppen. Seltene Anliegen zählen stärker als allgemeine.${ohne ? ` ${ohne} Projekte haben Suche und Biete noch nicht ausgefüllt und erhalten deshalb keine eigene Karte.` : ''}</p>
+    <div class="cards-grid m-grid${mSel !== '' ? ' m-single' : ''}">${shown.map(card).join('') || '<p class="empty">Noch keine Suche- und Biete-Angaben für ein Matching.</p>'}</div>`;
+  document.getElementById('mSel').onchange = ev => { mSel = ev.target.value; render(); };
+  document.getElementById('mPrint').onclick = () => window.print();
 }
 
 async function laden() {
