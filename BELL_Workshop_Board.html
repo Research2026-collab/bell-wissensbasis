@@ -7,20 +7,22 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #0f1923;
-  --surface: #172030;
-  --surface2: #1e2d40;
-  --border: rgba(255,255,255,0.08);
-  --text: #e8e8e4;
-  --text-muted: #8a9ab0;
-  --text-faint: #4a5a6a;
-  --green: #4caf82;   --green-light: #1a3028;
-  --orange: #e0913a;  --orange-light: #2a1e0a;
-  --radius: 12px;
-  --radius-sm: 8px;
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface2: #eef2f6;
+  --border: #e2e8f0;
+  --navy: #1a4f8a;
+  --text: #1a1a18;
+  --text-muted: #6b6b67;
+  --text-faint: #9a9a96;
+  --green: #2E7D5A;   --green-light: #ebf5f0;
+  --orange: #c05621;  --orange-light: #faf1e6;
+  --teal: #2b7a78;    --teal-light: #e9f3f1;
+  --radius: 10px;
+  --radius-sm: 7px;
 }
 body {
-  font-family: -apple-system, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: var(--bg); color: var(--text);
   min-height: 100vh; padding: 1.5rem;
 }
@@ -29,61 +31,68 @@ body {
   justify-content: space-between; margin-bottom: 1.25rem;
   flex-wrap: wrap; gap: 0.75rem;
 }
-.top-left h1 { font-size: 20px; font-weight: 500; margin-bottom: 0.25rem; }
+.top-left .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.35rem; }
+.top-left h1 { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 0.25rem; }
 .top-left p { font-size: 12px; color: var(--text-muted); }
+.top-right { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 .live-dot { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+.dot.error { background: var(--orange); animation: none; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-.tabs-wrap { margin-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); padding-bottom: 0.75rem; }
+.tabs-wrap { margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
 .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
 .tab {
-  font-family: inherit; font-size: 13px; font-weight: 500;
+  font-family: inherit; font-size: 12px; font-weight: 600;
   color: var(--text-muted); background: var(--surface);
-  border: 0.5px solid var(--border); border-radius: 20px;
-  padding: 0.5rem 1.1rem; cursor: pointer; transition: all 0.15s;
+  border: 1px solid var(--border); border-radius: 20px;
+  padding: 0.4rem 0.95rem; cursor: pointer; transition: all 0.15s;
   white-space: nowrap;
 }
-.tab:hover { color: var(--text); border-color: var(--text-faint); }
-.tab.active.tab-green  { color: var(--bg); background: var(--green);  border-color: var(--green); font-weight: 600; }
-.tab.active.tab-orange { color: var(--bg); background: var(--orange); border-color: var(--orange); font-weight: 600; }
+.tab .count { font-weight: 500; opacity: 0.75; margin-left: 0.3rem; }
+.tab-green:hover  { color: var(--green);  border-color: var(--green); }
+.tab-orange:hover { color: var(--orange); border-color: var(--orange); }
+.tab.active.tab-green  { color: #fff; background: var(--green);  border-color: var(--green);  font-weight: 700; }
+.tab.active.tab-orange { color: #fff; background: var(--orange); border-color: var(--orange); font-weight: 700; }
+.tab:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 
-.cards-grid { columns: 280px; gap: 0.75rem; }
+.question { font-size: 13px; color: var(--text-muted); margin-bottom: 1rem; max-width: 80ch; line-height: 1.6; }
+.question strong { color: var(--text); }
+
+.cards-grid { columns: 300px; gap: 0.75rem; }
 .cards-grid .card { break-inside: avoid; margin-bottom: 0.75rem; }
 
 .card {
   background: var(--surface);
-  border: 0.5px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(26,26,24,0.07);
   animation: fadein 0.35s ease;
 }
 @keyframes fadein { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+@media (prefers-reduced-motion: reduce) { .card, .dot { animation: none; } }
 .card-green  { border-left: 3px solid var(--green); }
 .card-orange { border-left: 3px solid var(--orange); }
 
 .card-head {
-  padding: 0.85rem 1rem 0.6rem;
-  border-bottom: 0.5px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1rem 0.55rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
 }
-.card-group {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
-  padding: 0.15rem 0.6rem; border-radius: 20px;
-}
+.card-group { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; padding: 0.15rem 0.6rem; border-radius: 20px; }
 .card-green .card-group  { background: var(--green-light);  color: var(--green); }
 .card-orange .card-group { background: var(--orange-light); color: var(--orange); }
-.card-time { font-size: 11px; color: var(--text-faint); }
-.card-body { padding: 0.75rem 1rem; font-size: 13px; line-height: 1.65; color: var(--text-muted); }
+.card-time { font-size: 11px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.card-body { padding: 0.75rem 1rem; font-size: 13.5px; line-height: 1.65; color: var(--text); white-space: pre-line; }
 .card-body .extra {
-  margin-top: 0.6rem; padding-top: 0.6rem; border-top: 0.5px solid var(--border);
-  font-size: 12px; color: var(--text-faint);
+  margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--border);
+  font-size: 12.5px; color: var(--text-muted);
 }
 .card-body .extra strong {
-  display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+  display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--text-faint); margin-bottom: 0.25rem;
 }
-
 .empty { text-align: center; color: var(--text-faint); padding: 4rem 0; font-size: 14px; }
 </style>
 </head>
@@ -91,27 +100,38 @@ body {
 
 <div class="top">
   <div class="top-left">
-    <h1>BELL 2026 – Workshop-Board</h1>
-    <p>Ergebnisse der Kleingruppen · Jahreskonferenz BELL, 16.–17.11.2026, Hannover</p>
+    <p class="eyebrow">Jahreskonferenz BELL 2026 · Hannover · 16.–17. November 2026</p>
+    <h1>Workshop-Board</h1>
+    <p>Ergebnisse der Kleingruppen</p>
   </div>
-  <div class="live-dot">
-    <div class="dot"></div>
-    <span id="livetext">Wird geladen…</span>
+  <div class="top-right">
+    <div class="live-dot">
+      <div class="dot" id="dot"></div>
+      <span id="livetext">Wird geladen…</span>
+    </div>
   </div>
 </div>
 
 <div class="tabs-wrap">
   <div class="tabs" id="tabs">
-    <button class="tab active tab-green" data-session="1">Workshop Session 1 · Gelingensfaktoren</button>
-    <button class="tab tab-orange" data-session="2">Workshop Session 2 · Behindernde Faktoren</button>
+    <button class="tab active tab-green" data-session="1">Session 1 · Gelingensfaktoren<span class="count" id="c1"></span></button>
+    <button class="tab tab-orange" data-session="2">Session 2 · Hemmende Faktoren<span class="count" id="c2"></span></button>
   </div>
 </div>
 
+<p class="question" id="question"></p>
 <div id="board"></div>
 
 <script>
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzt29vNU-riSrLsKJuORybtkdr5SnO9tJwDmzKnTwNXry45Qf9z4wQFf75Zq6p4EzR7VQ/exec';
-const POLL_INTERVAL = 25000; // 25 Sekunden – bewusst ruhiger als die Wissensbasis
+const POLL_INTERVAL = 25000; // 25 Sekunden, bewusst ruhiger als die Wissensbasis
+
+const SESSIONS = {
+  '1': { accent: 'green',  label: 'Gelingensfaktoren',
+         frage: 'Was hat dazu beigetragen, dass der eigentliche Mehrwert eines Angebots für die Teilnehmenden zustande gekommen ist?' },
+  '2': { accent: 'orange', label: 'Hemmende Faktoren',
+         frage: 'An welchen Stellen erschweren bestimmte Rahmenbedingungen oder Haltungen, dass der eigentliche Mehrwert eines Angebots zur Wirkung kommt?' },
+};
 
 let daten = [];
 let letzterStand = '';
@@ -130,50 +150,51 @@ function esc(s) {
   return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// Zeitstempel kann je nach Sheet „timestamp“ oder „zeitstempel“ heißen
+function zeit(e) { return e.timestamp || e.zeitstempel || ''; }
 function formatTime(ts) {
   if (!ts) return '';
   const d = new Date(ts);
   if (isNaN(d.getTime())) return '';
-  return d.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+  return d.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}) + ' Uhr';
 }
 
 function makeCard(e, accent) {
-  const extra = e.weitere && e.weitere.trim()
+  const extra = e.weitere && e.weitere.toString().trim()
     ? `<div class="extra"><strong>Weitere Einsichten</strong>${esc(e.weitere)}</div>`
     : '';
   return `
     <div class="card card-${accent}">
       <div class="card-head">
         <span class="card-group">Gruppe ${esc(e.gruppe)}</span>
-        <span class="card-time">${formatTime(e.timestamp)}</span>
+        <span class="card-time">${formatTime(zeit(e))}</span>
       </div>
-      <div class="card-body">
-        ${esc(e.inhalt)}
-        ${extra}
-      </div>
+      <div class="card-body">${esc(e.inhalt)}${extra}</div>
     </div>`;
 }
 
 function render() {
-  const board = document.getElementById('board');
-  const accent = activeSession === '1' ? 'green' : 'orange';
-  const label = activeSession === '1' ? 'Gelingensfaktoren' : 'behindernde Faktoren';
+  const s = SESSIONS[activeSession];
+  ['1','2'].forEach(k => {
+    const n = daten.filter(e => String(e.session) === k).length;
+    document.getElementById('c'+k).textContent = n ? `(${n})` : '';
+  });
+  document.getElementById('question').innerHTML = `<strong>Leitfrage:</strong> ${esc(s.frage)}`;
 
+  const board = document.getElementById('board');
   const items = daten
     .filter(e => String(e.session) === activeSession)
-    .sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+    .sort((a,b) => new Date(zeit(b)) - new Date(zeit(a)));
 
   if (!items.length) {
-    board.innerHTML = `<p class="empty">Noch keine Einträge zu ${label}.</p>`;
+    board.innerHTML = `<p class="empty">Noch keine Einträge zu ${s.label}.</p>`;
     return;
   }
-
-  board.innerHTML = `<div class="cards-grid">${
-    items.map(e => makeCard(e, accent)).join('')
-  }</div>`;
+  board.innerHTML = `<div class="cards-grid">${items.map(e => makeCard(e, s.accent)).join('')}</div>`;
 }
 
 async function laden() {
+  const dot = document.getElementById('dot');
   try {
     const res = await fetch(SHEET_URL + '?sheet=workshop&t=' + Date.now());
     const neu = await res.json();
@@ -181,16 +202,20 @@ async function laden() {
     const now = new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     if (neuJson !== letzterStand) {
       letzterStand = neuJson;
-      daten = neu;
+      daten = Array.isArray(neu) ? neu : [];
       render();
     }
+    dot.classList.remove('error');
     document.getElementById('livetext').textContent =
-      `Zuletzt gepr\u00FCft: ${now} \u00B7 ${daten.length} Eintr\u00E4ge`;
+      `Zuletzt geprüft: ${now} · ${daten.length} Einträge`;
   } catch(e) {
-    document.getElementById('livetext').textContent = 'Verbindungsfehler';
+    // Bereits angezeigte Einträge bleiben stehen
+    dot.classList.add('error');
+    document.getElementById('livetext').textContent = 'Keine Verbindung, neuer Versuch in 25 Sekunden';
   }
 }
 
+render();
 laden();
 setInterval(laden, POLL_INTERVAL);
 </script>
