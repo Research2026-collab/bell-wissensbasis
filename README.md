@@ -14,14 +14,25 @@ Für jede Seite muss der Dateiname an diese Adresse angehängt werden. Eine Star
 | [BELL_Whiteboard_Hell.html](https://research2026-collab.github.io/bell-wissensbasis/BELL_Whiteboard_Hell.html) | Wissensbasis in heller Darstellung, mit Matching-Karten | Alle Teilnehmenden, am Bildschirm |
 | [BELL_Whiteboard.html](https://research2026-collab.github.io/bell-wissensbasis/BELL_Whiteboard.html) | Wissensbasis in dunkler Darstellung, ohne Matching-Karten | Alle Teilnehmenden |
 | [BELL_Workshop1_Eingabe.html](https://research2026-collab.github.io/bell-wissensbasis/BELL_Workshop1_Eingabe.html) | Eingabe der Kleingruppen in Session 1 (Gelingensfaktoren) | Kleingruppen während der Tagung |
-| [BELL_Workshop2_Eingabe.html](https://research2026-collab.github.io/bell-wissensbasis/BELL_Workshop2_Eingabe.html) | Eingabe der Kleingruppen in Session 2 (Behindernde Faktoren) | Kleingruppen während der Tagung |
+| [BELL_Workshop2_Eingabe.html](https://research2026-collab.github.io/bell-wissensbasis/BELL_Workshop2_Eingabe.html) | Eingabe der Kleingruppen in Session 2 (Hemmende Faktoren) | Kleingruppen während der Tagung |
 | [BELL_Workshop_Board.html](https://research2026-collab.github.io/bell-wissensbasis/BELL_Workshop_Board.html) | Ergebnisse der Kleingruppen, laufend aktualisiert | Alle Teilnehmenden |
 
 Die Dateien `html2canvas.min.js` und `jspdf.umd.min.js` sind keine eigenen Seiten. Sie werden für den PDF-Download der Matching-Karten gebraucht und müssen neben den HTML-Dateien liegen.
 
+Die Datei `bell_faktoren.js` enthält die Auswahllisten der Gelingens- und hemmenden Faktoren sowie die Aufgabenstellung für beide Workshop-Sessions. Beide Eingabeseiten und das Workshop-Board lesen sie. Um die Listen zu ändern, wird nur diese Datei angepasst und neu hochgeladen.
+
 ## Woher die Daten kommen
 
-Alle Eingaben landen in einem Google Sheet. Ein Google Apps Script stellt die Daten für die Seiten bereit. Die Wissensbasis und das Workshop-Board fragen das Sheet alle 15 Sekunden ab. Neue Einträge erscheinen deshalb ohne Neuladen der Seite. Oben rechts steht, wann zuletzt geprüft wurde und wie viele Projekte vorliegen.
+Alle Eingaben landen in einem Google Sheet. Ein Google Apps Script stellt die Daten für die Seiten bereit. Die Wissensbasis fragt das Sheet alle 15 Sekunden ab, das Workshop-Board alle 25 Sekunden. Neue Einträge erscheinen deshalb ohne Neuladen der Seite. Oben rechts steht, wann zuletzt geprüft wurde und wie viele Projekte vorliegen.
+
+## Workshops
+
+In beiden Sessions wählen die Gruppen Faktoren aus einer Liste aus, auch mehrere, und notieren zu jedem Faktor eine kurze Anmerkung. In Session 2 können sie zusätzlich eine Frage an die Geragogik stellen. Jeder gewählte Faktor wird als eigener Eintrag im Google Sheet gespeichert, in der Form „Faktor: Anmerkung“. Das Workshop-Board ordnet die Einträge unter den Faktoren als Überschriften und zeigt die Fragen an die Geragogik gesondert oben an.
+
+**Vorführmodus:** Wird an die Adresse einer Workshop-Seite `?demo` angehängt, zeigt das Board Beispieleinträge, und die Eingabeseiten speichern nichts. So lassen sich die Seiten vorstellen, ohne dass Testeinträge im Sheet landen. Zum Beispiel:
+https://research2026-collab.github.io/bell-wissensbasis/BELL_Workshop_Board.html?demo
+
+Die beiden Workshop-Eingabeseiten prüfen nach dem Senden, ob der Eintrag wirklich im Sheet angekommen ist. Erst dann erscheint „Gespeichert“. Fehlt die Internetverbindung, bleibt der Text im Formular stehen und kann erneut gesendet werden. Zusätzlich wird jeder Eintrag auf dem jeweiligen Gerät gesichert und ist unten auf der Seite unter „Auf diesem Gerät gesicherte Einträge“ zu sehen.
 
 ## Die Wissensbasis
 

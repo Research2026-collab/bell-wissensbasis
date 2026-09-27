@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BELL 2026 – Workshop Session 1</title>
+<title>BELL 2026 – Workshop Session 2</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -16,8 +16,8 @@
   --text: #1a1a18;
   --text-muted: #6b6b67;
   --text-faint: #9a9a96;
-  --accent: #2E7D5A;
-  --accent-light: #ebf5f0;
+  --accent: #c05621;
+  --accent-light: #faf1e6;
   --warn: #9a5b00;  --warn-light: #fdf3dc;
   --error: #b42318; --error-light: #fdecea;
   --radius: 10px;
@@ -103,8 +103,8 @@ select:focus, textarea:focus, input:focus { border-color: var(--accent); box-sha
 <body>
 <div class="wrapper">
   <p class="demo" id="demoBanner" hidden>Vorführmodus: Einträge werden nicht gespeichert.</p>
-  <p class="label">Jahreskonferenz BELL 2026 · Workshop Session 1</p>
-  <h1>Gelingensfaktoren – Eintrag Ihrer Gruppe</h1>
+  <p class="label">Jahreskonferenz BELL 2026 · Workshop Session 2</p>
+  <h1>Hemmende Faktoren – Eintrag Ihrer Gruppe</h1>
   <p class="intro" id="aufgabe"></p>
 
   <form id="form" novalidate>
@@ -160,7 +160,7 @@ select:focus, textarea:focus, input:focus { border-color: var(--accent); box-sha
 <script src="bell_faktoren.js"></script>
 <script>
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzt29vNU-riSrLsKJuORybtkdr5SnO9tJwDmzKnTwNXry45Qf9z4wQFf75Zq6p4EzR7VQ/exec';
-const SESSION = '1';
+const SESSION = '2';
 const STORE = 'bell2026_workshop_' + SESSION;
 const DEMO = new URLSearchParams(location.search).has('demo');
 const FAKTOREN = ((window.BELL_FAKTOREN || {})[SESSION] || []).map(f => typeof f === 'string' ? { name: f } : f);

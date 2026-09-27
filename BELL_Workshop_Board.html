@@ -184,6 +184,7 @@ function render() {
 function demoDaten() {
   const t = m => new Date(Date.now() - m * 60000).toISOString();
   const F = window.BELL_FAKTOREN;
+  if (!F) return [];
   const r = (s, g, f, note, m) => ({ session: s, gruppe: g, inhalt: note ? `${f}: ${note}` : f, weitere: '', timestamp: t(m) });
   return [
     r('1','2',F['1'][2].name,'Wir laden persönlich ein, beim Mittagstisch oder am Telefon. Flyer allein bringen kaum jemanden.',42),
@@ -225,6 +226,7 @@ async function laden() {
 }
 
 document.getElementById('demoBanner').hidden = !DEMO;
+if (!window.BELL_FAKTOREN) document.getElementById('demoBanner').insertAdjacentHTML('afterend', '<p class="demo" style="background:#fdecea;border-color:#f1a8a0;color:#b42318">Die Faktorenliste fehlt. Die Datei bell_faktoren.js muss im selben Ordner liegen wie diese Seite.</p>');
 render();
 laden();
 if (!DEMO) setInterval(laden, POLL_INTERVAL);
