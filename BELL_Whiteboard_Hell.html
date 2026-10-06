@@ -777,10 +777,43 @@ async function mPdf(ids, name) {
   } finally { mBusy = false; }
 }
 
+// Zwischenspeicher: Die Seite zeigt beim Öffnen sofort den zuletzt geladenen Stand
+// und holt den aktuellen Stand im Hintergrund. Kontaktdaten ohne Einverständnis
+// werden vor dem Speichern entfernt.
+const CACHE_KEY = 'bell_wissensbasis_v1';
+const POLL_MS = 30000;
+let laedtGerade = false;
+
+function bereinigen(liste) {
+  return liste.map(e => {
+    if ((e.einverstaendnisKontakt || '').trim().toLowerCase() === 'ja') return e;
+    const k = Object.assign({}, e);
+    ['ap1Name','ap1Mail','ap2Name','ap2Mail','ap3Name','ap3Mail'].forEach(f => { k[f] = ''; });
+    return k;
+  });
+}
+
+(function ausCacheZeigen() {
+  try {
+    const roh = localStorage.getItem(CACHE_KEY);
+    if (!roh) return;
+    const gespeichert = JSON.parse(roh);
+    daten = gespeichert.daten || [];
+    if (daten.length) {
+      render();
+      document.getElementById('livetext').textContent =
+        `Gespeicherter Stand · ${daten.length} Projekte · wird aktualisiert …`;
+    }
+  } catch (e) { /* ohne Zwischenspeicher weiter */ }
+})();
+
 async function laden() {
+  if (laedtGerade || document.hidden) return;
+  laedtGerade = true;
   try {
     const res = await fetch(SHEET_URL + '?t=' + Date.now());
-    const neu = await res.json();
+    const neu = bereinigen(await res.json());
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ daten: neu })); } catch (e) {}
     const neuJson = JSON.stringify(neu);
     const now = new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     if (neuJson !== letzterStand) {
@@ -791,12 +824,18 @@ async function laden() {
     document.getElementById('livetext').textContent =
       `Zuletzt gepr\u00FCft: ${now} \u00B7 ${daten.length} Projekt${daten.length!==1?'e':''}`;
   } catch(e) {
-    document.getElementById('livetext').textContent = 'Verbindungsfehler';
+    document.getElementById('livetext').textContent = daten.length
+      ? `Gespeicherter Stand · ${daten.length} Projekte · Verbindung wird erneut versucht`
+      : 'Verbindungsfehler';
+  } finally {
+    laedtGerade = false;
   }
 }
 
 laden();
-setInterval(laden, 15000);
+setInterval(laden, POLL_MS);
+// Im Hintergrund liegende Tabs fragen nicht ab; beim Zurückkehren wird sofort aktualisiert.
+document.addEventListener('visibilitychange', () => { if (!document.hidden) laden(); });
 </script>
 </body>
 </html>
