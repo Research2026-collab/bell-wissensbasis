@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELL 2026 – Ihre Rückmeldung</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --border-strong: #cfd6df;
+  --navy: #1a4f8a;
+  --teal: #2b7a78;
+  --text: #1a1a18;
+  --text-muted: #6b6b67;
+  --text-faint: #9a9a96;
+  --accent: #2b7a78;
+  --accent-light: #e9f3f1;
+  --warn: #9a5b00;  --warn-light: #fdf3dc;
+  --error: #b42318; --error-light: #fdecea;
+  --gelb: #f2c230; --gelb-light: #fdf6dc;
+  --blau: #5fb6dc; --blau-light: #e8f5fb;
+  --orange: #e8622a; --orange-light: #fdeee6;
+  --radius: 10px;
+  --radius-sm: 7px;
+}
+body {
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; display: flex; align-items: flex-start; justify-content: center;
+  padding: 2rem 1rem 4rem;
+}
+.wrapper { width: 100%; max-width: 600px; }
+.demo { background: var(--warn-light); border: 1px solid #e9c46a; color: var(--warn); font-size: 13px; font-weight: 600; border-radius: var(--radius-sm); padding: .55rem .8rem; margin-bottom: 1.25rem; }
+.label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem; }
+h1 { font-size: 24px; font-weight: 800; color: var(--navy); line-height: 1.3; margin-bottom: 0.6rem; }
+.intro { font-size: 16px; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem; }
+.card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(26,26,24,0.07); }
+.step { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .75rem; }
+.frage { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: .8rem; line-height: 1.4; }
+
+/* Drei große Wahlknöpfe */
+.wahl { display: grid; gap: .6rem; }
+.opt { position: relative; }
+.opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.opt label { display: flex; align-items: center; gap: .9rem; padding: .95rem 1rem; border: 2px solid var(--border); border-radius: var(--radius); background: var(--surface); cursor: pointer; font-size: 18px; font-weight: 600; transition: border-color .15s, background .15s; }
+.kapsel { position: relative; width: 32px; height: 32px; border-radius: 50%; flex: none; transform: rotate(-18deg);
+  box-shadow: inset -3px -4px 6px rgba(0,0,0,.13), inset 2px 2px 3px rgba(255,255,255,.5), 0 1px 1.5px rgba(26,26,24,.2); }
+.kapsel::before { content: ''; position: absolute; left: 20%; top: 14%; width: 26%; height: 18%; border-radius: 50%; background: rgba(255,255,255,.75); }
+.opt.sehr .kapsel, .danke-kapsel.sehr { background: linear-gradient(180deg, var(--gelb) 0 48%, rgba(0,0,0,.14) 48% 52%, #fbfbf9 52%); }
+.opt.zufrieden .kapsel, .danke-kapsel.zufrieden { background: linear-gradient(180deg, var(--blau) 0 48%, rgba(0,0,0,.14) 48% 52%, #fbfbf9 52%); }
+.opt.weniger .kapsel, .danke-kapsel.weniger { background: linear-gradient(180deg, var(--orange) 0 48%, rgba(0,0,0,.14) 48% 52%, #fbfbf9 52%); }
+.opt.sehr input:checked + label { border-color: #c99a0e; background: var(--gelb-light); }
+.opt.zufrieden input:checked + label { border-color: #2f8fb8; background: var(--blau-light); }
+.opt.weniger input:checked + label { border-color: var(--orange); background: var(--orange-light); }
+.opt input:focus-visible + label { outline: 3px solid var(--navy); outline-offset: 2px; }
+
+textarea {
+  width: 100%; padding: 0.7rem 0.8rem;
+  font-family: inherit; font-size: 17px; line-height: 1.5;
+  color: var(--text); background: var(--bg);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-sm); outline: none; resize: vertical; min-height: 84px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+textarea::placeholder { color: var(--text-faint); }
+textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+.hint { font-size: 13px; color: var(--text-faint); margin-top: .4rem; }
+
+.submit-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.btn {
+  font-family: inherit; font-size: 18px; font-weight: 700;
+  padding: 0.85rem 1.8rem; border-radius: var(--radius-sm);
+  border: 1px solid var(--accent); background: var(--accent); color: #fff;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.88; }
+.btn:disabled { opacity: 0.45; cursor: default; }
+.btn-secondary { background: var(--surface); color: var(--accent); font-size: 15px; padding: .6rem 1.2rem; }
+.btn:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.status-text { font-size: 14px; color: var(--error); font-weight: 600; }
+.msg { display: none; border-radius: var(--radius); padding: 1.3rem 1.4rem; margin-top: 1rem; font-size: 15px; line-height: 1.6; }
+.msg.visible { display: block; }
+.msg h2 { font-size: 19px; font-weight: 800; margin-bottom: 0.35rem; }
+.msg p { color: var(--text-muted); }
+.msg .row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
+.msg-ok    { background: var(--accent-light); border: 1px solid var(--accent); }
+.msg-ok h2 { color: var(--teal); }
+.msg-wait  { background: var(--surface); border: 1px solid var(--border); }
+.msg-warn  { background: var(--warn-light); border: 1px solid #e9c46a; }
+.msg-warn h2 { color: var(--warn); }
+.msg-error { background: var(--error-light); border: 1px solid #f1a8a0; }
+.msg-error h2 { color: var(--error); }
+.danke-kapsel { position: relative; width: 56px; height: 56px; border-radius: 50%; margin-bottom: .8rem; animation: fall .9s cubic-bezier(.3,1.4,.5,1); box-shadow: inset -4px -6px 8px rgba(0,0,0,.13), inset 2px 2px 4px rgba(255,255,255,.5), 0 2px 3px rgba(26,26,24,.2); }
+.danke-kapsel::before { content: ''; position: absolute; left: 20%; top: 14%; width: 26%; height: 18%; border-radius: 50%; background: rgba(255,255,255,.75); }
+@keyframes fall { from { transform: translateY(-50px); opacity: 0; } to { transform: none; opacity: 1; } }
+.anonym { font-size: 13px; color: var(--text-faint); margin-top: 1.5rem; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <p class="demo" id="demoBanner" hidden>Vorführmodus: Rückmeldungen werden nicht gespeichert.</p>
+  <p class="label">Jahreskonferenz BELL 2026 · Ihre Rückmeldung</p>
+  <h1>Wie zufrieden sind Sie?</h1>
+  <p class="intro">Drei kurze Fragen, eine Minute. Ihre Antwort fällt als Kapsel in eines der Gläser auf der Leinwand.</p>
+
+  <form id="form" novalidate>
+    <div class="card">
+      <p class="step">1 · Bitte auswählen</p>
+      <p class="frage">Wie zufrieden sind Sie mit der Tagung insgesamt?</p>
+      <div class="wahl" role="radiogroup" aria-label="Wie zufrieden sind Sie?">
+        <div class="opt sehr"><input type="radio" name="wert" id="w1" value="sehr"><label for="w1"><span class="kapsel"></span>Sehr zufrieden</label></div>
+        <div class="opt zufrieden"><input type="radio" name="wert" id="w2" value="zufrieden"><label for="w2"><span class="kapsel"></span>Zufrieden</label></div>
+        <div class="opt weniger"><input type="radio" name="wert" id="w3" value="weniger"><label for="w3"><span class="kapsel"></span>Weniger zufrieden</label></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="step">2 · Freiwillig</p>
+      <label class="frage" for="mit" style="display:block">Was hat Ihnen besonders gut gefallen?</label>
+      <textarea id="mit" maxlength="300" placeholder="Ein Satz genügt."></textarea>
+    </div>
+
+    <div class="card">
+      <p class="step">3 · Freiwillig</p>
+      <label class="frage" for="wunsch" style="display:block">Was haben Sie vermisst?</label>
+      <textarea id="wunsch" maxlength="300" placeholder="Ein Satz genügt."></textarea>
+    </div>
+
+    <div class="submit-row">
+      <button type="submit" class="btn" id="submitBtn">Abschicken</button>
+      <p class="status-text" id="status" role="alert"></p>
+    </div>
+    <p class="anonym">Ihre Rückmeldung ist anonym. Name und Projekt werden nicht erfasst. Die Antworten fließen ohne Namen in die Dokumentation der Tagung ein.</p>
+  </form>
+
+  <div class="msg" id="msg" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+// Gleiche Verbindung wie die Workshop-Seiten. Rückmeldungen werden im Tabellenblatt "Workshop"
+// mit session = "F" gespeichert und erscheinen deshalb nicht auf dem Workshop-Board.
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzt29vNU-riSrLsKJuORybtkdr5SnO9tJwDmzKnTwNXry45Qf9z4wQFf75Zq6p4EzR7VQ/exec';
+const SESSION = 'F';
+const STORE = 'bell2026_feedback';
+const DEMO = new URLSearchParams(location.search).has('demo');
+const NAME = { sehr: 'Sehr zufrieden', zufrieden: 'Zufrieden', weniger: 'Weniger zufrieden' };
+
+const $ = id => document.getElementById(id);
+const norm = s => (s || '').toString().replace(/\s+/g, ' ').trim();
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function esc(s) { return (s || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function show(kind, html) { const m = $('msg'); m.className = 'msg visible msg-' + kind; m.innerHTML = html; }
+function readStore() { try { return JSON.parse(localStorage.getItem(STORE) || '[]'); } catch (e) { return []; } }
+function writeStore(l) { try { localStorage.setItem(STORE, JSON.stringify(l)); } catch (e) {} }
+
+$('demoBanner').hidden = !DEMO;
+document.querySelectorAll('input[name=wert], #mit').forEach(el => el.addEventListener('input', () => { $('status').textContent = ''; }));
+
+function zeile() {
+  const w = document.querySelector('input[name=wert]:checked');
+  return {
+    session: SESSION,
+    gruppe: w ? w.value : '',
+    faktor: 'Feedback',
+    inhalt: norm($('mit').value) ? 'Gefallen: ' + norm($('mit').value) : 'Gefallen: -',
+    weitere: norm($('wunsch').value) ? 'Vermisst: ' + norm($('wunsch').value) : '',
+  };
+}
+
+async function angekommen(p) {
+  if (DEMO) return true;
+  try {
+    const res = await fetch(SHEET_URL + '?sheet=workshop&t=' + Date.now());
+    const data = await res.json();
+    if (!Array.isArray(data)) return null;
+    return data.some(r => String(r.session) === SESSION && String(r.gruppe) === p.gruppe && norm(r.inhalt) === norm(p.inhalt));
+  } catch (e) { return null; }
+}
+
+function danke(p) {
+  $('form').style.display = 'none';
+  show('ok', `<div class="danke-kapsel ${p.gruppe}"></div>
+    <h2>Danke, Ihre Kapsel ist im Glas</h2>
+    <p>Schauen Sie auf die Leinwand. Ihre Antwort ist im Glas „${NAME[p.gruppe]}“ gelandet.</p>
+    <div class="row"><button type="button" class="btn btn-secondary" id="nochmal">Rückmeldung für eine weitere Person eingeben</button></div>`);
+  $('nochmal').onclick = zuruecksetzen;
+}
+
+async function senden(p) {
+  $('submitBtn').disabled = true; $('submitBtn').textContent = 'Wird gesendet …';
+  if (!DEMO) {
+    if (!navigator.onLine) return fehler();
+    try { await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) }); }
+    catch (e) { return fehler(); }
+  }
+  const l = readStore(); l.push({ zeit: Date.now(), ...p }); writeStore(l);
+  show('wait', '<h2>Wird gespeichert …</h2><p>Einen Moment, wir prüfen, ob Ihre Kapsel angekommen ist.</p>');
+  for (const w of (DEMO ? [800] : [2500, 4000, 6000])) {
+    await sleep(w);
+    const ok = await angekommen(p);
+    if (ok) return danke(p);
+  }
+  $('form').style.display = 'none';
+  show('warn', `<h2>Gesendet, noch nicht bestätigt</h2><p>Ihre Rückmeldung ist unterwegs, die Bestätigung dauert gerade länger. Bitte nicht erneut senden, sonst erscheint sie doppelt.</p>
+    <div class="row"><button type="button" class="btn btn-secondary" id="pruefen">Noch einmal prüfen</button></div>`);
+  $('pruefen').onclick = async () => { const ok = await angekommen(p); if (ok) danke(p); else $('pruefen').textContent = 'Noch nicht da, gleich nochmal prüfen'; };
+}
+
+function fehler() {
+  show('error', '<h2>Nicht gesendet</h2><p>Es besteht gerade keine Internetverbindung. Ihre Angaben stehen noch im Formular. Bitte WLAN prüfen und erneut senden.</p>');
+  $('submitBtn').disabled = false; $('submitBtn').textContent = 'Erneut senden';
+}
+
+function zuruecksetzen() {
+  document.querySelectorAll('input[name=wert]').forEach(i => { i.checked = false; });
+  $('mit').value = ''; $('wunsch').value = '';
+  $('msg').className = 'msg';
+  $('form').style.display = 'block';
+  $('submitBtn').disabled = false; $('submitBtn').textContent = 'Abschicken';
+  window.scrollTo({ top: 0 });
+}
+
+$('form').addEventListener('submit', ev => {
+  ev.preventDefault();
+  $('status').textContent = '';
+  const p = zeile();
+  if (!p.gruppe) { $('status').textContent = 'Bitte oben auswählen, wie zufrieden Sie sind.'; return; }
+  senden(p);
+});
+</script>
+</body>
+</html>
