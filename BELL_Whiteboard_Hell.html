@@ -175,6 +175,10 @@ body {
   .card-body { font-size:12.5px; }
   * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 }
+.feedback-leiste { display: flex; gap: 1.2rem; justify-content: flex-end; margin: -0.25rem 0 0.6rem; font-size: 12px; }
+.feedback-leiste a { color: var(--teal); font-weight: 600; text-decoration: none; }
+.feedback-leiste a:hover, .feedback-leiste a:focus-visible { text-decoration: underline; }
+.feedback-frame { display: block; width: 100%; height: calc(100vh - 245px); min-height: 600px; border: 1px solid var(--border); border-radius: var(--radius); background: #f4f6f9; }
 </style>
 </head>
 <body>
@@ -211,6 +215,7 @@ body {
     <button class="tab" data-tab="matching">Matching-Karten</button>
     <button class="tab" data-tab="uebersicht">Übersicht</button>
     <button class="tab" data-tab="kontakte">Kontakte</button>
+    <button class="tab" data-tab="feedback">Feedback</button>
   </div>
 </div>
 
@@ -343,6 +348,15 @@ function renderSingle(board, key, label, accent) {
 // ── Tab renderers ──────────────────────────────────────────────────
 function render() {
   const board = document.getElementById('board');
+  // Feedback-Reiter: zeigt das Kapsel-Barometer (eigene Seite) eingebettet an.
+  // Wird nur einmal aufgebaut, damit die 15-Sekunden-Aktualisierung es nicht neu lädt.
+  if (activeTab === 'feedback') {
+    if (!board.querySelector('#feedbackFrame')) {
+      board.innerHTML = `<div class="feedback-leiste"><a href="BELL_Feedback_Board.html" target="_blank" rel="noopener">Im Vollbild für den Beamer öffnen</a><a href="BELL_Feedback_Eingabe.html" target="_blank" rel="noopener">Zur Eingabeseite</a></div>
+        <iframe id="feedbackFrame" class="feedback-frame" src="BELL_Feedback_Board.html" title="Kapsel-Barometer: Zufriedenheit mit der Tagung"></iframe>`;
+    }
+    return;
+  }
   if (!daten.length) {
     board.innerHTML = `<p class="empty">Noch keine Projektangaben eingegangen.</p>`;
     return;
