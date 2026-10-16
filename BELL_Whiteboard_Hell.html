@@ -346,7 +346,16 @@ function renderSingle(board, key, label, accent) {
 }
 
 // ── Tab renderers ──────────────────────────────────────────────────
+// Ein Fehler in einem Reiter zeigt sich als Hinweis auf der Seite statt als leere Fläche.
 function render() {
+  try { renderInner(); }
+  catch (err) {
+    console.error('BELL Whiteboard:', err);
+    document.getElementById('board').innerHTML =
+      `<p class="empty">Dieser Reiter konnte nicht dargestellt werden (${esc(String(err && err.message || err))}). Bitte die Seite neu laden.</p>`;
+  }
+}
+function renderInner() {
   const board = document.getElementById('board');
   // Feedback-Reiter: zeigt das Kapsel-Barometer (eigene Seite) eingebettet an.
   // Wird nur einmal aufgebaut, damit die 15-Sekunden-Aktualisierung es nicht neu lädt.
@@ -512,7 +521,10 @@ const M_ZG_TEXT = {
 };
 const M_STOP = new Set(('aber alle allem als also am an auch auf aus bei bin bis da damit dann das dass dem den der des die dies diese dieser dir doch durch ein eine einem einen einer es für gibt hat haben ich ihr im in ist ja kann können mit nach nicht noch nur oder sich sie sind so über um und uns unser unsere unserer unseren von vor wie wir wird wo zu zum zur zwischen besonders gerne gern sowie etwa andere anderen anderer projekt projekte projekten projekts menschen ältere älteren älterer erfahrungen erfahrung austausch interessant bieten suchen gut sehr viele mehr werden wurde einen jahren dazu außerdem welche konnten innen bereich zielgruppe zielgruppen arbeit bildung ideen hinweise darüber hinaus aktiv dabei insbesondere').split(' '));
 const M_EMPTY = /Aufbauphase befinden, lassen sich momentan keine Aussagen/i;
-let mCache = { key: '', P: [] };
+// Der Cache wird an das Datenarray selbst gebunden. Früher hing er an letzterStand,
+// das beim Anzeigen des gespeicherten Stands leer bleibt; dann galt der leere
+// Anfangscache als gültig und die Matching-Karten blieben leer.
+let mCache = { daten: null, P: [] };
 let mSel = '';
 
 function mText(t) { t = (t || '').toString().trim(); return M_EMPTY.test(t) ? '' : t; }
@@ -625,7 +637,7 @@ function mCompute() {
 }
 
 function renderMatching(board) {
-  if (mCache.key !== letzterStand) mCache = { key: letzterStand, P: mCompute() };
+  if (mCache.daten !== daten) mCache = { daten, P: mCompute() };
   const P = mCache.P;
   const withCards = P.map((p, i) => ({ p, i })).filter(({ p }) => p.M.length || p.R.length)
     .sort((x, y) => x.p.p.localeCompare(y.p.p, 'de'));
@@ -784,8 +796,22 @@ const CACHE_KEY = 'bell_wissensbasis_v1';
 const POLL_MS = 30000;
 let laedtGerade = false;
 
-function bereinigen(liste) {
-  return liste.map(e => {
+// Alle Werte als Text, damit Zahlen, Ankreuzfelder oder leere Zellen aus der
+// Tabelle keine Darstellung zum Absturz bringen.
+function alsText(v) {
+  if (v === null || v === undefined) return '';
+  if (Array.isArray(v)) return v.map(alsText).filter(Boolean).join(', ');
+  if (typeof v === 'boolean') return v ? 'ja' : 'nein';
+  return String(v);
+}
+function bereinigen(roh) {
+  const liste = Array.isArray(roh) ? roh : (roh && Array.isArray(roh.daten) ? roh.daten : (roh && Array.isArray(roh.data) ? roh.data : null));
+  if (!liste) throw new Error('Unerwartetes Datenformat');
+  return liste.filter(e => e && typeof e === 'object').map(roh => {
+    const e = {};
+    Object.keys(roh).forEach(k => { e[k] = alsText(roh[k]); });
+    return e;
+  }).map(e => {
     if ((e.einverstaendnisKontakt || '').trim().toLowerCase() === 'ja') return e;
     const k = Object.assign({}, e);
     ['ap1Name','ap1Mail','ap2Name','ap2Mail','ap3Name','ap3Mail'].forEach(f => { k[f] = ''; });
@@ -798,7 +824,7 @@ function bereinigen(liste) {
     const roh = localStorage.getItem(CACHE_KEY);
     if (!roh) return;
     const gespeichert = JSON.parse(roh);
-    daten = gespeichert.daten || [];
+    daten = bereinigen(gespeichert.daten || []);
     if (daten.length) {
       render();
       document.getElementById('livetext').textContent =
