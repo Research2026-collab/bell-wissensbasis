@@ -148,8 +148,10 @@ function card(e, z) {
 
 function render() {
   const s = activeSession, acc = ACC[s];
-  const defs = ((window.BELL_FAKTOREN || {})[s] || []).map(f => typeof f === 'string' ? { name: f } : f);
-  const faktoren = defs.map(f => f.name);
+  const checkliste = (window.BELL_CHECKLISTE || {})[s] !== false;
+  const freitext = ((window.BELL_FREITEXT || {})[s] || []).map(f => f.name);
+  const defs = checkliste ? ((window.BELL_FAKTOREN || {})[s] || []).map(f => typeof f === 'string' ? { name: f } : f) : [];
+  const faktoren = defs.map(f => f.name).concat(freitext);
   const basis = Object.fromEntries(defs.map(f => [f.name, f.projekte]));
   ['1','2'].forEach(k => { const n = new Set(daten.filter(e => String(e.session) === k).map(e => e.gruppe)).size;
     document.getElementById('c'+k).textContent = n ? `(${n} ${n === 1 ? 'Gruppe' : 'Gruppen'})` : ''; });
@@ -166,7 +168,7 @@ function render() {
   const reihenfolge = faktoren.concat(['Anderes', 'Weitere Einträge']);
   const mit = reihenfolge.filter(f => gruppen[f]).sort((a, b) =>
     (['Anderes','Weitere Einträge'].includes(a) - ['Anderes','Weitere Einträge'].includes(b)) || gruppen[b].length - gruppen[a].length);
-  const ohne = faktoren.filter(f => !gruppen[f]);
+  const ohne = checkliste ? defs.map(f => f.name).filter(f => !gruppen[f]) : [];
 
   let html = '';
   if (fragen.length) html += `<section class="fragen"><h2>Fragen an die Geragogik <span>${fragen.length}</span></h2><ol>${
@@ -187,15 +189,12 @@ function demoDaten() {
   if (!F) return [];
   const r = (s, g, f, note, m) => ({ session: s, gruppe: g, inhalt: note ? `${f}: ${note}` : f, weitere: '', timestamp: t(m) });
   return [
-    r('1','2',F['1'][2].name,'Wir laden persönlich ein, beim Mittagstisch oder am Telefon. Flyer allein bringen kaum jemanden.',42),
-    r('1','5',F['1'][2].name,'Feste Ansprechperson, die man auch zwischen den Terminen anrufen darf.',35),
-    r('1','7',F['1'][2].name,'',20),
-    r('1','2',F['1'][0].name,'Themen kommen aus der Gruppe selbst, zum Beispiel Online-Banking, weil die Filiale schließt.',41),
-    r('1','3',F['1'][0].name,'Wir fragen zu Beginn jedes Treffens, was gerade im Alltag schwierig ist.',30),
-    r('1','3',F['1'][1].name,'Gleicher Ort, gleiche Uhrzeit, jede Woche. Das gibt Sicherheit.',30),
-    r('1','5',F['1'][4].name,'Teilnehmende planen ein Treffen im Monat selbst.',34),
-    r('1','7',F['1'][5].name,'Kooperation mit der Kirchengemeinde öffnet Türen, die wir allein nicht hätten.',19),
-    r('1','3','Anderes (Humor)','Gemeinsam lachen baut schneller Vertrauen auf als jede Methode.',28),
+    r('1','2','Fehlende Gelingensfaktoren','Humor. Gemeinsam lachen baut schneller Vertrauen auf als jede Methode.',42),
+    r('1','5','Fehlende Gelingensfaktoren','Verlässliche Räume, die den Teilnehmenden vertraut sind.',35),
+    r('1','2','Umsetzung in der Projektpraxis','Wir laden persönlich ein, beim Mittagstisch oder am Telefon. Flyer allein bringen kaum jemanden.',41),
+    r('1','3','Umsetzung in der Projektpraxis','Gleicher Ort, gleiche Uhrzeit, jede Woche. Das gibt Sicherheit.',30),
+    r('1','7','Umsetzung in der Projektpraxis','Kooperation mit der Kirchengemeinde öffnet Türen, die wir allein nicht hätten.',19),
+    { session: '1', gruppe: '3', inhalt: `${FRAGE_PREFIX}: Wie halten wir Ehrenamtliche über längere Zeit, ohne sie zu überfordern?`, weitere: '', timestamp: t(28) },
     r('2','1',F['2'][1].name,'Im selben Kurs sitzen Menschen, die noch nie ein Smartphone hatten, neben Menschen, die Videos schneiden.',50),
     r('2','4',F['2'][1].name,'Zwei Kursleitungen würden helfen, dafür fehlt aber das Geld.',38),
     r('2','1',F['2'][8].name,'Der Aufnahmebogen schreckt ab, bevor das erste Treffen überhaupt stattgefunden hat.',49),

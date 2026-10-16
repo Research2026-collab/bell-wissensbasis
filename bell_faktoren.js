@@ -64,9 +64,31 @@ window.BELL_FAKTOREN = {
 
 // Aufgabenstellung, die über dem Formular und auf dem Board steht
 window.BELL_AUFGABE = {
-  '1': 'Wählen Sie die Gelingensfaktoren aus, die in Ihrer Gruppe besonders wichtig waren. Notieren Sie zu jedem Faktor kurz, wie er in Ihrer Praxis konkret aussieht, etwa ein Beispiel oder einen Tipp.',
+  '1': 'Halten Sie hier die Ergebnisse Ihrer Gruppe fest. Alle Felder sind freiwillig, ein ausgefülltes Feld genügt zum Absenden.',
   '2': 'Wählen Sie die hemmenden Faktoren aus, die in Ihrer Gruppe besonders wichtig waren. Notieren Sie zu jedem Faktor kurz, wo Sie an eine Grenze stoßen. Wenn Sie mögen, formulieren Sie zum Schluss eine Frage an die Geragogik.',
 };
 
-// Session 2: zusätzliches Feld für die Frage an die Geragogik (true = anzeigen)
-window.BELL_FRAGE_GERAGOGIK = { '1': false, '2': true };
+// Feld für die Frage an die Geragogik (true = anzeigen)
+window.BELL_FRAGE_GERAGOGIK = { '1': true, '2': true };
+
+// Session 1 arbeitet ohne Ankreuzliste, nur mit offenen Feldern.
+// false = die Faktorenliste oben wird im Formular und auf dem Board
+// nicht als Auswahl verwendet (sie bleibt hier zur Dokumentation erhalten).
+window.BELL_CHECKLISTE = { '1': false, '2': true };
+
+// Offene Felder je Session. 'name' ist die Spaltenüberschrift auf dem Board,
+// 'frage' steht im Formular über dem Eingabefeld.
+window.BELL_FREITEXT = {
+  '1': [
+    { name: 'Fehlende Gelingensfaktoren', frage: 'Fehlt Ihnen ein Gelingensfaktor?',
+      platzhalter: 'Name des Faktors und gerne ein Satz dazu' },
+    { name: 'Umsetzung in der Projektpraxis', frage: 'Wie setzen Sie das konkret in Ihrer Projektpraxis um?',
+      platzhalter: 'Ein Beispiel oder ein Tipp aus Ihrem Projekt' },
+  ],
+};
+
+// Beschriftung des Fragefelds je Session
+window.BELL_FRAGE_TEXT = {
+  '1': 'Offene Fragen, z. B. für den Geragogik-Talk?',
+  '2': 'Wo stoßen Sie an eine Grenze, für die Sie keine Lösung haben? Ein Satz genügt.',
+};
