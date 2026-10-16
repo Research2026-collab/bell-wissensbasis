@@ -65,16 +65,16 @@ window.BELL_FAKTOREN = {
 // Aufgabenstellung, die über dem Formular und auf dem Board steht
 window.BELL_AUFGABE = {
   '1': 'Halten Sie hier die Ergebnisse Ihrer Gruppe fest. Alle Felder sind freiwillig, ein ausgefülltes Feld genügt zum Absenden.',
-  '2': 'Wählen Sie die hemmenden Faktoren aus, die in Ihrer Gruppe besonders wichtig waren. Notieren Sie zu jedem Faktor kurz, wo Sie an eine Grenze stoßen. Wenn Sie mögen, formulieren Sie zum Schluss eine Frage an die Geragogik.',
+  '2': 'Halten Sie hier die Ergebnisse Ihrer Gruppe fest. Alle Felder sind freiwillig, ein ausgefülltes Feld genügt zum Absenden.',
 };
 
 // Feld für die Frage an die Geragogik (true = anzeigen)
 window.BELL_FRAGE_GERAGOGIK = { '1': true, '2': true };
 
-// Session 1 arbeitet ohne Ankreuzliste, nur mit offenen Feldern.
+// Beide Sessions arbeiten ohne Ankreuzliste, nur mit offenen Feldern.
 // false = die Faktorenliste oben wird im Formular und auf dem Board
 // nicht als Auswahl verwendet (sie bleibt hier zur Dokumentation erhalten).
-window.BELL_CHECKLISTE = { '1': false, '2': true };
+window.BELL_CHECKLISTE = { '1': false, '2': false };
 
 // Offene Felder je Session. 'name' ist die Spaltenüberschrift auf dem Board,
 // 'frage' steht im Formular über dem Eingabefeld.
@@ -85,10 +85,16 @@ window.BELL_FREITEXT = {
     { name: 'Umsetzung in der Projektpraxis', frage: 'Wie setzen Sie das konkret in Ihrer Projektpraxis um?',
       platzhalter: 'Ein Beispiel oder ein Tipp aus Ihrem Projekt' },
   ],
+  '2': [
+    { name: 'Fehlende hemmende Faktoren', frage: 'Fehlt Ihnen ein hemmender Faktor?',
+      platzhalter: 'Name des Faktors und gerne ein Satz dazu' },
+    { name: 'Umgang in der Praxis', frage: 'Wie begegnen Sie dieser Herausforderung in Ihrer Praxis?',
+      platzhalter: 'Was Sie tun, was hilft, was Sie ausprobiert haben' },
+  ],
 };
 
 // Beschriftung des Fragefelds je Session
 window.BELL_FRAGE_TEXT = {
   '1': 'Offene Fragen, z. B. für den Geragogik-Talk?',
-  '2': 'Wo stoßen Sie an eine Grenze, für die Sie keine Lösung haben? Ein Satz genügt.',
+  '2': 'Offene Fragen, z. B. für den Geragogik-Talk?',
 };
