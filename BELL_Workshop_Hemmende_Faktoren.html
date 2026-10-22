@@ -16,7 +16,7 @@ h1{color:var(--head);font-family:Georgia,"Times New Roman",serif;font-weight:400
 .lead{font-size:clamp(17px,2vw,21px);max-width:62ch;margin:0 0 10px}
 .lead b{font-weight:600}
 .note{font-size:14px;color:var(--muted);max-width:85ch;margin:0 0 20px}
-.bar-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.bar-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin:0 -16px 14px;padding:12px 16px;position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid transparent}.bar-row.stuck{border-bottom-color:var(--line);box-shadow:0 4px 10px -8px rgba(0,0,0,.25)}
 .legend{display:flex;flex-wrap:wrap;gap:18px;font-size:14px;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .sw{width:14px;height:14px;border-radius:3px;display:inline-block;background:var(--acc)}
@@ -124,8 +124,14 @@ function draw(){
     li.onkeydown = e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tog(); } };
     list.append(li);
   });
-  if (st.step!==null) st.last = st.step-1;
+  if (st.step!==null) {
+    const neu = list.querySelector('li.new');
+    if (neu) { const bar = document.querySelector('.bar-row').getBoundingClientRect().height; const r = neu.getBoundingClientRect(); if (r.bottom > window.innerHeight - 16 || r.top < bar) window.scrollBy({top: r.bottom - window.innerHeight + 24, behavior: 'smooth'}); }
+    st.last = st.step-1;
+  }
 }
+const barRow = document.querySelector('.bar-row');
+window.addEventListener('scroll', () => barRow.classList.toggle('stuck', barRow.getBoundingClientRect().top <= 0 && window.scrollY > 0), {passive:true});
 draw();
 </script>
 </body>
