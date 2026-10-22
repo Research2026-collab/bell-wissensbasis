@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BELL Workshop Hemmende Faktoren</title>
+<style>
+:root{--bg:#ffffff;--panel:#ffffff;--fg:#1a1a1a;--muted:#55606b;--line:#dde2e8;--track:#eef1f4;--head:#00455B;--acc:#004B76;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1b1b1a;--panel:#242422;--fg:#f1efe9;--muted:#b3afa6;--line:#3a3935;--track:#33322f;--head:#DEF1FC;--acc:#99B6C8;}}
+:root[data-theme="dark"]{--bg:#1b1b1a;--panel:#242422;--fg:#f1efe9;--muted:#b3afa6;--line:#3a3935;--track:#33322f;--head:#DEF1FC;--acc:#99B6C8;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;line-height:1.4}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 16px 48px}
+.eyebrow{font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+h1{color:var(--head);font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(28px,4vw,40px);margin:0 0 10px}
+.lead{font-size:clamp(17px,2vw,21px);max-width:62ch;margin:0 0 10px}
+.lead b{font-weight:600}
+.note{font-size:14px;color:var(--muted);max-width:85ch;margin:0 0 20px}
+.bar-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block;background:var(--acc)}
+.sw.light{opacity:.35}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;padding:7px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 24px}
+ul{list-style:none;margin:0;padding:0}
+li{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);cursor:pointer}
+li:last-child{border-bottom:0}
+li.hid{visibility:hidden}
+li:focus-visible{outline:2px solid var(--fg);outline-offset:4px;border-radius:4px}
+@media (prefers-reduced-motion:no-preference){li.new{animation:in .45s ease-out}@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+.name{font-size:20px;font-weight:600;margin:0 0 4px}
+.kern{font-size:17px;margin:0 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.barcell{display:flex;align-items:center;gap:12px}
+.track{position:relative;flex:1;height:26px;border-radius:6px;background:var(--track);overflow:hidden}
+.fill,.hv{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--acc)}
+.fill{opacity:.35}
+.num{min-width:7.5em;font-variant-numeric:tabular-nums}
+.num b{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:24px}
+.num small{display:block;color:var(--muted);font-size:13px}
+.syn{grid-column:1/-1;font-size:16px;line-height:1.5;color:var(--muted);margin:2px 0 0;max-width:85ch}
+.foot{font-size:13px;color:var(--muted);margin-top:20px;max-width:90ch}
+@media (max-width:640px){li{grid-template-columns:1fr}.card{padding:4px 14px}}
+@media print{button,.ctrl{display:none}li.hid{visibility:visible}.syn{display:block!important}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Jahreskonferenz BELL 2026 · Workshop Hemmende Faktoren</p>
+  <h1>Hemmende Faktoren in den BELL-Projekten</h1>
+  <p class="lead" id="lead"></p>
+  <p class="note" id="note"></p>
+  <div class="bar-row">
+    <div class="legend"><span><i class="sw"></i> Projekte, die den Faktor als entscheidend hervorheben</span><span><i class="sw light"></i> weitere Projekte, die ihn nennen</span></div>
+    <div class="ctrl" id="ctrl"></div>
+  </div>
+  <div class="card"><ul id="list"></ul></div>
+  <p class="foot">Grundlage ist eine qualitative Inhaltsanalyse der Freitextantworten aus der BELL-Wissensbasis (Stand 22.10.2026, 49 von 65 Projekten). Kategorien wurden induktiv am Material gebildet. Kernaussagen und Stichworte verdichten die kodierten Belege. Die Zahlen beschreiben, wie viele Projekte einen Faktor von sich aus nennen, und messen weder Wirkung noch Wichtigkeit. Bedienung: „Schrittweise zeigen“ deckt die Faktoren einzeln auf, weiter mit Klick oder Pfeiltaste rechts, zurück mit Pfeiltaste links. Ein Klick auf eine Zeile zeigt die Erläuterung.</p>
+</div>
+<script>
+const DATA = [{"kuerzel": "H01", "kategorie": "Erreichbarkeit und Gewinnung der Zielgruppe", "projekte": 20, "basis": 49, "hervorgehoben": 5, "kernaussage": "Viele Ältere sind über klassische Wege nicht erreichbar", "stichworte": "Flyer und Presse wirken kaum; Ältere mit Migrationsgeschichte; Männer und noch Berufstätige", "synthese": "Die Erreichbarkeit der Zielgruppe wird am häufigsten ausdrücklich als größte Herausforderung bezeichnet. Als schwer erreichbar gelten Ältere mit Migrationsgeschichte, bildungsferne und sozial isolierte Menschen, Männer und noch Berufstätige. Flyer, Presse und soziale Medien erweisen sich dabei als wenig wirksam."}, {"kuerzel": "H02", "kategorie": "Heterogene Voraussetzungen und Erwartungen", "projekte": 20, "basis": 49, "hervorgehoben": 1, "kernaussage": "Sehr unterschiedliche Voraussetzungen in einer Gruppe", "stichworte": "Digitale Vorkenntnisse; Lerntempo; Erwartungen", "synthese": "Unterschiedliche Vorkenntnisse, Erwartungen und Lebenslagen erschweren die Planung von Angeboten, die für alle passen. Die Projekte begegnen dem mit flexiblen Formaten und individueller Unterstützung."}, {"kuerzel": "H03", "kategorie": "Gesundheitliche, sensorische und kognitive Einschränkungen", "projekte": 16, "basis": 49, "hervorgehoben": 3, "kernaussage": "Körperliche, sensorische und kognitive Einschränkungen", "stichworte": "Hören und Sehen; Pflegebedarf; Psychische Belastungen", "synthese": "Genannt werden körperliche, sensorische und kognitive Einschränkungen, vor allem Hör- und Sehbeeinträchtigungen, ferner psychische Belastungen und Pflegebedarf."}, {"kuerzel": "H04", "kategorie": "Mobilität und räumliche Barrierefreiheit", "projekte": 17, "basis": 49, "hervorgehoben": 3, "kernaussage": "Der Weg zum Angebot wird zur Hürde", "stichworte": "ÖPNV im ländlichen Raum; Nicht barrierefreie Räume; Dunkelheit im Winter", "synthese": "Fehlende Barrierefreiheit externer Orte, schlechte Verkehrsanbindung im ländlichen Raum und eingeschränkte Mobilität begrenzen die Teilnahme. Ein Projekt beschreibt den Zielkonflikt, dass Abendtermine Berufstätige erreichen und zugleich Ältere wegen der Dunkelheit fernhalten."}, {"kuerzel": "H05", "kategorie": "Sprachliche und digitale Barrieren", "projekte": 12, "basis": 49, "hervorgehoben": 1, "kernaussage": "Sprache und Technik erschweren die Verständigung", "stichworte": "Deutschkenntnisse; Fachbegriffe und Anglizismen; Geräte und Kompetenzen", "synthese": "Sprachliche Barrieren betreffen vor allem Projekte mit Älteren mit Migrationsgeschichte. Hinzu kommen Fachbegriffe, Anglizismen sowie unterschiedliche digitale Kompetenzen und Geräte."}, {"kuerzel": "H06", "kategorie": "Vorbehalte, Unsicherheiten und Skepsis", "projekte": 14, "basis": 49, "hervorgehoben": 1, "kernaussage": "Skepsis und Berührungsängste gegenüber Neuem", "stichworte": "Technikängste; Hemmschwellen; Abwehr gegen Belehrung", "synthese": "Skepsis, Berührungsängste gegenüber Neuem und gegenüber Technik sowie Hemmschwellen erschweren den Einstieg. In der politischen Bildung reagieren Teilnehmende ablehnend auf den Eindruck, belehrt zu werden."}, {"kuerzel": "H07", "kategorie": "Zeitbedarf des Vertrauensaufbaus", "projekte": 5, "basis": 49, "hervorgehoben": 2, "kernaussage": "Vertrauen braucht Zeit und vertraute Mittelspersonen", "stichworte": "Ein Kontakt reicht nicht; Vermittlerinnen aus der Community", "synthese": "Mehrere Projekte betonen, dass Vertrauen Zeit und oft vertraute Mittelspersonen braucht, bevor Angebote angenommen werden. Ein einmaliger Kontakt reicht nach diesen Angaben selten aus."}, {"kuerzel": "H08", "kategorie": "Verbindlichkeit und Planbarkeit der Teilnahme", "projekte": 11, "basis": 49, "hervorgehoben": 0, "kernaussage": "Absagen und volle Kalender erschweren verbindliche Angebote", "stichworte": "Enkelbetreuung und Arzttermine; Zusage ohne Erscheinen; Termine finden", "synthese": "Kurzfristige Absagen, Zusagen ohne Erscheinen und konkurrierende Verpflichtungen wie Enkelbetreuung, Arzttermine oder Berufstätigkeit erschweren die Planung verbindlicher und mehrwöchiger Angebote."}, {"kuerzel": "H09", "kategorie": "Bürokratie und Fördervorgaben", "projekte": 7, "basis": 49, "hervorgehoben": 2, "kernaussage": "Fragebögen und Nachweise schrecken ab", "stichworte": "Umfangreiche Aufnahmebögen; Unterschriften; Abrechnungsaufwand", "synthese": "Kritisiert werden umfangreiche und schwer verständliche Teilnehmendenfragebögen, Unterschriftserfordernisse und Nachweisaufwand. Diese Vorgaben wirken nach Angaben der Projekte demotivierend, erzeugen Misstrauen und schließen Menschen aus, die etwa wegen Demenz oder Erblindung nicht unterschreiben können."}, {"kuerzel": "H10", "kategorie": "Personelle und zeitliche Ressourcen", "projekte": 5, "basis": 49, "hervorgehoben": 0, "kernaussage": "Persönliche Arbeit braucht mehr Zeit als vorhanden", "stichworte": "Wartelisten; Begrenzte Projektzeit", "synthese": "Engpässe der eigenen Arbeitszeit erscheinen als Warteliste bei hoher Nachfrage oder als Spannung zwischen zeitintensiver persönlicher Ansprache und begrenzten Ressourcen. Mehrere Belege sind knapp formuliert und daher unsicher."}, {"kuerzel": "H11", "kategorie": "Kooperation und regionale Angebotsstruktur", "projekte": 4, "basis": 49, "hervorgehoben": 0, "kernaussage": "Partner und passende Angebote in der Region fehlen", "stichworte": "Geringe Kooperationsbereitschaft; Ausgelastete Angebote", "synthese": "Genannt werden geringe Kooperationsbereitschaft anderer Anbieter, Personalmangel bei Partnereinrichtungen sowie fehlende oder ausgelastete Angebote in der Region."}, {"kuerzel": "H12", "kategorie": "Soziale Lebenslagen und Belastungen", "projekte": 7, "basis": 49, "hervorgehoben": 1, "kernaussage": "Einsamkeit und belastete Lebenslagen", "stichworte": "Soziale Isolation; Prekäre Lebensbedingungen; Alltag bindet Kraft", "synthese": "Einsamkeit, soziale Isolation, prekäre Lebensbedingungen und ein Alltag, der viel Kraft bindet, erschweren die Teilnahme und lassen wenig Raum für neue Angebote."}, {"kuerzel": "H13", "kategorie": "Aktivierung für Engagement und Mitgestaltung", "projekte": 3, "basis": 49, "hervorgehoben": 2, "kernaussage": "Ältere unterschätzen, was sie weitergeben können", "stichworte": "Für Engagement begeistern; Formale Qualifikationshürden", "synthese": "Projekte mit Engagementbezug beschreiben, dass Ältere ihr eigenes Erfahrungswissen oft unterschätzen und formale Voraussetzungen die Qualifizierung Engagierter begrenzen."}, {"kuerzel": "H14", "kategorie": "Gruppendynamik und Kommunikation", "projekte": 5, "basis": 49, "hervorgehoben": 0, "kernaussage": "Konflikte und ungleiche Redeanteile in der Gruppe", "stichworte": "Konflikte unter Teilnehmenden; Dominanz Einzelner; Kontroverse Themen", "synthese": "Konflikte unter Teilnehmenden, Unzufriedenheit, die Dominanz einzelner im Gespräch und kontroverse Positionen stellen Anforderungen an die Moderation."}, {"kuerzel": "H15", "kategorie": "Unterstützungsbedarfe jenseits des Projektauftrags", "projekte": 3, "basis": 49, "hervorgehoben": 1, "kernaussage": "Anliegen jenseits des Bildungsauftrags", "stichworte": "Behörden und Krankenkassen; Persönliche Sorgen", "synthese": "Einige Projekte erhalten Anfragen zu Behörden, Krankenkassen oder persönlichen Themen, die über den Bildungsauftrag hinausgehen."}];
+const data = DATA.slice().sort((a,b)=>b.projekte-a.projekte||b.hervorgehoben-a.hervorgehoben||a.kuerzel.localeCompare(b.kuerzel));
+const st = {step:null, last:-1, open:new Set()};
+const el = (t,txt,c)=>{const e=document.createElement(t); if(txt!=null) e.textContent=txt; if(c) e.className=c; return e;};
+
+(function head(){
+  const basis = data[0].basis;
+  const top = data.filter(d=>d.projekte===data[0].projekte);
+  const hv = data.slice().sort((a,b)=>b.hervorgehoben-a.hervorgehoben)[0];
+  const lead = document.getElementById('lead');
+  lead.append('Am häufigsten genannt ' + (top.length>1?'werden ':'wird '));
+  top.forEach((d,i)=>{ if(i) lead.append(i===top.length-1?' und ':', '); lead.append(el('b',d.kategorie)); });
+  lead.append('. Als ausdrücklich entscheidend hervorgehoben wird am häufigsten ', el('b',hv.kategorie), '.');
+  document.getElementById('note').textContent = basis + ' Projekte haben diese Frage beantwortet. Ein Projekt kann mehrere Faktoren nennen.';
+})();
+
+function controls(){
+  const box = document.getElementById('ctrl'); box.replaceChildren();
+  const n = data.length;
+  if (st.step===null){
+    const b = el('button','Schrittweise zeigen'); b.onclick=()=>{st.step=0; st.last=-1; draw();}; box.append(b);
+  } else {
+    const nx = el('button', st.step<n ? 'Nächster Faktor ('+(st.step+1)+' von '+n+')' : 'Alle gezeigt'); nx.disabled = st.step>=n; nx.onclick=next;
+    const all = el('button','Alle zeigen'); all.onclick=()=>{st.step=null; draw();};
+    const re = el('button','Von vorn'); re.onclick=()=>{st.step=0; st.last=-1; draw();};
+    box.append(nx, all, re);
+  }
+}
+function next(){ if(st.step===null) return; if(st.step<data.length){ st.step++; draw(); } }
+document.addEventListener('keydown', e=>{
+  if (st.step===null) return;
+  if (e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); next(); }
+  if ((e.key==='ArrowLeft'||e.key==='PageUp') && st.step>0){ e.preventDefault(); st.step--; draw(); }
+});
+
+function draw(){
+  controls();
+  const list = document.getElementById('list'); list.replaceChildren();
+  data.forEach((d,i)=>{
+    const li = el('li'); li.tabIndex=0; li.setAttribute('aria-expanded', String(st.open.has(d.kuerzel)));
+    if (st.step!==null && i>=st.step) li.classList.add('hid');
+    if (st.step!==null && i===st.step-1 && i>st.last) li.classList.add('new');
+    const left = el('div');
+    left.append(el('p',d.kategorie,'name'), el('p',d.kernaussage,'kern'));
+    const chips = el('div',null,'chips');
+    String(d.stichworte||'').split(';').map(s=>s.trim()).filter(Boolean).forEach(s=>chips.append(el('span',s,'chip')));
+    left.append(chips);
+    const right = el('div',null,'barcell');
+    const tr = el('div',null,'track');
+    const f = el('div',null,'fill'); f.style.width = (100*d.projekte/d.basis)+'%';
+    const h = el('div',null,'hv'); h.style.width = (100*d.hervorgehoben/d.basis)+'%';
+    tr.append(f,h);
+    const num = el('div',null,'num'); num.append(el('b',String(d.projekte)), el('small','von '+d.basis+' Projekten, '+d.hervorgehoben+' hervorgehoben'));
+    right.append(tr,num);
+    const syn = el('p',d.synthese,'syn'); syn.hidden = !st.open.has(d.kuerzel);
+    li.setAttribute('aria-label', d.kategorie+', '+d.projekte+' von '+d.basis+' Projekten, davon '+d.hervorgehoben+' hervorgehoben');
+    li.append(left,right,syn);
+    const tog = ()=>{ st.open.has(d.kuerzel)?st.open.delete(d.kuerzel):st.open.add(d.kuerzel); draw(); };
+    li.onclick = tog;
+    li.onkeydown = e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tog(); } };
+    list.append(li);
+  });
+  if (st.step!==null) st.last = st.step-1;
+}
+draw();
+</script>
+</body>
+</html>
