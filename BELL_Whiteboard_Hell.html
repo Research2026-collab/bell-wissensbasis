@@ -178,6 +178,10 @@ body {
 .feedback-leiste { display: flex; gap: 1.2rem; justify-content: flex-end; margin: -0.25rem 0 0.6rem; font-size: 12px; }
 .feedback-leiste a { color: var(--teal); font-weight: 600; text-decoration: none; }
 .feedback-leiste a:hover, .feedback-leiste a:focus-visible { text-decoration: underline; }
+.auswertung-leiste { display: flex; flex-wrap: wrap; gap: .6rem; margin: 0 0 1rem; }
+.auswertung-leiste a { display: inline-block; font-size: 13px; font-weight: 700; text-decoration: none; padding: .45rem 1rem; border-radius: 20px; color: #fff; background: var(--teal); border: 1px solid var(--teal); }
+.auswertung-leiste a + a { color: var(--teal); background: var(--surface); }
+.auswertung-leiste a:hover, .auswertung-leiste a:focus-visible { text-decoration: underline; }
 .feedback-frame { display: block; width: 100%; height: calc(100vh - 245px); min-height: 600px; border: 1px solid var(--border); border-radius: var(--radius); background: #f4f6f9; }
 </style>
 </head>
@@ -334,13 +338,15 @@ function renderColumns(board, defs, keyFn, cardBodyFn, hideRegion=false) {
 }
 
 // ── Single-item tab ────────────────────────────────────────────────
-function renderSingle(board, key, label, accent) {
+function renderSingle(board, key, label, accent, links) {
   const items = daten.filter(e => e[key] && e[key].trim());
+  // Leiste mit Verweis auf die Auswertung der Inhaltsanalyse (nur in den Reitern Gelingensfaktoren und Hemmende Faktoren)
+  const leiste = links ? `<div class="auswertung-leiste">${links.map(l => `<a href="${l.href}" target="_blank" rel="noopener">${l.text}</a>`).join('')}</div>` : '';
   if (!items.length) {
-    board.innerHTML = `<p class="empty">Noch keine Einträge für „${label}".</p>`;
+    board.innerHTML = leiste + `<p class="empty">Noch keine Einträge für „${label}".</p>`;
     return;
   }
-  board.innerHTML = `<div class="cards-grid accent-${accent}">${
+  board.innerHTML = leiste + `<div class="cards-grid accent-${accent}">${
     items.map(e => makeCard(e, esc(e[key]))).join('')
   }</div>`;
 }
@@ -425,8 +431,12 @@ function renderInner() {
   if (activeTab === 'begeisterung') { renderSingle(board, 'begeisterung', 'Was begeistert mich', 'teal');   return; }
   if (activeTab === 'veraenderung') { renderSingle(board, 'veraenderung', 'Mehrwert bisher',     'pink');   return; }
   if (activeTab === 'veraenderungZiel') { renderSingle(board, 'veraenderungZiel', 'Wirkung am Projektende', 'blue'); return; }
-  if (activeTab === 'gelingen')     { renderSingle(board, 'gelingen',     'Gelingensfaktoren',  'green');  return; }
-  if (activeTab === 'hindernisse') { renderSingle(board, 'hindernisse','Hemmende Faktoren',  'orange'); return; }
+  if (activeTab === 'gelingen')     { renderSingle(board, 'gelingen',     'Gelingensfaktoren',  'green', [
+    { href: 'BELL_Workshop_Gelingensfaktoren.html', text: 'Auswertung Gelingensfaktoren öffnen' },
+    { href: 'BELL_Plakat_Gelingensfaktoren_A2.pdf', text: 'Plakat als PDF' }]);  return; }
+  if (activeTab === 'hindernisse') { renderSingle(board, 'hindernisse','Hemmende Faktoren',  'orange', [
+    { href: 'BELL_Workshop_Hemmende_Faktoren.html', text: 'Auswertung Hemmende Faktoren öffnen' },
+    { href: 'BELL_Plakat_Hemmende_Faktoren_A2.pdf', text: 'Plakat als PDF' }]); return; }
   if (activeTab === 'geheimtipp')  { renderSingle(board, 'geheimtipp', 'Geheimtipps',           'purple'); return; }
   if (activeTab === 'suche')       { renderSingle(board, 'suche',      'Wonach suche ich',      'teal');   return; }
   if (activeTab === 'biete')       { renderSingle(board, 'biete',      'Was ich anbiete',       'pink');   return; }
