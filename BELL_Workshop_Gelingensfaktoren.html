@@ -28,7 +28,7 @@ button:disabled{opacity:.5;cursor:default}
 ul{list-style:none;margin:0;padding:0}
 li{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);cursor:pointer}
 li:last-child{border-bottom:0}
-li.hid{visibility:hidden}
+li.hid{display:none}
 li:focus-visible{outline:2px solid var(--fg);outline-offset:4px;border-radius:4px}
 @media (prefers-reduced-motion:no-preference){li.new{animation:in .45s ease-out}@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
 .name{font-size:20px;font-weight:600;margin:0 0 4px}
@@ -82,11 +82,11 @@ function controls(){
   const box = document.getElementById('ctrl'); box.replaceChildren();
   const n = data.length;
   if (st.step===null){
-    const b = el('button','Schrittweise zeigen'); b.onclick=()=>{st.step=0; st.last=-1; draw();}; box.append(b);
+    const b = el('button','Schrittweise zeigen'); b.onclick=()=>{st.step=1; st.last=-1; draw();}; box.append(b);
   } else {
     const nx = el('button', st.step<n ? 'Nächster Faktor ('+(st.step+1)+' von '+n+')' : 'Alle gezeigt'); nx.disabled = st.step>=n; nx.onclick=next;
     const all = el('button','Alle zeigen'); all.onclick=()=>{st.step=null; draw();};
-    const re = el('button','Von vorn'); re.onclick=()=>{st.step=0; st.last=-1; draw();};
+    const re = el('button','Von vorn'); re.onclick=()=>{st.step=1; st.last=-1; draw();};
     box.append(nx, all, re);
   }
 }
@@ -94,7 +94,7 @@ function next(){ if(st.step===null) return; if(st.step<data.length){ st.step++; 
 document.addEventListener('keydown', e=>{
   if (st.step===null) return;
   if (e.key==='ArrowRight'||e.key==='PageDown'){ e.preventDefault(); next(); }
-  if ((e.key==='ArrowLeft'||e.key==='PageUp') && st.step>0){ e.preventDefault(); st.step--; draw(); }
+  if ((e.key==='ArrowLeft'||e.key==='PageUp') && st.step>1){ e.preventDefault(); st.step--; draw(); }
 });
 
 function draw(){
