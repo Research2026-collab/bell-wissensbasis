@@ -42,7 +42,7 @@ li:focus-visible{outline:2px solid var(--fg);outline-offset:4px;border-radius:4p
 .num{min-width:7.5em;font-variant-numeric:tabular-nums}
 .num b{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:24px}
 .num small{display:block;color:var(--muted);font-size:13px}
-.syn{grid-column:1/-1;font-size:16px;line-height:1.5;color:var(--muted);margin:2px 0 0;max-width:85ch}
+li.aktuell{border-left:5px solid var(--acc);padding-left:18px;margin-left:-23px;border-bottom:0}li.aktuell .name{font-size:24px}li.aktuell .kern{font-size:19px}li.kompakt{padding:8px 0;gap:20px}li.kompakt .name{font-size:15px;font-weight:600;margin:0}li.kompakt .track{height:14px}li.kompakt .num b{font-size:17px}li.kompakt .num small{display:inline;margin-left:6px}.prevhead{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}.syn{grid-column:1/-1;font-size:16px;line-height:1.5;color:var(--muted);margin:2px 0 0;max-width:85ch}
 .foot{font-size:13px;color:var(--muted);margin-top:20px;max-width:90ch}
 @media (max-width:640px){li{grid-template-columns:1fr}.card{padding:4px 14px}}
 @media print{button,.ctrl{display:none}li.hid{visibility:visible}.syn{display:block!important}body{background:#fff}}
@@ -59,6 +59,7 @@ li:focus-visible{outline:2px solid var(--fg);outline-offset:4px;border-radius:4p
     <div class="ctrl" id="ctrl"></div>
   </div>
   <div class="card"><ul id="list"></ul></div>
+  <div id="prevbox" hidden><p class="prevhead">Bereits vorgestellt</p><div class="card"><ul id="prev"></ul></div></div>
   <p class="foot">Grundlage ist eine qualitative Inhaltsanalyse der Freitextantworten aus der BELL-Wissensbasis (Stand 22.10.2026, 49 von 65 Projekten). Kategorien wurden induktiv am Material gebildet. Kernaussagen und Stichworte verdichten die kodierten Belege. Die Zahlen beschreiben, wie viele Projekte einen Faktor von sich aus nennen, und messen weder Wirkung noch Wichtigkeit. Bedienung: „Schrittweise zeigen“ deckt die Faktoren einzeln auf, weiter mit Klick oder Pfeiltaste rechts, zurück mit Pfeiltaste links. Ein Klick auf eine Zeile zeigt die Erläuterung.</p>
 </div>
 <script>
@@ -97,38 +98,51 @@ document.addEventListener('keydown', e=>{
   if ((e.key==='ArrowLeft'||e.key==='PageUp') && st.step>1){ e.preventDefault(); st.step--; draw(); }
 });
 
-function draw(){
-  controls();
-  const list = document.getElementById('list'); list.replaceChildren();
-  data.forEach((d,i)=>{
-    const li = el('li'); li.tabIndex=0; li.setAttribute('aria-expanded', String(st.open.has(d.kuerzel)));
-    if (st.step!==null && i>=st.step) li.classList.add('hid');
-    if (st.step!==null && i===st.step-1 && i>st.last) li.classList.add('new');
-    const left = el('div');
-    left.append(el('p',d.kategorie,'name'), el('p',d.kernaussage,'kern'));
+function row(d, mode){
+  const li = el('li'); li.tabIndex=0; li.setAttribute('aria-expanded', String(st.open.has(d.kuerzel)));
+  if (mode) li.classList.add(mode);
+  const left = el('div');
+  left.append(el('p',d.kategorie,'name'));
+  if (mode!=='kompakt') {
+    left.append(el('p',d.kernaussage,'kern'));
     const chips = el('div',null,'chips');
     String(d.stichworte||'').split(';').map(s=>s.trim()).filter(Boolean).forEach(s=>chips.append(el('span',s,'chip')));
     left.append(chips);
-    const right = el('div',null,'barcell');
-    const tr = el('div',null,'track');
-    const f = el('div',null,'fill'); f.style.width = (100*d.projekte/d.basis)+'%';
-    const h = el('div',null,'hv'); h.style.width = (100*d.hervorgehoben/d.basis)+'%';
-    tr.append(f,h);
-    const num = el('div',null,'num'); num.append(el('b',String(d.projekte)), el('small','von '+d.basis+' Projekten, '+d.hervorgehoben+' hervorgehoben'));
-    right.append(tr,num);
-    const syn = el('p',d.synthese,'syn'); syn.hidden = !st.open.has(d.kuerzel);
-    li.setAttribute('aria-label', d.kategorie+', '+d.projekte+' von '+d.basis+' Projekten, davon '+d.hervorgehoben+' hervorgehoben');
-    li.append(left,right,syn);
-    const tog = ()=>{ st.open.has(d.kuerzel)?st.open.delete(d.kuerzel):st.open.add(d.kuerzel); draw(); };
-    li.onclick = tog;
-    li.onkeydown = e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tog(); } };
-    list.append(li);
-  });
-  if (st.step!==null) {
-    const neu = list.querySelector('li.new');
-    if (neu) { const bar = document.querySelector('.bar-row').getBoundingClientRect().height; const r = neu.getBoundingClientRect(); if (r.bottom > window.innerHeight - 16 || r.top < bar) window.scrollBy({top: r.bottom - window.innerHeight + 24, behavior: 'smooth'}); }
-    st.last = st.step-1;
   }
+  const right = el('div',null,'barcell');
+  const tr = el('div',null,'track');
+  const f = el('div',null,'fill'); f.style.width = (100*d.projekte/d.basis)+'%';
+  const h = el('div',null,'hv'); h.style.width = (100*d.hervorgehoben/d.basis)+'%';
+  tr.append(f,h);
+  const num = el('div',null,'num'); num.append(el('b',String(d.projekte)), el('small','von '+d.basis+' Projekten, '+d.hervorgehoben+' hervorgehoben'));
+  right.append(tr,num);
+  li.setAttribute('aria-label', d.kategorie+', '+d.projekte+' von '+d.basis+' Projekten, davon '+d.hervorgehoben+' hervorgehoben');
+  li.append(left,right);
+  if (mode!=='kompakt') { const syn = el('p',d.synthese,'syn'); syn.hidden = !st.open.has(d.kuerzel); li.append(syn); }
+  const tog = ()=>{ st.open.has(d.kuerzel)?st.open.delete(d.kuerzel):st.open.add(d.kuerzel); draw(); };
+  li.onclick = tog;
+  li.onkeydown = e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tog(); } };
+  return li;
+}
+
+function draw(){
+  controls();
+  const list = document.getElementById('list'); list.replaceChildren();
+  const prev = document.getElementById('prev'); prev.replaceChildren();
+  document.getElementById('prevbox').hidden = true;
+  if (st.step===null) { data.forEach(d=>list.append(row(d,''))); return; }
+  // Präsentationsmodus: der aktuelle Faktor steht immer an derselben Stelle direkt unter der Leiste
+  const cur = data[st.step-1];
+  const li = row(cur,'aktuell');
+  if (st.step-1 > st.last) li.classList.add('new');
+  list.append(li);
+  if (st.step>1) {
+    document.getElementById('prevbox').hidden = false;
+    data.slice(0, st.step-1).forEach(d=>prev.append(row(d,'kompakt')));
+  }
+  st.last = st.step-1;
+  const r = li.getBoundingClientRect(), bar = document.querySelector('.bar-row').getBoundingClientRect().bottom;
+  if (r.top < bar || r.bottom > window.innerHeight) window.scrollBy({top: r.top - bar - 8, behavior:'smooth'});
 }
 const barRow = document.querySelector('.bar-row');
 window.addEventListener('scroll', () => barRow.classList.toggle('stuck', barRow.getBoundingClientRect().top <= 0 && window.scrollY > 0), {passive:true});
