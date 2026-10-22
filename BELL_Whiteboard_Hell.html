@@ -338,6 +338,9 @@ function renderColumns(board, defs, keyFn, cardBodyFn, hideRegion=false) {
 }
 
 // ── Single-item tab ────────────────────────────────────────────────
+// Bei jeder neuen Fassung der Auswertungsdateien diese Zahl ändern, damit Browser nicht die alte Fassung aus dem Zwischenspeicher zeigen.
+const AUSWERTUNG_VERSION = '2026-10-22b';
+
 function renderSingle(board, key, label, accent, links) {
   const items = daten.filter(e => e[key] && e[key].trim());
   // Leiste mit Verweis auf die Auswertung der Inhaltsanalyse (nur in den Reitern Gelingensfaktoren und Hemmende Faktoren)
@@ -432,11 +435,11 @@ function renderInner() {
   if (activeTab === 'veraenderung') { renderSingle(board, 'veraenderung', 'Mehrwert bisher',     'pink');   return; }
   if (activeTab === 'veraenderungZiel') { renderSingle(board, 'veraenderungZiel', 'Wirkung am Projektende', 'blue'); return; }
   if (activeTab === 'gelingen')     { renderSingle(board, 'gelingen',     'Gelingensfaktoren',  'green', [
-    { href: 'BELL_Workshop_Gelingensfaktoren.html', text: 'Auswertung Gelingensfaktoren öffnen' },
-    { href: 'BELL_Plakat_Gelingensfaktoren_A2.pdf', text: 'Plakat als PDF' }]);  return; }
+    { href: 'BELL_Workshop_Gelingensfaktoren.html?v=' + AUSWERTUNG_VERSION, text: 'Auswertung Gelingensfaktoren öffnen' },
+    { href: 'BELL_Plakat_Gelingensfaktoren_A2.pdf?v=' + AUSWERTUNG_VERSION, text: 'Plakat als PDF' }]);  return; }
   if (activeTab === 'hindernisse') { renderSingle(board, 'hindernisse','Hemmende Faktoren',  'orange', [
-    { href: 'BELL_Workshop_Hemmende_Faktoren.html', text: 'Auswertung Hemmende Faktoren öffnen' },
-    { href: 'BELL_Plakat_Hemmende_Faktoren_A2.pdf', text: 'Plakat als PDF' }]); return; }
+    { href: 'BELL_Workshop_Hemmende_Faktoren.html?v=' + AUSWERTUNG_VERSION, text: 'Auswertung Hemmende Faktoren öffnen' },
+    { href: 'BELL_Plakat_Hemmende_Faktoren_A2.pdf?v=' + AUSWERTUNG_VERSION, text: 'Plakat als PDF' }]); return; }
   if (activeTab === 'geheimtipp')  { renderSingle(board, 'geheimtipp', 'Geheimtipps',           'purple'); return; }
   if (activeTab === 'suche')       { renderSingle(board, 'suche',      'Wonach suche ich',      'teal');   return; }
   if (activeTab === 'biete')       { renderSingle(board, 'biete',      'Was ich anbiete',       'pink');   return; }
