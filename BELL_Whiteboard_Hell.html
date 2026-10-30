@@ -573,10 +573,12 @@ function mTokens(t) { return ((t || '').toLowerCase().match(/[a-zäöüß][a-zä
 
 function mCompute() {
   // Dubletten je Projektnummer: Eintrag mit Suche/Biete und Zeitstempel bevorzugen
-  const byNr = {};
+  const byNr = {}, offiziell = {};
   daten.forEach(e => {
     if (!e.projekt || /^Name Projekt$/i.test(e.projekt.trim())) return;
-    const nr = (e.projektnummer || e.projekt).toString().trim();
+    const raw = (e.projektnummer || '').toString().trim(); const mm = raw.match(/(\d{2,4})\D*24\s*$/);
+    const nr = mm ? 'BELL.' + mm[1].padStart(4, '0') + '.24' : (/mosaik/i.test(e.projekt) ? 'BELL.0093.24' : (raw || e.projekt.toString().trim()));
+    if (!e.zeitstempel && /^BELL\./.test(nr)) offiziell[nr] = e.projekt;
     const rank = (mText(e.suche) || mText(e.biete) ? 2 : 0) + (e.zeitstempel ? 1 : 0);
     const ok = (e.einverstaendnisKontakt || '').trim().toLowerCase() === 'ja';
     const names = ok ? [e.ap1Name, e.ap2Name, e.ap3Name].map(n => (n || '').trim()).filter(Boolean) : [];
@@ -589,7 +591,7 @@ function mCompute() {
     const s = mText(e.suche), b = mText(e.biete), f = mText(e.fokus).replace(/\s+/g, ' ');
     const B = mCats(b);
     return {
-      id: nr, ap, p: e.projekt.replace(/\s+/g, ' ').trim().replace(/^["„“]+|["„“]+$/g, ''), r: mRegion(e.region),
+      id: nr, ap, p: (offiziell[nr] || e.projekt).replace(/\s+/g, ' ').trim().replace(/^["„“]+|["„“]+$/g, ''), r: mRegion(e.region),
       s, b, f, S: mCats(s), B, F: mCats(f).filter(c => !B.includes(c)),
       zg: Object.keys(M_ZG).filter(k => (e.zielgruppe || '').includes(k)).map(k => M_ZG[k]),
     };
@@ -628,13 +630,15 @@ function mCompute() {
       // nur allgemeine Felder ohne Text- oder Zielgruppenbezug: abwerten
       const generic = ['Formate & Methoden', 'Zielgruppen erreichen', 'Netzwerke & Kooperationen'];
       if (m.concat(mf).every(c => generic.includes(c)) && cos < 0.08 && !zgHit.length) sc *= 0.75;
-      if (sc < 0.35) return;
+      if (sc < 0.12) return;
       zgm.push(...zgHit.filter(z => !zgm.includes(z)));
       const terms = prod.sort((x, y) => y[0] - x[0]).slice(0, 4).map(x => x[1]);
       L.push({ j, sc, m, mf, zg: zgm, sa: mBest(a.s, m, terms), sb: mBest(b.b, m, terms), sf: mf.length ? mBest(b.f, mf) : '', same: b.r === a.r });
     });
     // Auswahl nacheinander: bereits abgedeckte Anliegen zählen beim nächsten Vorschlag weniger,
     // damit jedes Anliegen eines Projekts einen passenden Partner bekommt
+    const strong = L.filter(x => x.sc >= 0.35);
+    if (strong.length) L.splice(0, L.length, ...strong); else { L.sort((x, y) => y.sc - x.sc); L.splice(2); }
     const pick = [], covered = new Set();
     while (pick.length < 4 && L.length) {
       L.forEach(x => x.adj = x.sc - 0.6 * x.m.concat(x.mf).filter(c => covered.has(c)).reduce((s, c) => s + (W[c] || 0.3), 0));  // abgedeckt = ausdrücklich angeboten
@@ -652,7 +656,7 @@ function mCompute() {
 function renderMatching(board) {
   if (mCache.daten !== daten) mCache = { daten, P: mCompute() };
   const P = mCache.P;
-  const withCards = P.map((p, i) => ({ p, i })).filter(({ p }) => p.M.length || p.R.length)
+  const withCards = P.map((p, i) => ({ p, i })).filter(({ p }) => p.s || p.b || p.M.length || p.R.length)
     .sort((x, y) => x.p.p.localeCompare(y.p.p, 'de'));
   const ohne = P.filter(p => !p.s && !p.b).length;
   const opts = withCards.map(({ p, i }) => `<option value="${i}"${String(i) === mSel ? ' selected' : ''}>${esc(p.p)}</option>`).join('');
@@ -671,12 +675,13 @@ function renderMatching(board) {
         ${tags.length ? `<div class="m-tags">${tags.map(t => tag(t, 'teal')).join('')}</div>` : ''}${why}${zg}
         <div class="m-actions"><button type="button" class="m-act" data-go="uebersicht" data-nr="${esc(o.id)}">Projekt ansehen</button>${o.ap.length ? `<button type="button" class="m-act" data-go="kontakte" data-nr="${esc(o.id)}">Kontakt ansehen</button>` : ''}</div></div></li>`;
     }).join('');
-    const learn = p.R.slice(0, 5).map(x => `<li><b>${esc(P[x.i].p)}</b> <span class="card-meta">${esc(P[x.i].r)}</span>${P[x.i].ap.length ? `<br><span class="m-person">${esc(P[x.i].ap.join(', '))}</span>` : ''}${x.m.length ? `<br><span class="m-seek">sucht ${esc(x.m.join(', '))}</span>` : ''}</li>`).join('');
+    const learn = p.R.slice(0, 3).map(x => `<li><b>${esc(P[x.i].p)}</b> <span class="card-meta">${esc(P[x.i].r)}</span>${P[x.i].ap.length ? `<br><span class="m-person">${esc(P[x.i].ap.join(', '))}</span>` : ''}${x.m.length ? `<br><span class="m-seek">sucht ${esc(x.m.join(', '))}</span>` : ''}</li>`).join('');
     return `<div class="card m-card" data-card="${i}">
-      <div class="card-head"><p class="m-eyebrow">Matching-Karte</p><p class="card-project">${esc(p.p)}</p><p class="card-meta">${esc(p.r) || 'Region nicht angegeben'}${p.ap.length ? ' · ' + esc(p.ap.join(', ')) : ''}</p>
+      <div class="card-head"><p class="m-eyebrow">Matching-Karte</p><p class="card-project">${esc(p.p)}</p><p class="card-meta">${/^BELL\./.test(p.id) ? esc(p.id) + ' · ' : ''}${esc(p.r) || 'Region nicht angegeben'}${p.ap.length ? ' · ' + esc(p.ap.join(', ')) : ''}</p>
       <button type="button" class="m-pdf" data-pdf="${i}" title="Diese Karte als PDF herunterladen">PDF</button></div>
       <div class="card-body">
-        ${p.s ? `<p class="m-label">Ihr sucht</p><p class="m-quote">${esc(p.s.length > 380 ? p.s.slice(0, 380).replace(/\s\S*$/, '') + ' …' : p.s)}</p>` : ''}
+        ${p.s ? `<p class="m-label">Ihr sucht</p><p class="m-quote">${esc(p.s)}</p>` : ''}
+        ${p.b ? `<p class="m-label" style="margin-top:.8rem">Ihr bietet</p><p class="m-quote">${esc(p.b)}</p>` : ''}
         ${partners ? `<p class="m-label" style="margin-top:.8rem">Eure Gesprächspartner</p><ol class="m-list">${partners}</ol>` : ''}
         ${learn ? `<p class="m-label" style="margin-top:.8rem">Diese Projekte möchten von euch lernen</p><ul class="m-learn">${learn}</ul>` : ''}
       </div></div>`;
