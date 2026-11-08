@@ -54,6 +54,8 @@ body {
 }
 .tab:hover { color: var(--teal); border-color: var(--teal); }
 .tab.active { color: #fff; background: var(--teal); border-color: var(--teal); font-weight: 700; }
+.tab-link { font-family: inherit; font-size: 12px; font-weight: 600; color: var(--teal); background: var(--surface); border: 1px solid var(--teal); border-radius: 20px; padding: 0.4rem 0.95rem; white-space: nowrap; text-decoration: none; transition: all 0.15s; }
+.tab-link:hover { color: #fff; background: var(--teal); }
 
 /* Column layout for grouping tabs */
 .columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1rem; align-items: start; }
@@ -220,6 +222,7 @@ body {
     <button class="tab" data-tab="uebersicht">Übersicht</button>
     <button class="tab" data-tab="kontakte">Kontakte</button>
     <button class="tab" data-tab="feedback">Feedback</button>
+    <a class="tab-link" href="BELL_Workshop_Board.html" target="_blank" rel="noopener">Workshop-Ergebnisse ↗</a>
   </div>
 </div>
 
