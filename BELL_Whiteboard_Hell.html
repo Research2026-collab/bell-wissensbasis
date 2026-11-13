@@ -132,6 +132,7 @@ body {
 
 /* Matching-Karten */
 .m-bar { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-bottom:.6rem; }
+.m-bar input[type=search] { font-family:inherit; font-size:13px; padding:.4rem .6rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); color:var(--text); width:18rem; max-width:100%; }
 .m-bar select { font-family:inherit; font-size:13px; padding:.4rem .6rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); color:var(--text); max-width:100%; }
 .m-hint { font-size:12px; color:var(--text-faint); margin-bottom:1rem; max-width:80ch; line-height:1.6; }
 .m-card { border-left:3px solid var(--teal); }
@@ -542,6 +543,18 @@ const M_EMPTY = /Aufbauphase befinden, lassen sich momentan keine Aussagen/i;
 // Anfangscache als gültig und die Matching-Karten blieben leer.
 let mCache = { daten: null, P: [] };
 let mSel = '';
+let mQ = '';
+// Suche nach BELL-Nummer (z. B. 180, 0180, BELL.0180.24) oder nach einem Teil des Projektnamens
+function mMatch(p, q) {
+  q = (q || '').trim().toLowerCase();
+  if (!q) return true;
+  const kompakt = q.replace(/\s+/g, '');
+  const pm = (p.id || '').match(/^BELL\.(\d+)\./i);
+  if (/^(bell)?[.\-]*\d+([.\-]*\d*)?$/.test(kompakt)) {
+    return pm ? parseInt(pm[1], 10) === parseInt(kompakt.match(/\d+/)[0], 10) : false;
+  }
+  return p.p.toLowerCase().includes(q) || (p.id || '').toLowerCase().includes(q);
+}
 
 function mText(t) { t = (t || '').toString().trim(); return M_EMPTY.test(t) ? '' : t; }
 function mCats(t) { const l = (t || '').toLowerCase(); return t ? Object.keys(M_CATS).filter(k => l.search(new RegExp(M_CATS[k].source)) >= 0) : []; }
@@ -657,13 +670,18 @@ function mCompute() {
 }
 
 function renderMatching(board) {
+  const aktiv = document.activeElement && document.activeElement.id === 'mQ' ? document.activeElement.selectionStart : -1;
   if (mCache.daten !== daten) mCache = { daten, P: mCompute() };
   const P = mCache.P;
   const withCards = P.map((p, i) => ({ p, i })).filter(({ p }) => p.s || p.b || p.M.length || p.R.length)
     .sort((x, y) => x.p.p.localeCompare(y.p.p, 'de'));
   const ohne = P.filter(p => !p.s && !p.b).length;
-  const opts = withCards.map(({ p, i }) => `<option value="${i}"${String(i) === mSel ? ' selected' : ''}>${esc(p.p)}</option>`).join('');
-  const shown = mSel === '' ? withCards : withCards.filter(({ i }) => String(i) === mSel);
+  const opts = withCards.map(({ p, i }) => `<option value="${i}"${String(i) === mSel ? ' selected' : ''}>${esc(p.p)}${/^BELL\./.test(p.id) ? ' · ' + esc(p.id) : ''}</option>`).join('');
+  const shown = mSel !== '' ? withCards.filter(({ i }) => String(i) === mSel)
+    : mQ.trim() ? withCards.filter(({ p }) => mMatch(p, mQ)) : withCards;
+  const leer = mQ.trim() && !shown.length
+    ? `<p class="empty">Keine Matching-Karte zu „${esc(mQ.trim())}“ gefunden. Bitte prüfen Sie die BELL-Nummer. Projekte ohne Angaben zu Suche und Angebot haben keine eigene Karte.</p>`
+    : '<p class="empty">Noch keine Suche- und Biete-Angaben für ein Matching.</p>';
   const tag = (t, c) => `<span class="tag" style="background:var(--${c}-light);color:var(--${c})">${esc(t)}</span>`;
   const card = ({ p, i }) => {
     const partners = p.M.map((x, n) => {
@@ -691,18 +709,23 @@ function renderMatching(board) {
   };
   board.innerHTML = `
     <div class="m-bar">
+      <label for="mQ" class="m-label" style="margin:0">Suche</label>
+      <input type="search" id="mQ" value="${esc(mQ)}" placeholder="BELL-Nummer, z. B. 0180, oder Projektname" autocomplete="off">
       <label for="mSel" class="m-label" style="margin:0">Karte für</label>
       <select id="mSel"><option value="">Alle Projekte (${withCards.length})</option>${opts}</select>
-      <button type="button" class="tab" id="mPdfAll">${mSel === '' ? 'Alle Karten als PDF' : 'Karte als PDF'}</button>
+      <button type="button" class="tab" id="mPdfAll">${mSel !== '' || shown.length === 1 ? 'Karte als PDF' : mQ.trim() ? 'Gefundene Karten als PDF' : 'Alle Karten als PDF'}</button>
       <button type="button" class="tab" id="mPrint">Drucken</button>
       <span class="m-status" id="mStatus" aria-live="polite"></span>
     </div>
     <p class="m-hint">Die Vorschläge verbinden, was ein Projekt sucht, mit dem, was andere anbieten oder laut Projektbeschreibung tun, und berücksichtigen gemeinsame Zielgruppen. Seltene Anliegen zählen stärker als allgemeine.${ohne ? ` ${ohne} Projekte haben Suche und Biete noch nicht ausgefüllt und erhalten deshalb keine eigene Karte.` : ''}</p>
-    <div class="cards-grid m-grid${mSel !== '' ? ' m-single' : ''}">${shown.map(card).join('') || '<p class="empty">Noch keine Suche- und Biete-Angaben für ein Matching.</p>'}</div>`;
-  document.getElementById('mSel').onchange = ev => { mSel = ev.target.value; render(); };
+    <div class="cards-grid m-grid${mSel !== '' || shown.length === 1 ? ' m-single' : ''}">${shown.map(card).join('') || leer}</div>`;
+  document.getElementById('mSel').onchange = ev => { mSel = ev.target.value; mQ = ''; render(); };
+  const qEl = document.getElementById('mQ');
+  qEl.oninput = ev => { mQ = ev.target.value; mSel = ''; render(); };
+  if (aktiv >= 0) { qEl.focus(); try { qEl.setSelectionRange(aktiv, aktiv); } catch (e) {} }
   document.getElementById('mPrint').onclick = () => window.print();
   mLibs().catch(() => {});
-  document.getElementById('mPdfAll').onclick = () => mPdf(shown.map(x => x.i), mSel === '' ? 'BELL_Matching-Karten' : 'Matching-Karte_' + P[+mSel].p);
+  document.getElementById('mPdfAll').onclick = () => mPdf(shown.map(x => x.i), shown.length === 1 ? 'Matching-Karte_' + shown[0].p.p : 'BELL_Matching-Karten');
   board.querySelectorAll('[data-go]').forEach(b => b.onclick = () => mGoto(b.dataset.go, b.dataset.nr));
   board.querySelectorAll('[data-pdf]').forEach(b => b.onclick = () => mPdf([+b.dataset.pdf], 'Matching-Karte_' + P[+b.dataset.pdf].p));
 }
