@@ -451,7 +451,7 @@ function renderInner() {
   if (activeTab === 'matching')    { renderMatching(board); return; }
 
   if (activeTab === 'uebersicht') {
-    const cards = daten.map(e => {
+    const cards = uebersichtListe().map(({ nr, e, name }) => {
       const themen = list(e.themen).map(t => t==='Sonstiges'&&e.themenSonstiges?e.themenSonstiges:t);
       const zg     = list(e.zielgruppe).map(z => z==='Sonstiges'&&e.zielgruppeSonstiges?e.zielgruppeSonstiges:z);
       const col = (THEMEN_DEF.find(t => list(e.themen).includes(t.name)) || {color:'gray'}).color;
@@ -470,8 +470,10 @@ function renderInner() {
         e.suche       ? `<p style="margin-top:.6rem"><strong style="font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em">Wonach suche ich</strong><br>${esc(e.suche)}</p>` : '',
         e.biete       ? `<p style="margin-top:.6rem"><strong style="font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em">Was ich anbiete</strong><br>${esc(e.biete)}</p>` : '',
       ].filter(Boolean).join('');
-      return `<div class="card" data-nr="${esc((e.projektnummer||'').trim())}" data-rich="${e.suche||e.biete?'1':'0'}" style="border-left:3px solid var(--${col});margin-bottom:.75rem;break-inside:avoid">
-        ${cardHead(e)}
+      const kopf = cardHead(Object.assign({}, e, { projekt: name }))
+        .replace('<p class="card-meta">', /^BELL\./.test(nr) ? `<p class="card-meta">${esc(nr)} · ` : '<p class="card-meta">');
+      return `<div class="card" data-nr="${esc(nr)}" data-rich="1" style="border-left:3px solid var(--${col});margin-bottom:.75rem;break-inside:avoid">
+        ${kopf}
         ${tagHtml}
         ${zgLine ? `<div style="padding:0 1rem .5rem">${zgLine}</div>` : ''}
         <div class="card-body">${body||'<span style="color:var(--text-faint)">Keine weiteren Angaben</span>'}</div>
@@ -587,13 +589,40 @@ function mBest(t, cats, terms) {
 }
 function mTokens(t) { return ((t || '').toLowerCase().match(/[a-zäöüß][a-zäöüß-]{3,}/g) || []).filter(w => !M_STOP.has(w)); }
 
+// Einheitliche BELL-Nummer, z. B. aus „0180“ oder „BELL 180/24“ wird „BELL.0180.24“
+function projektNr(e) {
+  const raw = (e.projektnummer || '').toString().trim(); const mm = raw.match(/(\d{2,4})\D*24\s*$/);
+  return mm ? 'BELL.' + mm[1].padStart(4, '0') + '.24' : (/mosaik/i.test(e.projekt || '') ? 'BELL.0093.24' : (raw || (e.projekt || '').toString().trim()));
+}
+
+// Übersicht: ein Eintrag je BELL-Nummer, sortiert nach BELL-Nummer.
+// Bei Dubletten gilt dieselbe Vorrangregel wie bei den Matching-Karten (Suche/Biete, dann Zeitstempel),
+// bei Gleichstand der Eintrag mit den meisten ausgefüllten Feldern.
+const UEBERSICHT_FELDER = ['fokus','begeisterung','veraenderung','veraenderungZiel','gelingen','hindernisse','geheimtipp','suche','biete'];
+function uebersichtListe() {
+  const byNr = {}, offiziell = {};
+  daten.forEach(e => {
+    if (!e.projekt || /^Name Projekt$/i.test(e.projekt.trim())) return;
+    const nr = projektNr(e);
+    if (!e.zeitstempel && /^BELL\./.test(nr)) offiziell[nr] = e.projekt;
+    const rank = ((mText(e.suche) || mText(e.biete) ? 2 : 0) + (e.zeitstempel ? 1 : 0)) * 100
+      + UEBERSICHT_FELDER.filter(k => mText(e[k])).length;
+    if (!byNr[nr] || rank > byNr[nr].rank) byNr[nr] = { e, rank };
+  });
+  return Object.entries(byNr).map(([nr, { e }]) => ({ nr, e, name: (offiziell[nr] || e.projekt).replace(/\s+/g, ' ').trim() }))
+    .sort((x, y) => {
+      const nx = /^BELL\./.test(x.nr), ny = /^BELL\./.test(y.nr);
+      if (nx !== ny) return nx ? -1 : 1;
+      return nx ? x.nr.localeCompare(y.nr) : x.name.localeCompare(y.name, 'de');
+    });
+}
+
 function mCompute() {
   // Dubletten je Projektnummer: Eintrag mit Suche/Biete und Zeitstempel bevorzugen
   const byNr = {}, offiziell = {};
   daten.forEach(e => {
     if (!e.projekt || /^Name Projekt$/i.test(e.projekt.trim())) return;
-    const raw = (e.projektnummer || '').toString().trim(); const mm = raw.match(/(\d{2,4})\D*24\s*$/);
-    const nr = mm ? 'BELL.' + mm[1].padStart(4, '0') + '.24' : (/mosaik/i.test(e.projekt) ? 'BELL.0093.24' : (raw || e.projekt.toString().trim()));
+    const nr = projektNr(e);
     if (!e.zeitstempel && /^BELL\./.test(nr)) offiziell[nr] = e.projekt;
     const rank = (mText(e.suche) || mText(e.biete) ? 2 : 0) + (e.zeitstempel ? 1 : 0);
     const ok = (e.einverstaendnisKontakt || '').trim().toLowerCase() === 'ja';
