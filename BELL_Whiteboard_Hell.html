@@ -674,9 +674,13 @@ function renderMatching(board) {
   if (mCache.daten !== daten) mCache = { daten, P: mCompute() };
   const P = mCache.P;
   const withCards = P.map((p, i) => ({ p, i })).filter(({ p }) => p.s || p.b || p.M.length || p.R.length)
-    .sort((x, y) => x.p.p.localeCompare(y.p.p, 'de'));
+    .sort((x, y) => {
+      const nx = /^BELL\./.test(x.p.id), ny = /^BELL\./.test(y.p.id);
+      if (nx !== ny) return nx ? -1 : 1;
+      return nx ? x.p.id.localeCompare(y.p.id) : x.p.p.localeCompare(y.p.p, 'de');
+    });
   const ohne = P.filter(p => !p.s && !p.b).length;
-  const opts = withCards.map(({ p, i }) => `<option value="${i}"${String(i) === mSel ? ' selected' : ''}>${esc(p.p)}${/^BELL\./.test(p.id) ? ' · ' + esc(p.id) : ''}</option>`).join('');
+  const opts = withCards.map(({ p, i }) => `<option value="${i}"${String(i) === mSel ? ' selected' : ''}>${/^BELL\./.test(p.id) ? esc(p.id) + ' · ' : ''}${esc(p.p)}</option>`).join('');
   const shown = mSel !== '' ? withCards.filter(({ i }) => String(i) === mSel)
     : mQ.trim() ? withCards.filter(({ p }) => mMatch(p, mQ)) : withCards;
   const leer = mQ.trim() && !shown.length
