@@ -235,6 +235,7 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzt29vNU-riSrLsKJuORy
 let daten = [];
 let letzterStand = '';
 let activeTab = 'themen';
+let uQ = '';   // Suchbegriff im Reiter Übersicht
 
 const THEMEN_DEF = [
   { name: 'Alle Themen/keine Festlegung',    color: 'blue'   },
@@ -451,7 +452,11 @@ function renderInner() {
   if (activeTab === 'matching')    { renderMatching(board); return; }
 
   if (activeTab === 'uebersicht') {
-    const cards = uebersichtListe().map(({ nr, e, name }) => {
+    const aktivU = document.activeElement && document.activeElement.id === 'uQ' ? document.activeElement.selectionStart : -1;
+    const alle = uebersichtListe();
+    // Suche wie bei den Matching-Karten: BELL-Nummer (z. B. 180, 0180, BELL.0180.24) oder Teil des Projektnamens
+    const gefunden = uQ.trim() ? alle.filter(x => mMatch({ id: x.nr, p: x.name }, uQ)) : alle;
+    const cards = gefunden.map(({ nr, e, name }) => {
       const themen = list(e.themen).map(t => t==='Sonstiges'&&e.themenSonstiges?e.themenSonstiges:t);
       const zg     = list(e.zielgruppe).map(z => z==='Sonstiges'&&e.zielgruppeSonstiges?e.zielgruppeSonstiges:z);
       const col = (THEMEN_DEF.find(t => list(e.themen).includes(t.name)) || {color:'gray'}).color;
@@ -479,7 +484,17 @@ function renderInner() {
         <div class="card-body">${body||'<span style="color:var(--text-faint)">Keine weiteren Angaben</span>'}</div>
       </div>`;
     }).join('');
-    board.innerHTML = `<div class="cards-grid">${cards}</div>`;
+    const leerU = `<p class="empty">Kein Projekt zu „${esc(uQ.trim())}“ gefunden. Bitte prüfen Sie die BELL-Nummer oder den Projektnamen.</p>`;
+    board.innerHTML = `
+      <div class="m-bar">
+        <label for="uQ" class="m-label" style="margin:0">Suche</label>
+        <input type="search" id="uQ" value="${esc(uQ)}" placeholder="BELL-Nummer, z. B. 0180, oder Projektname" autocomplete="off">
+        <span class="m-status">${uQ.trim() ? `${gefunden.length} von ${alle.length} Projekten` : `${alle.length} Projekte`}</span>
+      </div>
+      ${cards ? `<div class="cards-grid">${cards}</div>` : leerU}`;
+    const uEl = document.getElementById('uQ');
+    uEl.oninput = ev => { uQ = ev.target.value; render(); };
+    if (aktivU >= 0) { uEl.focus(); try { uEl.setSelectionRange(aktivU, aktivU); } catch (e) {} }
     mHighlight();
     return;
   }
