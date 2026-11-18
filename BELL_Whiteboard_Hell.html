@@ -640,6 +640,330 @@ function uebersichtListe() {
     });
 }
 
+// Projektstammliste aus BELL_Wissensdatenbank.xlsx (nur Projektnummer, Name, Region).
+const M_PROJEKT_STAMM = [
+  {
+    "id": "BELL.0003.24",
+    "p": "Akademie der Generationen SeniorInnenakademie",
+    "r": "Rheinland-Pfalz"
+  },
+  {
+    "id": "BELL.0007.24",
+    "p": "BEE: Bildung - Erfahrung - Engagement - Teilhabe für Menschen mit Behinderungen stärken",
+    "r": "Hamburg"
+  },
+  {
+    "id": "BELL.0011.24",
+    "p": "Bildung & Begegnung – 60 plus",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0013.24",
+    "p": "ZusammenZeit",
+    "r": "Thüringen"
+  },
+  {
+    "id": "BELL.0018.24",
+    "p": "Impuls",
+    "r": "Sachsen"
+  },
+  {
+    "id": "BELL.0019.24",
+    "p": "60PLUS – Gesund aktiv bleiben!",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0030.24",
+    "p": "BELLA VITA: Bildung und Erfahrung lebenslang aktivieren – Vitalität, Innovation und Teilhabe im Alter",
+    "r": "Niedersachsen"
+  },
+  {
+    "id": "BELL.0034.24",
+    "p": "Sehen-Lernern-Teilhaben",
+    "r": "Niedersachsen"
+  },
+  {
+    "id": "BELL.0036.24",
+    "p": "DigiLand - Digitale Kompetenz und Teilhabe für ältere Menschen auf dem Land",
+    "r": "Niedersachsen"
+  },
+  {
+    "id": "BELL.0037.24",
+    "p": "Aqua-Mentorinnen und -Mentoren",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0040.24",
+    "p": "DiTA – Digitale Teilhabe im Alter",
+    "r": "Sachsen-Anhalt"
+  },
+  {
+    "id": "BELL.0042.24",
+    "p": "Lernen im Alter! Engagiert mit Vergnügen!",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0044.24",
+    "p": "Engagement Plus - Systematische Förderung des Engagements von Senior:innen für Jugendliche in Berlin",
+    "r": "Berlin"
+  },
+  {
+    "id": "BELL.0045.24",
+    "p": "GEFRAGT! – ein WIR für nachhaltige Bildung",
+    "r": "Berlin"
+  },
+  {
+    "id": "BELL.0047.24",
+    "p": "Lebensraum Lernen – Gesundheits- und Bildungszentrum für Senior*innen",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0048.24",
+    "p": "Lern-und Integrationsangebote für Erwachsene 60+ mit Zuwanderungsgeschichte",
+    "r": "Niedersachsen"
+  },
+  {
+    "id": "BELL.0049.24",
+    "p": "Männerschuppen: Ein australisches Konzept für Deutschland",
+    "r": "Bremen"
+  },
+  {
+    "id": "BELL.0052.24",
+    "p": "Ich-Du-Wir, niemand lebt allein - Rudow verbindet",
+    "r": "Berlin"
+  },
+  {
+    "id": "BELL.0056.24",
+    "p": "LEBhaft lernen – Wissen für Generationen und Kulturen",
+    "r": "Niedersachsen"
+  },
+  {
+    "id": "BELL.0061.24",
+    "p": "Aktiv leben in Mecklenburg-Vorpommern",
+    "r": "Mecklenburg-Vorpommern"
+  },
+  {
+    "id": "BELL.0062.24",
+    "p": "Segel miT - Senioren*innen gerechtes Lernen mit uns in Thüringen",
+    "r": "Thüringen"
+  },
+  {
+    "id": "BELL.0065.24",
+    "p": "LUCIA - Lernen und Engagement für Chancengleichheit im Alter",
+    "r": "Hessen"
+  },
+  {
+    "id": "BELL.0067.24",
+    "p": "BEST 60 Plus",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0070.24",
+    "p": "RAGE Prävention (Rechtsextremismus im Alter als Gefahr für Zusammenhalt und Engagement. Entwicklung eines Präventionsangebots.)",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0071.24",
+    "p": "BrückenBildung-Begegnung und Beteiligung von Migrantinnen 60+",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0076.24",
+    "p": "LernLeben 60+ im Dialog",
+    "r": "Berlin"
+  },
+  {
+    "id": "BELL.0077.24",
+    "p": "Bühne der Generationen - Generationsübergreifende Begegnungs- und Bildungsgelegenheiten",
+    "r": "Hessen"
+  },
+  {
+    "id": "BELL.0078.24",
+    "p": "„LiA – Lernen im Alter“\n Bedarfsorientierte Bildungsangebote für vielfältige Lebenslagen",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0080.24",
+    "p": "Lernen und Gestalten im Alter - Digital, Nachhaltig, Engagiert",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0081.24",
+    "p": "Musizieren im Alter",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0082.24",
+    "p": "Neue Wege4 - Das Praktikum für den Ruhestand",
+    "r": "Sachsen-Anhalt"
+  },
+  {
+    "id": "BELL.0083.24",
+    "p": "Chance 60 plus",
+    "r": "Berlin"
+  },
+  {
+    "id": "BELL.0087.24",
+    "p": "LebensLernraum im Alter",
+    "r": "Brandenburg"
+  },
+  {
+    "id": "BELL.0089.24",
+    "p": "HAltung: Hybrid Alt und Jung",
+    "r": "Niedersachsen"
+  },
+  {
+    "id": "BELL.0090.24",
+    "p": "Lernen mit der Diakonie - ein Leben lang",
+    "r": "Bayern"
+  },
+  {
+    "id": "BELL.0093.24",
+    "p": "MOSAIK Lebenszeit . Bildungszeit . Engagementzeit",
+    "r": "Niedersachsen"
+  },
+  {
+    "id": "BELL.0097.24",
+    "p": "SENIOR LABS- Bildung. Engagement. Lebensfreude. (Heldburg und Eisfeld)",
+    "r": "Thüringen"
+  },
+  {
+    "id": "BELL.0104.24",
+    "p": "Ein Plus an Bildungszugängen und ein Plus an Bildungsformaten für die Generation 60 plus in Sachsen",
+    "r": "Sachsen"
+  },
+  {
+    "id": "BELL.0105.24",
+    "p": "kURSELA \"Kultur auf Rädern - intergenerationelle Begegnungen mit Senior:innen auf Lastenfahrrädern\"",
+    "r": "Mecklenburg-Vorpommern"
+  },
+  {
+    "id": "BELL.0106.24",
+    "p": "Bildung leben. Engagement entfalten.",
+    "r": "Mecklenburg-Vorpommern"
+  },
+  {
+    "id": "BELL.0111.24",
+    "p": "BiEBeR - Bildung, Ehrenamt und Begegnung in der Region 60+",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0115.24",
+    "p": "Senior Social Space",
+    "r": "Sachsen"
+  },
+  {
+    "id": "BELL.0118.24",
+    "p": "Erfahrung zählt",
+    "r": "Brandenburg"
+  },
+  {
+    "id": "BELL.0120.24",
+    "p": "LOS – LernOrte 60+",
+    "r": "Niedersachsen"
+  },
+  {
+    "id": "BELL.0121.24",
+    "p": "In Bewegung bleiben",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0124.24",
+    "p": "SeniorCLASS – Orientierungsjahr für die nachberufliche Lebensphase",
+    "r": "Bayern"
+  },
+  {
+    "id": "BELL.0128.24",
+    "p": "SeniorBus & SeniorScout für ein aktives Leben im ländlichen Raum",
+    "r": "Brandenburg"
+  },
+  {
+    "id": "BELL.0135.24",
+    "p": "Neugier kennt kein Alter",
+    "r": "Thüringen"
+  },
+  {
+    "id": "BELL.0136.24",
+    "p": "Vielfalt hilft",
+    "r": "Hessen"
+  },
+  {
+    "id": "BELL.0140.24",
+    "p": "Souverän mit Smartphone, Tablet & Co. - Sicher und selbstständig im digitalen Alltag",
+    "r": "Berlin"
+  },
+  {
+    "id": "BELL.0146.24",
+    "p": "kvhs aktiviert 60plus: Habt Mut im Ruhestand!",
+    "r": "Niedersachsen"
+  },
+  {
+    "id": "BELL.0147.24",
+    "p": "Ein Leben lang aktiv: Bildung und Engagement im Alter",
+    "r": "Thüringen"
+  },
+  {
+    "id": "BELL.0152.24",
+    "p": "Lebenslanges Lernen in Annen",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0153.24",
+    "p": "Digitale Kompetenzen und Bildung für Menschen 60+",
+    "r": "Schleswig-Holstein"
+  },
+  {
+    "id": "BELL.0154.24",
+    "p": "Demokratie erleben – Politische Bildungsfahrten für Menschen Ü60",
+    "r": "Brandenburg"
+  },
+  {
+    "id": "BELL.0161.24",
+    "p": "Senior*innen Kreativ- & Digitalwerkstatt",
+    "r": "Sachsen"
+  },
+  {
+    "id": "BELL.0167.24",
+    "p": "Kompetent bis ins Alter",
+    "r": "Brandenburg"
+  },
+  {
+    "id": "BELL.0177.24",
+    "p": "sana – Lebensfreude im Alter",
+    "r": "Bremen"
+  },
+  {
+    "id": "BELL.0178.24",
+    "p": "Zukunft gestalten im Kiez – Werkstatt für Bildung & Engagement in Neukölln",
+    "r": "Berlin"
+  },
+  {
+    "id": "BELL.0180.24",
+    "p": "60 Plus – Erfahrungen teilen, Neues entdecken",
+    "r": "Hessen"
+  },
+  {
+    "id": "BELL.0181.24",
+    "p": "DNA - Die Neuen Alten",
+    "r": "Baden-Württemberg"
+  },
+  {
+    "id": "BELL.0182.24",
+    "p": "TANDEM - Tales Across Nations: Digital Encounters & Memories",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0185.24",
+    "p": "Bellavita-gemeinsam statt einsam",
+    "r": "Nordrhein-Westfalen"
+  },
+  {
+    "id": "BELL.0187.24",
+    "p": "gesund und digital vor Ort - Aufsuchende Bildungsangebote für ältere Menschen in Baden-Württemberg",
+    "r": "Baden-Württemberg"
+  }
+];
+
 function mCompute() {
   // Dubletten je Projektnummer: Eintrag mit Suche/Biete und Zeitstempel bevorzugen
   const byNr = {}, offiziell = {};
@@ -663,6 +987,14 @@ function mCompute() {
       s, b, f, S: mCats(s), B, F: mCats(f).filter(c => !B.includes(c)),
       zg: Object.keys(M_ZG).filter(k => (e.zielgruppe || '').includes(k)).map(k => M_ZG[k]),
     };
+  });
+  // Fehlende Projekte aus der Stammliste ergänzen; Live-Einträge haben Vorrang.
+  const vorhandeneIds = new Set(P.map(p => p.id));
+  M_PROJEKT_STAMM.forEach(stamm => {
+    if (vorhandeneIds.has(stamm.id)) return;
+    P.push({ id: stamm.id, p: stamm.p, r: stamm.r, ap: [],
+      s: '', b: '', f: '', S: [], B: [], F: [], zg: [] });
+    vorhandeneIds.add(stamm.id);
   });
   // Gewichte: seltene Angebote zählen mehr
   const W = {};
@@ -1347,31 +1679,32 @@ const M_VOR_ORT_SUCHE = {
   'BELL.0044.24': ['Referent*innen zu Kinderschutz und geschlechtergerechter Pädagogik.', 'Erfahrungen mit der Begleitung Ehrenamtlicher bei der Entwicklung eigener Bildungsangebote an Kooperationsorten.']
 };
 function mVorOrt(p, P) {
-  const links = M_VOR_ORT.filter(x => x.owner === p.id);
+  // Beide Seiten einer auf den Pinnwaenden festgehaltenen Projektverbindung zeigen.
+  const links = M_VOR_ORT.filter(x => x.owner === p.id || x.target === p.id);
   const zusatz = M_VOR_ORT_SUCHE[p.id] || [];
   if (!links.length && !zusatz.length) return '';
-  const lookup = Object.fromEntries(P.map(x => [x.id,x.p]));
+  const lookup = Object.fromEntries(P.map(x => [x.id, x.p]));
   const groups = {};
   links.forEach(x => { (groups[x.topic] ||= []).push(x); });
   const items = Object.entries(groups).map(([topic, xs]) => {
     const entries = xs.map(x => {
-      const partner = x.targetName || lookup[x.target] || x.target;
-
-      return `<li class="m-site-entry"><b>${esc(partner)}</b> <span class="card-meta">${esc(x.target)}</span>` +
-        `</li>`;
+      const partnerId = x.owner === p.id ? x.target : x.owner;
+      const partner = lookup[partnerId] || (x.owner === p.id ? x.targetName : '') || partnerId;
+      return `<li class="m-site-entry"><b>${esc(partner)}</b> <span class="card-meta">${esc(partnerId)}</span></li>`;
     }).join('');
     return `<div class="m-site-group"><p class="m-site-topic">${esc(topic)}</p><ul class="m-site-list">${entries}</ul></div>`;
   }).join('');
   const suchblock = zusatz.length ? `<div class="m-site-group"><p class="m-site-topic">Zusätzlich auf der Tagung gesuchte Expertise</p><ul class="m-site-list">${zusatz.map(t=>`<li class="m-site-entry">${esc(t)}</li>`).join('')}</ul></div>` : '';
-  return `<div class="m-site"><p class="m-label">Auf den Tagungstafeln dokumentierte Projektbezüge</p>` +
-    `<p class="m-site-hint">Handschriftliche Give-&-Take-Einträge der BELL-Tagung vom 16.–17. November 2026.</p>${items}${suchblock}</div>`;
+  return `<div class="m-site"><p class="m-label">Auf der Tagung ergänzte Projektverbindungen</p>${items}${suchblock}</div>`;
 }
 
 function renderMatching(board) {
   const aktiv = document.activeElement && document.activeElement.id === 'mQ' ? document.activeElement.selectionStart : -1;
   if (mCache.daten !== daten) mCache = { daten, P: mCompute() };
   const P = mCache.P;
-  const withCards = P.map((p, i) => ({ p, i })).filter(({ p }) => p.s || p.b || p.M.length || p.R.length || (M_VOR_ORT.some(x => x.owner === p.id) || !!M_VOR_ORT_SUCHE[p.id]))
+  // Eine Karte fuer jedes in den Live-Projektdaten registrierte Projekt;
+  // Such-/Angebotsfelder und Tagungskontakte sind keine Zugangsvoraussetzung.
+  const withCards = P.map((p, i) => ({ p, i }))
     .sort((x, y) => {
       const nx = /^BELL\./.test(x.p.id), ny = /^BELL\./.test(y.p.id);
       if (nx !== ny) return nx ? -1 : 1;
@@ -1382,8 +1715,8 @@ function renderMatching(board) {
   const shown = mSel !== '' ? withCards.filter(({ i }) => String(i) === mSel)
     : mQ.trim() ? withCards.filter(({ p }) => mMatch(p, mQ)) : withCards;
   const leer = mQ.trim() && !shown.length
-    ? `<p class="empty">Keine Matching-Karte zu „${esc(mQ.trim())}“ gefunden. Bitte prüfen Sie die BELL-Nummer. Es werden Projekte mit Suche-/Angebotsangaben oder dokumentierten Tagungseinträgen gezeigt.</p>`
-    : '<p class="empty">Noch keine Suche- und Biete-Angaben für ein Matching.</p>';
+    ? `<p class="empty">Kein Projekt zu „${esc(mQ.trim())}“ gefunden. Bitte prüfen Sie die BELL-Nummer.</p>`
+    : '<p class="empty">Keine Projekte vorhanden.</p>';
   const tag = (t, c) => `<span class="tag" style="background:var(--${c}-light);color:var(--${c})">${esc(t)}</span>`;
   const card = ({ p, i }) => {
     const partners = p.M.map((x, n) => {
@@ -1408,6 +1741,7 @@ function renderMatching(board) {
         ${partners ? `<p class="m-label" style="margin-top:.8rem">Eure Gesprächspartner</p><ol class="m-list">${partners}</ol>` : ''}
         ${learn ? `<p class="m-label" style="margin-top:.8rem">Diese Projekte möchten von euch lernen</p><ul class="m-learn">${learn}</ul>` : ''}
         ${mVorOrt(p, P)}
+        ${!p.s && !p.b && !partners && !learn && !M_VOR_ORT.some(x => x.owner === p.id || x.target === p.id) && !M_VOR_ORT_SUCHE[p.id] ? '<p class="m-seek">Noch keine Matching-Angaben vorhanden.</p>' : ''}
       </div></div>`;
   };
   board.innerHTML = `
@@ -1420,7 +1754,7 @@ function renderMatching(board) {
       <button type="button" class="tab" id="mPrint">Drucken</button>
       <span class="m-status" id="mStatus" aria-live="polite"></span>
     </div>
-    <p class="m-hint">Die automatisch berechneten Vorschläge verbinden Such- und Angebotsinteressen. Zusätzlich zeigen ausgewählte Karten die auf den Give-&-Take-Tafeln der Tagung handschriftlich dokumentierten Projektbezüge. Diese sind ausdrücklich keine bestätigten Kontakte. Seltene Anliegen zählen stärker als allgemeine.${ohne ? ` ${ohne} Projekte haben Suche und Biete noch nicht ausgefüllt und erhalten deshalb keine eigene Karte.` : ''}</p>
+    <p class="m-hint">Für jedes in der Projektliste oder den aktuellen Meldungen erfasste Projekt wird eine Karte angezeigt. Vorhandene Matching-Vorschläge und die auf der Tagung ergänzten Projektverbindungen erscheinen auf derselben Karte. Die Anzahl der Karten ist nicht die Anzahl der Tagungsteilnehmenden.</p>
     <div class="cards-grid m-grid${mSel !== '' || shown.length === 1 ? ' m-single' : ''}">${shown.map(card).join('') || leer}</div>`;
   document.getElementById('mSel').onchange = ev => { mSel = ev.target.value; mQ = ''; render(); };
   const qEl = document.getElementById('mQ');
