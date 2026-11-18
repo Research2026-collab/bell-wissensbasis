@@ -131,6 +131,14 @@ body {
 .empty { text-align: center; color: var(--text-faint); padding: 4rem 0; font-size: 14px; }
 
 /* Matching-Karten */
+.m-site { margin-top:1.1rem; padding-top:.85rem; border-top:1px solid var(--border); }
+.m-site-hint { font-size:11px; color:var(--text-muted); margin:.2rem 0 .65rem; line-height:1.55; }
+.m-site-group { margin:.6rem 0; }
+.m-site-topic { font-size:12px; font-weight:700; color:var(--navy); margin-bottom:.25rem; }
+.m-site-list { margin:0; padding-left:1.15rem; }
+.m-site-entry { font-size:12px; margin-bottom:.35rem; line-height:1.45; }
+.m-site-meta { display:block; color:var(--text-faint); font-size:10px; }
+
 .m-bar { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-bottom:.6rem; }
 .m-bar input[type=search] { font-family:inherit; font-size:13px; padding:.4rem .6rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); color:var(--text); width:18rem; max-width:100%; }
 .m-bar select { font-family:inherit; font-size:13px; padding:.4rem .6rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); color:var(--text); max-width:100%; }
@@ -713,11 +721,657 @@ function mCompute() {
   return P;
 }
 
+
+// Auf den Give-&-Take-Pinnwaenden der BELL-Tagung 16.–17.11.2026 notierte
+// Projektbezuege. Fotografisch erfasste Vermerke, ergänzt um die im Nachgang geklärten Einträge.
+// Quellen und Transkriptionsnotizen bleiben als Datensätze erhalten.
+// Richtungslogik: owner = auf dieser Projektkarte notiert, target = handschriftlich
+// eingetragene Projektkennung. Keine Bestaetigung, dass Kontakt stattgefunden hat.
+const M_VOR_ORT = [
+  {
+    "owner": "BELL.0007.24",
+    "target": "BELL.0071.24",
+    "topic": "Angebote an unterschiedliche Bedürfnisse anpassen",
+    "side": "Give",
+    "photo": 15,
+    "note": "Julika Loeper / BrückenBildung",
+    "targetName": "BrückenBildung-Begegnung und Beteiligung von Migrantinnen 60+"
+  },
+  {
+    "owner": "BELL.0067.24",
+    "target": "BELL.0042.24",
+    "topic": "Angebote an unterschiedliche Bedürfnisse anpassen",
+    "side": "Give",
+    "photo": 15,
+    "note": "Lernen im Alter –",
+    "targetName": "Lernen im Alter! Engagiert mit Vergnügen!"
+  },
+  {
+    "owner": "BELL.0115.24",
+    "target": "BELL.0011.24",
+    "topic": "Angebote an unterschiedliche Bedürfnisse anpassen",
+    "side": "Take",
+    "photo": 15,
+    "note": "Ekin Yildiran-Schoepe / Bildung & Begegnung",
+    "targetName": "Bildung & Begegnung – 60 plus"
+  },
+  {
+    "owner": "BELL.0067.24",
+    "target": "BELL.0153.24",
+    "topic": "Digitale Kompetenzen vermitteln",
+    "side": "Give",
+    "photo": 14,
+    "note": "Stephan Seiffert / DiKomBi (auch BEST 60 Plus handschriftlich)",
+    "targetName": "Digitale Kompetenzen und Bildung für Menschen 60+"
+  },
+  {
+    "owner": "BELL.0080.24",
+    "target": "BELL.0090.24",
+    "topic": "Digitale Kompetenzen vermitteln",
+    "side": "Give",
+    "photo": 14,
+    "note": "Lernen mit der Diakonie – ein Leben lang",
+    "targetName": "Lernen mit der Diakonie - ein Leben lang"
+  },
+  {
+    "owner": "BELL.0080.24",
+    "target": "BELL.0019.24",
+    "topic": "Digitale Kompetenzen vermitteln",
+    "side": "Give",
+    "photo": 14,
+    "note": "60PLUS – Gesund aktiv bleiben",
+    "targetName": "60PLUS – Gesund aktiv bleiben!"
+  },
+  {
+    "owner": "BELL.0135.24",
+    "target": "BELL.0121.24",
+    "topic": "Digitale Kompetenzen vermitteln",
+    "side": "Give",
+    "photo": 14,
+    "note": "Daniela Otto / In Bewegung bleiben",
+    "targetName": "In Bewegung bleiben"
+  },
+  {
+    "owner": "BELL.0040.24",
+    "target": "BELL.0081.24",
+    "topic": "Digitale Kompetenzen vermitteln",
+    "side": "Give",
+    "photo": 14,
+    "note": "Janine Gerold / Musizieren im Alter",
+    "targetName": "Musizieren im Alter"
+  },
+  {
+    "owner": "BELL.0187.24",
+    "target": "BELL.0177.24",
+    "topic": "Digitale Kompetenzen vermitteln",
+    "side": "Give",
+    "photo": 14,
+    "note": "Paula Miralles / sana – Lebensfreude im Alter",
+    "targetName": "sana – Lebensfreude im Alter"
+  },
+  {
+    "owner": "BELL.0161.24",
+    "target": "BELL.0045.24",
+    "topic": "Digitale Kompetenzen vermitteln",
+    "side": "Give",
+    "photo": 14,
+    "note": "Julia Theurig / GEFRAGT! – ein WIR für nachhaltige Bildung",
+    "targetName": "GEFRAGT! – ein WIR für nachhaltige Bildung"
+  },
+  {
+    "owner": "BELL.0042.24",
+    "target": "BELL.0071.24",
+    "topic": "Netzwerke knüpfen und Kooperationen aufbauen",
+    "side": "Give",
+    "photo": 13,
+    "note": "Julika Loeper / BrückenBildung",
+    "targetName": "BrückenBildung-Begegnung und Beteiligung von Migrantinnen 60+"
+  },
+  {
+    "owner": "BELL.0080.24",
+    "target": "BELL.0177.24",
+    "topic": "Netzwerke knüpfen und Kooperationen aufbauen",
+    "side": "Give",
+    "photo": 13,
+    "note": "Paula Miralles / sana,",
+    "targetName": "sana – Lebensfreude im Alter"
+  },
+  {
+    "owner": "BELL.0040.24",
+    "target": "BELL.0036.24",
+    "topic": "Netzwerke knüpfen und Kooperationen aufbauen",
+    "side": "Take",
+    "photo": 13,
+    "note": "Jörg Biehl / Helmut Nagel – DigiLand; Hinweis auf Digitalisierungsstammtisch und kostenlose Materialien (Wortlaut nur teilweise lesbar)",
+    "targetName": "DigiLand - Digitale Kompetenz und Teilhabe für ältere Menschen auf dem Land"
+  },
+  {
+    "owner": "BELL.0065.24",
+    "target": "BELL.0052.24",
+    "topic": "Demokratie stärken und Altersbilder hinterfragen",
+    "side": "Give",
+    "photo": 12,
+    "note": "Rudow verbindet / Ich-Du-Wir",
+    "targetName": "Ich-Du-Wir, niemand lebt allein - Rudow verbindet"
+  },
+  {
+    "owner": "BELL.0065.24",
+    "target": "BELL.0011.24",
+    "topic": "Demokratie stärken und Altersbilder hinterfragen",
+    "side": "Give",
+    "photo": 12,
+    "note": "Ekin Yildiran-Schoepe / Bildung & Begegnung",
+    "targetName": "Bildung & Begegnung – 60 plus"
+  },
+  {
+    "owner": "BELL.0065.24",
+    "target": "BELL.0044.24",
+    "topic": "Demokratie stärken und Altersbilder hinterfragen",
+    "side": "Give",
+    "photo": 12,
+    "note": "Julia Rutkewitz / Engagement Plus",
+    "targetName": "Engagement Plus – Systematische Förderung des Engagements von Senior:innen für Jugendliche in Berlin"
+  },
+  {
+    "owner": "BELL.0070.24",
+    "target": "BELL.0161.24",
+    "topic": "Demokratie stärken und Altersbilder hinterfragen",
+    "side": "Give",
+    "photo": 12,
+    "note": "Kreativ- & Digitalwerkstatt",
+    "targetName": "Senior*innen Kreativ- & Digitalwerkstatt"
+  },
+  {
+    "owner": "BELL.0070.24",
+    "target": "BELL.0153.24",
+    "topic": "Demokratie stärken und Altersbilder hinterfragen",
+    "side": "Give",
+    "photo": 12,
+    "note": "DiKomBi – digitale Kompetenz",
+    "targetName": "Digitale Kompetenzen und Bildung für Menschen 60+"
+  },
+  {
+    "owner": "BELL.0124.24",
+    "target": "BELL.0052.24",
+    "topic": "Demokratie stärken und Altersbilder hinterfragen",
+    "side": "Give",
+    "photo": 12,
+    "note": "Rudow verbindet – Eintrag auf SeniorCLASS",
+    "targetName": "Ich-Du-Wir, niemand lebt allein - Rudow verbindet"
+  },
+  {
+    "owner": "BELL.0011.24",
+    "target": "BELL.0070.24",
+    "topic": "Demokratie stärken und Altersbilder hinterfragen",
+    "side": "Give",
+    "photo": 12,
+    "note": "Politische Bildung; Zuordnung der Handschrift prüfen",
+    "targetName": "RAGE Prävention (Rechtsextremismus im Alter als Gefahr für Zusammenhalt und Engagement. Entwicklung eines Präventionsangebots.)"
+  },
+  {
+    "owner": "BELL.0070.24",
+    "target": "BELL.0065.24",
+    "topic": "Demokratie stärken und Altersbilder hinterfragen",
+    "side": "Take",
+    "photo": 12,
+    "note": "LUCIA, handschriftlich Projektverweis",
+    "targetName": "LUCIA - Lernen und Engagement für Chancengleichheit im Alter"
+  },
+  {
+    "owner": "BELL.0124.24",
+    "target": "BELL.0049.24",
+    "topic": "Offener Bedarf / Männerschuppen",
+    "side": "Take",
+    "photo": 11,
+    "note": "SeniorCLASS sucht Unterstützung zum Konzept Männerschuppen; Projektbezug aus Handschrift",
+    "targetName": "MARS+Männerschuppen: Ein australisches Konzept für Deutschland"
+  },
+  {
+    "owner": "BELL.0042.24",
+    "target": "BELL.0019.24",
+    "topic": "Projekte verstetigen und weiterführen",
+    "side": "Take",
+    "photo": 10,
+    "note": "60PLUS – Gesund aktiv bleiben / Birgit Brinkmann",
+    "targetName": "60PLUS – Gesund aktiv bleiben!"
+  },
+  {
+    "owner": "BELL.0048.24",
+    "target": "BELL.0180.24",
+    "topic": "Projekte verstetigen und weiterführen",
+    "side": "Take",
+    "photo": 10,
+    "note": "60 Plus – Erfahrungen teilen, Neues entdecken",
+    "targetName": "60 Plus – Erfahrungen teilen, Neues entdecken"
+  },
+  {
+    "owner": "BELL.0011.24",
+    "target": "BELL.0052.24",
+    "topic": "Ältere mit Migrationsgeschichte einbinden",
+    "side": "Give",
+    "photo": 9,
+    "note": "Rudow verbindet",
+    "targetName": "Ich-Du-Wir, niemand lebt allein - Rudow verbindet"
+  },
+  {
+    "owner": "BELL.0011.24",
+    "target": "BELL.0177.24",
+    "topic": "Ältere mit Migrationsgeschichte einbinden",
+    "side": "Give",
+    "photo": 9,
+    "note": "Paula Miralles – sana",
+    "targetName": "sana – Lebensfreude im Alter"
+  },
+  {
+    "owner": "BELL.0048.24",
+    "target": "BELL.0136.24",
+    "topic": "Ältere mit Migrationsgeschichte einbinden",
+    "side": "Give",
+    "photo": 9,
+    "note": "Vanessa Verdugo / Vielfalt hilft",
+    "targetName": "Vielfalt hilft"
+  },
+  {
+    "owner": "BELL.0071.24",
+    "target": "BELL.0178.24",
+    "topic": "Ältere mit Migrationsgeschichte einbinden",
+    "side": "Give",
+    "photo": 9,
+    "note": "Zukunft gestalten im Kiez / Werkstatt für Bildung",
+    "targetName": "Zukunft im Kiez gestalten – Werkstatt für Bildung & Engagement in Neukölln"
+  },
+  {
+    "owner": "BELL.0076.24",
+    "target": "BELL.0071.24",
+    "topic": "Ältere mit Migrationsgeschichte einbinden",
+    "side": "Give",
+    "photo": 9,
+    "note": "Julika Loeper / BrückenBildung",
+    "targetName": "BrückenBildung-Begegnung und Beteiligung von Migrantinnen 60+"
+  },
+  {
+    "owner": "BELL.0076.24",
+    "target": "BELL.0177.24",
+    "topic": "Ältere mit Migrationsgeschichte einbinden",
+    "side": "Give",
+    "photo": 9,
+    "note": "Paula Miralles / sana; Projekt",
+    "targetName": "sana – Lebensfreude im Alter"
+  },
+  {
+    "owner": "BELL.0071.24",
+    "target": "BELL.0011.24",
+    "topic": "Ältere mit Migrationsgeschichte einbinden",
+    "side": "Take",
+    "photo": 9,
+    "note": "Ekin Yildiran-Schoepe / Bildung & Begegnung",
+    "targetName": "Bildung & Begegnung – 60 plus"
+  },
+  {
+    "owner": "BELL.0048.24",
+    "target": "BELL.0011.24",
+    "topic": "Ältere mit Migrationsgeschichte einbinden",
+    "side": "Take",
+    "photo": 9,
+    "note": "Ekin Yildiran-Schoepe / Bildung & Begegnung",
+    "targetName": "Bildung & Begegnung – 60 plus"
+  },
+  {
+    "owner": "BELL.0136.24",
+    "target": "BELL.0011.24",
+    "topic": "Ältere mit Migrationsgeschichte einbinden",
+    "side": "Take",
+    "photo": 9,
+    "note": "Ekin Yildiran-Schoepe / Bildung & Begegnung",
+    "targetName": "Bildung & Begegnung – 60 plus"
+  },
+  {
+    "owner": "BELL.0081.24",
+    "target": "BELL.0071.24",
+    "topic": "Verwaltung und Dokumentation bewältigen",
+    "side": "Give",
+    "photo": 8,
+    "note": "Julika Loeper – Verwaltung/Projektpraxis",
+    "targetName": "BrückenBildung-Begegnung und Beteiligung von Migrantinnen 60+"
+  },
+  {
+    "owner": "BELL.0011.24",
+    "target": "BELL.0076.24",
+    "topic": "Ehrenamtliche gewinnen und Multiplikator*innen qualifizieren",
+    "side": "Give",
+    "photo": 7,
+    "note": "LernLeben 60+ im Dialog",
+    "targetName": "LernLeben 60+ im Dialog"
+  },
+  {
+    "owner": "BELL.0011.24",
+    "target": "BELL.0044.24",
+    "topic": "Ehrenamtliche gewinnen und Multiplikator*innen qualifizieren",
+    "side": "Give",
+    "photo": 7,
+    "note": "Engagement Plus",
+    "targetName": "Engagement Plus – Systematische Förderung des Engagements von Senior:innen für Jugendliche in Berlin"
+  },
+  {
+    "owner": "BELL.0042.24",
+    "target": "BELL.0052.24",
+    "topic": "Ehrenamtliche gewinnen und Multiplikator*innen qualifizieren",
+    "side": "Give",
+    "photo": 7,
+    "note": "Rudow verbindet",
+    "targetName": "Ich-Du-Wir, niemand lebt allein - Rudow verbindet"
+  },
+  {
+    "owner": "BELL.0111.24",
+    "target": "BELL.0011.24",
+    "topic": "Ehrenamtliche gewinnen und Multiplikator*innen qualifizieren",
+    "side": "Take",
+    "photo": 7,
+    "note": "Ekin Yildiran-Schoepe / Bildung & Begegnung",
+    "targetName": "Bildung & Begegnung – 60 plus"
+  },
+  {
+    "owner": "BELL.0077.24",
+    "target": "BELL.0177.24",
+    "topic": "Mit Kunst, Theater und Biografie arbeiten",
+    "side": "Give",
+    "photo": 6,
+    "note": "Paula Miralles – sana / Lebensfreude im Alter",
+    "targetName": "sana – Lebensfreude im Alter"
+  },
+  {
+    "owner": "BELL.0083.24",
+    "target": "BELL.0124.24",
+    "topic": "Mit Kunst, Theater und Biografie arbeiten",
+    "side": "Give",
+    "photo": 6,
+    "note": "SeniorCLASS",
+    "targetName": "SeniorCLASS – Orientierungsjahr für die nachberufliche Lebensphase"
+  },
+  {
+    "owner": "BELL.0161.24",
+    "target": "BELL.0030.24",
+    "topic": "Mit Kunst, Theater und Biografie arbeiten",
+    "side": "Give",
+    "photo": 6,
+    "note": "BELLA VITA – Lena Matzeit",
+    "targetName": "BELLA VITA: Bildung und Erfahrung lebenslang aktivieren – Vitalität, Innovation und Teilhabe im Alter"
+  },
+  {
+    "owner": "BELL.0106.24",
+    "target": "BELL.0083.24",
+    "topic": "Mit Kunst, Theater und Biografie arbeiten",
+    "side": "Take",
+    "photo": 6,
+    "note": "Chance 60 plus, biografisches Erzählen",
+    "targetName": "Chance60plus"
+  },
+  {
+    "owner": "BELL.0161.24",
+    "target": "BELL.0077.24",
+    "topic": "Mit Kunst, Theater und Biografie arbeiten",
+    "side": "Take",
+    "photo": 6,
+    "note": "Ruby Leuze / Bühne der Generationen",
+    "targetName": "Bühne der Generationen - Generationsübergreifende Begegnungs- und Bildungsgelegenheiten"
+  },
+  {
+    "owner": "BELL.0061.24",
+    "target": "BELL.0011.24",
+    "topic": "Zielgruppen erreichen und gewinnen",
+    "side": "Give",
+    "photo": 5,
+    "note": "Ekin Yildiran-Schoepe / Bildung & Begegnung",
+    "targetName": "Bildung & Begegnung – 60 plus"
+  },
+  {
+    "owner": "BELL.0061.24",
+    "target": "BELL.0136.24",
+    "topic": "Zielgruppen erreichen und gewinnen",
+    "side": "Give",
+    "photo": 5,
+    "note": "Vanessa Verdugo / Vielfalt hilft",
+    "targetName": "Vielfalt hilft"
+  },
+  {
+    "owner": "BELL.0093.24",
+    "target": "BELL.0030.24",
+    "topic": "Zielgruppen erreichen und gewinnen",
+    "side": "Give",
+    "photo": 5,
+    "note": "BELLA VITA /",
+    "targetName": "BELLA VITA: Bildung und Erfahrung lebenslang aktivieren – Vitalität, Innovation und Teilhabe im Alter"
+  },
+  {
+    "owner": "BELL.0178.24",
+    "target": "BELL.0011.24",
+    "topic": "Zielgruppen erreichen und gewinnen",
+    "side": "Give",
+    "photo": 5,
+    "note": "Ekin Yildiran-Schoepe / Bildung & Begegnung",
+    "targetName": "Bildung & Begegnung – 60 plus"
+  },
+  {
+    "owner": "BELL.0178.24",
+    "target": "BELL.0080.24",
+    "topic": "Zielgruppen erreichen und gewinnen",
+    "side": "Give",
+    "photo": 5,
+    "note": "Lernen und Gestalten im Alter",
+    "targetName": "Lernen und Gestalten im Alter - Digital, Nachhaltig, Engagiert"
+  },
+  {
+    "owner": "BELL.0178.24",
+    "target": "BELL.0111.24",
+    "topic": "Zielgruppen erreichen und gewinnen",
+    "side": "Give",
+    "photo": 5,
+    "note": "BiEBeR; handschriftliche Notiz",
+    "targetName": "BiEBeR - Bildung, Ehrenamt und Begegnung in der Region 60+"
+  },
+  {
+    "owner": "BELL.0018.24",
+    "target": "BELL.0011.24",
+    "topic": "Zielgruppen erreichen und gewinnen",
+    "side": "Take",
+    "photo": 5,
+    "note": "Ekin Yildiran-Schoepe / Bildung & Begegnung",
+    "targetName": "Bildung & Begegnung – 60 plus"
+  },
+  {
+    "owner": "BELL.0018.24",
+    "target": "BELL.0071.24",
+    "topic": "Offener Austausch",
+    "side": "Give",
+    "photo": 3,
+    "note": "Julika Loeper / BrückenBildung",
+    "targetName": "BrückenBildung-Begegnung und Beteiligung von Migrantinnen 60+"
+  },
+  {
+    "owner": "BELL.0056.24",
+    "target": "BELL.0177.24",
+    "topic": "Offener Austausch",
+    "side": "Give",
+    "photo": 3,
+    "note": "Paula Miralles / sana",
+    "targetName": "sana – Lebensfreude im Alter"
+  },
+  {
+    "owner": "BELL.0080.24",
+    "target": "BELL.0077.24",
+    "topic": "Offener Austausch",
+    "side": "Give",
+    "photo": 3,
+    "note": "Ruby Leuze / Bühne der Generationen",
+    "targetName": "Bühne der Generationen - Generationsübergreifende Begegnungs- und Bildungsgelegenheiten"
+  },
+  {
+    "owner": "BELL.0019.24",
+    "target": "BELL.0071.24",
+    "topic": "Offener Austausch",
+    "side": "Give",
+    "photo": 3,
+    "note": "Julika Loeper / BrückenBildung",
+    "targetName": "BrückenBildung-Begegnung und Beteiligung von Migrantinnen 60+"
+  },
+  {
+    "owner": "BELL.0115.24",
+    "target": "BELL.0011.24",
+    "topic": "Offener Austausch",
+    "side": "Take",
+    "photo": 3,
+    "note": "Ekin Yildiran-Schoepe / Bildung & Begegnung",
+    "targetName": "Bildung & Begegnung – 60 plus"
+  },
+  {
+    "owner": "BELL.0019.24",
+    "target": "BELL.0007.24",
+    "topic": "Zielgruppen erreichen und gewinnen",
+    "side": "Take",
+    "photo": 2,
+    "note": "Julia Hochfeld / BEE; handschriftliche Zuordnung prüfen",
+    "targetName": "BEE: Bildung - Erfahrung - Engagement - Teilhabe für Menschen mit Behinderungen stärken"
+  },
+  {
+    "owner": "BELL.0115.24",
+    "target": "BELL.0044.24",
+    "topic": "Angebote an unterschiedliche Bedürfnisse anpassen",
+    "side": "Give",
+    "photo": 15,
+    "note": "Julia Rutkewitz / Engagement Plus",
+    "targetName": "Engagement Plus – Systematische Förderung des Engagements von Senior:innen für Jugendliche in Berlin"
+  },
+  {
+    "owner": "BELL.0115.24",
+    "target": "BELL.0111.24",
+    "topic": "Angebote an unterschiedliche Bedürfnisse anpassen",
+    "side": "Give",
+    "photo": 15,
+    "note": "BiEBeR",
+    "targetName": "BiEBeR - Bildung, Ehrenamt und Begegnung in der Region 60+"
+  },
+  {
+    "owner": "BELL.0115.24",
+    "target": "BELL.0177.24",
+    "topic": "Angebote an unterschiedliche Bedürfnisse anpassen",
+    "side": "Give",
+    "photo": 15,
+    "note": "Paula Miralles / sana – Lebensfreude im Alter",
+    "targetName": "sana – Lebensfreude im Alter"
+  },
+  {
+    "owner": "BELL.0070.24",
+    "target": "BELL.0178.24",
+    "topic": "Demokratie stärken und Altersbilder hinterfragen",
+    "side": "Give",
+    "photo": 12,
+    "note": "Zukunft gestalten im Kiez – eigenständiger Kontakt",
+    "targetName": "Zukunft im Kiez gestalten – Werkstatt für Bildung & Engagement in Neukölln"
+  },
+  {
+    "owner": "BELL.0080.24",
+    "target": "BELL.0152.24",
+    "topic": "Digitale Kompetenzen vermitteln",
+    "side": "Give",
+    "photo": 14,
+    "note": "Handschriftlich „LiA – BELL.0152.24“; Nummer im Eintrag bestätigt, Datenbank führt BELL.0152.24 als „Lebenslanges Lernen in Annen“",
+    "targetName": "Lebenslanges Lernen in Annen (auf der Tafel: „LiA“)"
+  },
+  {
+    "owner": "BELL.0161.24",
+    "target": "BELL.0153.24",
+    "topic": "Digitale Kompetenzen vermitteln",
+    "side": "Give",
+    "photo": 14,
+    "note": "Stephan Seiffert / DiKomBi",
+    "targetName": "Digitale Kompetenzen und Bildung für Menschen 60+"
+  },
+  {
+    "owner": "BELL.0065.24",
+    "target": "BELL.0118.24",
+    "topic": "Demokratie stärken und Altersbilder hinterfragen",
+    "side": "Give",
+    "photo": 12,
+    "note": "Jana Dornfeld / Erfahrung zählt",
+    "targetName": "Erfahrung zählt"
+  },
+  {
+    "owner": "BELL.0077.24",
+    "target": "BELL.0061.24",
+    "topic": "Mit Kunst, Theater und Biografie arbeiten",
+    "side": "Give",
+    "photo": 6,
+    "note": "Yvonne Ott / Aktiv leben in Mecklenburg-Vorpommern",
+    "targetName": "Aktiv leben in MV"
+  },
+  {
+    "owner": "BELL.0077.24",
+    "target": "BELL.0003.24",
+    "topic": "Mit Kunst, Theater und Biografie arbeiten",
+    "side": "Give",
+    "photo": 6,
+    "note": "Kathrin Kiefer / Akademie der Generationen",
+    "targetName": "Akademie der Generationen"
+  },
+  {
+    "owner": "BELL.0178.24",
+    "target": "BELL.0153.24",
+    "topic": "Zielgruppen erreichen und gewinnen",
+    "side": "Take",
+    "photo": 5,
+    "note": "Stephan Seiffert / DiKomBi",
+    "targetName": "Digitale Kompetenzen und Bildung für Menschen 60+"
+  },
+  {
+    "owner": "BELL.0178.24",
+    "target": "BELL.0040.24",
+    "topic": "Zielgruppen erreichen und gewinnen",
+    "side": "Take",
+    "photo": 5,
+    "note": "DiTA – Digitale Teilhabe im Alter",
+    "targetName": "DiTA – Digitale Teilhabe im Alter"
+  },
+  {
+    "owner": "BELL.0044.24",
+    "target": "BELL.0106.24",
+    "topic": "Ehrenamtliche gewinnen und Multiplikator*innen qualifizieren",
+    "side": "Take",
+    "photo": 11,
+    "note": "Ann Wenske-Radvan / Bildung leben. Engagement entfalten. – Kinderschutz",
+    "targetName": "BELL- Bildung leben. Engagement entfalten."
+  }
+];
+const M_VOR_ORT_SUCHE = {
+  'BELL.0124.24': ['Referent/innen zu Demokratie, Projektmethodik (SCRUM).'],
+  'BELL.0118.24': ['Praxisorientierter Fachinput zu intersektionalem Ageism und Rassismus, möglichst handlungsorientiert und erlebbar.'],
+  'BELL.0044.24': ['Referent*innen zu Kinderschutz und geschlechtergerechter Pädagogik.', 'Erfahrungen mit der Begleitung Ehrenamtlicher bei der Entwicklung eigener Bildungsangebote an Kooperationsorten.']
+};
+function mVorOrt(p, P) {
+  const links = M_VOR_ORT.filter(x => x.owner === p.id);
+  const zusatz = M_VOR_ORT_SUCHE[p.id] || [];
+  if (!links.length && !zusatz.length) return '';
+  const lookup = Object.fromEntries(P.map(x => [x.id,x.p]));
+  const groups = {};
+  links.forEach(x => { (groups[x.topic] ||= []).push(x); });
+  const items = Object.entries(groups).map(([topic, xs]) => {
+    const entries = xs.map(x => {
+      const partner = x.targetName || lookup[x.target] || x.target;
+
+      return `<li class="m-site-entry"><b>${esc(partner)}</b> <span class="card-meta">${esc(x.target)}</span>` +
+        `</li>`;
+    }).join('');
+    return `<div class="m-site-group"><p class="m-site-topic">${esc(topic)}</p><ul class="m-site-list">${entries}</ul></div>`;
+  }).join('');
+  const suchblock = zusatz.length ? `<div class="m-site-group"><p class="m-site-topic">Zusätzlich auf der Tagung gesuchte Expertise</p><ul class="m-site-list">${zusatz.map(t=>`<li class="m-site-entry">${esc(t)}</li>`).join('')}</ul></div>` : '';
+  return `<div class="m-site"><p class="m-label">Auf den Tagungstafeln dokumentierte Projektbezüge</p>` +
+    `<p class="m-site-hint">Handschriftliche Give-&-Take-Einträge der BELL-Tagung vom 16.–17. November 2026.</p>${items}${suchblock}</div>`;
+}
+
 function renderMatching(board) {
   const aktiv = document.activeElement && document.activeElement.id === 'mQ' ? document.activeElement.selectionStart : -1;
   if (mCache.daten !== daten) mCache = { daten, P: mCompute() };
   const P = mCache.P;
-  const withCards = P.map((p, i) => ({ p, i })).filter(({ p }) => p.s || p.b || p.M.length || p.R.length)
+  const withCards = P.map((p, i) => ({ p, i })).filter(({ p }) => p.s || p.b || p.M.length || p.R.length || (M_VOR_ORT.some(x => x.owner === p.id) || !!M_VOR_ORT_SUCHE[p.id]))
     .sort((x, y) => {
       const nx = /^BELL\./.test(x.p.id), ny = /^BELL\./.test(y.p.id);
       if (nx !== ny) return nx ? -1 : 1;
@@ -728,7 +1382,7 @@ function renderMatching(board) {
   const shown = mSel !== '' ? withCards.filter(({ i }) => String(i) === mSel)
     : mQ.trim() ? withCards.filter(({ p }) => mMatch(p, mQ)) : withCards;
   const leer = mQ.trim() && !shown.length
-    ? `<p class="empty">Keine Matching-Karte zu „${esc(mQ.trim())}“ gefunden. Bitte prüfen Sie die BELL-Nummer. Projekte ohne Angaben zu Suche und Angebot haben keine eigene Karte.</p>`
+    ? `<p class="empty">Keine Matching-Karte zu „${esc(mQ.trim())}“ gefunden. Bitte prüfen Sie die BELL-Nummer. Es werden Projekte mit Suche-/Angebotsangaben oder dokumentierten Tagungseinträgen gezeigt.</p>`
     : '<p class="empty">Noch keine Suche- und Biete-Angaben für ein Matching.</p>';
   const tag = (t, c) => `<span class="tag" style="background:var(--${c}-light);color:var(--${c})">${esc(t)}</span>`;
   const card = ({ p, i }) => {
@@ -753,6 +1407,7 @@ function renderMatching(board) {
         ${p.b ? `<p class="m-label" style="margin-top:.8rem">Ihr bietet</p><p class="m-quote">${esc(p.b)}</p>` : ''}
         ${partners ? `<p class="m-label" style="margin-top:.8rem">Eure Gesprächspartner</p><ol class="m-list">${partners}</ol>` : ''}
         ${learn ? `<p class="m-label" style="margin-top:.8rem">Diese Projekte möchten von euch lernen</p><ul class="m-learn">${learn}</ul>` : ''}
+        ${mVorOrt(p, P)}
       </div></div>`;
   };
   board.innerHTML = `
@@ -765,7 +1420,7 @@ function renderMatching(board) {
       <button type="button" class="tab" id="mPrint">Drucken</button>
       <span class="m-status" id="mStatus" aria-live="polite"></span>
     </div>
-    <p class="m-hint">Die Vorschläge verbinden, was ein Projekt sucht, mit dem, was andere anbieten oder laut Projektbeschreibung tun, und berücksichtigen gemeinsame Zielgruppen. Seltene Anliegen zählen stärker als allgemeine.${ohne ? ` ${ohne} Projekte haben Suche und Biete noch nicht ausgefüllt und erhalten deshalb keine eigene Karte.` : ''}</p>
+    <p class="m-hint">Die automatisch berechneten Vorschläge verbinden Such- und Angebotsinteressen. Zusätzlich zeigen ausgewählte Karten die auf den Give-&-Take-Tafeln der Tagung handschriftlich dokumentierten Projektbezüge. Diese sind ausdrücklich keine bestätigten Kontakte. Seltene Anliegen zählen stärker als allgemeine.${ohne ? ` ${ohne} Projekte haben Suche und Biete noch nicht ausgefüllt und erhalten deshalb keine eigene Karte.` : ''}</p>
     <div class="cards-grid m-grid${mSel !== '' || shown.length === 1 ? ' m-single' : ''}">${shown.map(card).join('') || leer}</div>`;
   document.getElementById('mSel').onchange = ev => { mSel = ev.target.value; mQ = ''; render(); };
   const qEl = document.getElementById('mQ');
